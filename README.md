@@ -1,6 +1,6 @@
 # Using Machine Learning to Predict Individual Differences in Psychological Reactivities to Social Interactions and Major Societal Events 
 
-This repository contains the full analysis code.
+This repository contains the complete analysis code.
 
 
 ## Table of Contents
@@ -8,13 +8,13 @@ This repository contains the full analysis code.
 1. [Introduction](#introduction)
 2. [Installation](#installation)
    - [Cloning the Repository](#cloning-the-repository)
-   - [Get the data](#get-the-data)
+   - [Get the Data](#get-the-data)
    - [Installing Python](#installing-python)
    - [Installing Requirements](#installing-requirements)
 3. [Usage](#usage)
    - [Main Function](#main-function)
    - [Main Config](#main-config)
-   - [Computation of SHAP interaction values](#computation-of-shap-interaction-values)
+   - [Computation of SHAP Interaction Values](#computation-of-shap-interaction-values)
    - [Speed up Computations](#speed-up-computations)
    - [Troubleshooting](#troubleshooting)
 4. [Reproducing Results](#reproducing-results)
@@ -27,7 +27,7 @@ To reproduce the results, please execute the following steps:
 - Download the data 
 - Install Python 
 - Install the requirements 
-- Run the analyses as described in the script
+- Run the analyses as described below
 
 ## Installation
 
@@ -60,7 +60,7 @@ cd psychological_reactivities_analysis
 
 This method does not require any special software and is perfect for those unfamiliar with command-line tools. You will have a complete copy of the repository files, ready to be used with any code editor of your choice.
 
-### Get the data 
+### Get the Data 
 
 1. **Download the data**:
    - Navigate to the OSF project that contains the data by clicking on the link provided in the manuscript. Download the zip file **data**.  
@@ -97,7 +97,7 @@ psychological_reactivities_analysis/
    - This command should return "Python 3.10.8". If it does not, you may need to restart your terminal or computer.
 
 
-### Installing the requirements 
+### Installing Requirements 
 To ensure your setup is correctly configured to run the code, follow these steps to install the necessary dependencies:
 
 1. **Open your terminal**: Before proceeding, make sure you are in the project's root directory.
@@ -169,7 +169,7 @@ Analyses set to `True` in the configuration file will be performed when this scr
 3. Run the machine learning analysis (depending on the specific configuration, this may be time-consuming (e.g., for the non-linear ML models and the computation of SHAP interaction values))
 4. Conduct subsequent analyses as needed, in chronological order
 
-### Computation of SHAP interaction values 
+### Computation of SHAP Interaction Values 
 
 As we have described in the paper, we did only compute the SHAP interaction values for specific analysis settings. 
 With the following description, SHAP interaction values for every analysis setting can be computed. 
@@ -182,7 +182,7 @@ Do the computations as described in the next section. If `calc_ia_values: true`,
 ### Speed up Computations
 
 To speed up the computations, the machine learning-based analysis can be parallelized (on a local computer). As a default, the analysis is not parallelized.
-Therefore, lines 702-713 in `config_refactored.yaml` need to be adjusted to parallelize the compuatations. 
+Therefore, lines 702-713 in `config_refactored.yaml` need to be adjusted to parallelize the computations. 
 I recommend these settings for local parallelization where the specific number depends on the cores available at the local device. 
 
 - `parallelize_reps: false`
@@ -205,6 +205,7 @@ If main.py is not running as expected, consider the following steps
 - Check if you installed the `requirements.txt` file 
 - Try running the code in an editor, if it does not work from the terminal 
 - Check the python version and the python path 
+- Check the run configuration
 - Check if you accidentally changed any settings in `config_refactored.yaml
 
 ## Reproducing Results 
@@ -218,17 +219,17 @@ To reproduce the results, adjust the parameters in `config_refactored.yaml` and 
 - **"mse"**: Major societal events
 
 #### Types of Supplementary Analyses
-1. **"sep_ftf_cmc"**: Analysis where face-to-face and computer-mediated interactions are separated
+1. **"sep_ftf_cmc"**: Analysis where face-to-face and computer-mediated interactions are separated (Supplement 2)
    - **"ftf"**: Face-to-face social interactions
    - **"cmc"**: Computer-mediated social interactions
    - **"ftf_pa"**: Combination of face-to-face social interactions and positive affective reactivities
-2. **"sep_pa_na"**: Analysis where positive and negative affective reactivities are separated
+2. **"sep_pa_na"**: Analysis where positive and negative affective reactivities are separated (Supplement 3)
    - **"pa"**: Positive affect
    - **"na"**: Negative affect
-3. **"weighting_by_rel"**: Analysis where individual random effects are weighted by their estimated reliability
+3. **"weighting_by_rel"**: Analysis where individual random effects are weighted by their estimated reliability (Supplement 4)
    - **"random_slopes"**: Weighting the empirical Bayes estimates
    - **"ols_slopes"**: Weighting the Ordinary Least Squares (OLS) estimates (individual models, N=1)
-4. **"add_wb_change"**: Supplementary analysis where the initial well-being change is added as a person-level variable
+4. **"add_wb_change"**: Supplementary analysis where the initial well-being change is added as a person-level variable (Supplement 5)
 
 
 ### Walk-Through 
@@ -296,7 +297,7 @@ For subsequent methods, adjust lines 8-16 as needed for the specific method bein
 
 #### Other analysis settings
 All supplementary analyses can be computed equally, it just needs other adjustments of lines 31-34. 
-For example, if one want to execute the whole procedure for the supplementary analysis sep_ftf_cmc for ftf (face to face interactions), one has to specify these parameters and repeat steps 1-5: 
+For example, if one want to execute the whole procedure for the supplementary analysis sep_ftf_cmc for ftf (face-to-face interactions), one has to specify these parameters and repeat steps 1-5: 
 - `analysis: suppl`
 - `suppl_type: sep_ftf_cmc`
 - `suppl_var: ftf`
