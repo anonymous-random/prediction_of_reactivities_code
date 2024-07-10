@@ -219,17 +219,17 @@ To reproduce the results, adjust the parameters in `config_refactored.yaml` and 
 - **"mse"**: Major societal events
 
 #### Types of Supplementary Analyses
-1. **"sep_ftf_cmc"**: Analysis where face-to-face and computer-mediated interactions are separated (Supplement 2)
+1. **"sep_ftf_cmc"**: Supplement 2 - Separating Face-to-Face and Computer-Mediated Social Interactions
    - **"ftf"**: Face-to-face social interactions
    - **"cmc"**: Computer-mediated social interactions
    - **"ftf_pa"**: Combination of face-to-face social interactions and positive affective reactivities
-2. **"sep_pa_na"**: Analysis where positive and negative affective reactivities are separated (Supplement 3)
+2. **"sep_pa_na"**: Supplement 3 – Separation of Positive and Negative Affect in the Operationalization of the Well-Being Measure
    - **"pa"**: Positive affect
    - **"na"**: Negative affect
-3. **"weighting_by_rel"**: Analysis where individual random effects are weighted by their estimated reliability (Supplement 4)
+3. **"weighting_by_rel"**: Supplement 4 – Using Weighted Samples to Consider the Reliability of the Individual Reactivities in the Machine Learning-Based Prediction Process
    - **"random_slopes"**: Weighting the empirical Bayes estimates
    - **"ols_slopes"**: Weighting the Ordinary Least Squares (OLS) estimates (individual models, N=1)
-4. **"add_wb_change"**: Supplementary analysis where the initial well-being change is added as a person-level variable (Supplement 5)
+4. **"add_wb_change"**: Supplement 5 – Adding the Initial Change in Well-Being as a Person-Level Variable for the Machine Learning-Based Prediction Process
 
 
 ### Walk-Through 
