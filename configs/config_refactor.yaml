@@ -1,0 +1,1255 @@
+# Config for the whole project
+# Every important adjustment of settings regarding the analysis should be made here
+
+general:
+  log_name: 'final_tests'
+  # Methods applied in main.py
+  # To prevent confusion, I recommend to use only one method at a time
+  preprocessing: false
+  calc_mlms: false
+  ml_analysis: true
+  result_analysis: false
+  prelim_results_analysis: false
+  significance_tests: false
+  cv_results_plots: false
+  shap_value_analysis: false
+  osf_suppl_analysis: false
+
+  #### Common Parameters used in all Classes - Could be assigned via Slurm in the machine learning analyses ####
+
+  # For example, for creating the data for the supplementary analysis where we use only ftf social situations,
+  # one has to specify analysis==suppl, suppl_type==separate_ftf_cmc and suppl_var==ftf
+  # Similarly, to run the ml procedure on the cluster for this analysis, specifications must be the same
+  # suppl_type is only used when analysis==suppl
+  # suppl_var is only used when analysis==suppl and suppl_type is separate_ftf_cmc, separate_pa_na, or weighting by rel
+
+  # Addition: CVResultPlotter can now also take a list of suppl_vars to create plots to compare them.
+  #           CVResultPlotter can now also take ['main', 'suppl',] as analysis parameters and ['main', 'add_wb_change']
+  #           as suppl_type parameters to create a common plot with the two variables. This might not work with other
+  #           combinations and is for one specific plot in the paper
+
+  analysis: main # suppl # main / suppl, ['main', 'suppl']
+  suppl_type:  # sep_pa_na, sep_ftf_cmc, weighting_by_rel, add_wb_change, mse_no_day_agg, ['main', 'add_wb_change']
+  suppl_var:  # pa, na; ftf, cmc, ftf_pa; random_slopes, ols_slopes, ['pa', 'na'], ['ftf', 'cmc']
+  study: ssc # ssc / mse
+  social_interaction_variable: social_interaction # social_interaction, interaction_quantity, interaction_depth, interaction_closeness
+  esm_sample: coco_int  # coco_int, emotions, coco_ut, for classes that use only a single sample at a time
+  feature_inclusion_strategy: scale_means  # single_items, scale_means, feature_selection
+  model: rfr  # linear_baseline_model, lasso, rfr, svr
+
+  # This is used in classes that use all specified samples at a time
+  samples_for_analysis:
+    - emotions
+    - coco_int
+    - coco_ut
+
+  # This is used to validate the chosen suppl_type/suppl_var combinations when setting the property in the class
+  suppl_type_mapping:
+    ssc: [sep_ftf_cmc, sep_pa_na, weighting_by_rel]
+    mse: [add_wb_change, sep_pa_na, weighting_by_rel, mse_no_day_agg]
+  suppl_var_mapping:
+    sep_pa_na: [pa, na, ftf_pa]
+    sep_ftf_cmc: [ftf, ftf_pa, cmc]
+    weighting_by_rel: [random_slopes, ols_slopes]
+
+  load_data:
+    data_path: '../data/raw'
+    processed_data_path: '../data/preprocessed'    # '../data/preprocessed'
+  store_data:
+    data_path: '../data/preprocessed'  # '../data/preprocessed'
+    store_only_one_hot_encoded: true
+
+  # Oder matters: exclude_flagged_samples first -> filter_and_preprocess_traits -> filter_and_preprocess_states
+  preprocessing_methods_ssc:
+    - remove_mse_specific_items
+    - exclude_flagged_samples
+    - filter_and_preprocess_traits
+    - filter_and_preprocess_states
+    - set_id_as_index
+    - sanity_checks
+    - store_processed_dfs
+
+  preprocessing_methods_mse:
+    - exclude_flagged_samples
+    - filter_and_preprocess_traits
+    - filter_and_preprocess_states
+    - set_id_as_index
+    - sanity_checks
+    - store_processed_dfs
+
+  id_col: # aligned for convenience
+    all: id
+    coco_int: id
+    emotions: id
+    coco_ut: id
+
+  # Define columns to keep apart from ML-Features because they are needed in the preparation process
+  trait_columns_to_keep:
+    - id
+  state_columns_to_keep:
+    - id
+    - created_esm_timepoint
+
+  # Define exclusion criteria for suspicious data, e.g. by using Flags from the original ESM samples
+  exclude_flagged_data:
+    emotions:
+      traits:
+      #- flag_susp_traits -> too many persons excluded, do not use
+      states:
+      #- flag_susp_states -> too many persons excluded, do not use
+    coco_int:
+      traits:
+        - FLAG_ANY_TRAITS
+      states:
+        - FLAG_ANY_ESM
+    coco_ut:
+      traits:
+      # no flags available
+      states:
+      # no flags available
+
+state_data:
+  general:
+    well_being_items: # renamed for convenience
+      coco_int:
+        positive_affect:
+          - state_pa1 # happy
+          - state_pa2 # excited
+          - state_pa3 # relaxed
+        negative_affect:
+          - state_na1 # angry
+          - state_na2 # anxious
+          - state_na3 # sad
+        scale_endpoints: [1,6]
+      emotions:
+        positive_affect:
+          - state_pa1 # relaxed
+          - state_pa2 # proud
+          - state_pa3 # enthusiastic
+          - state_pa4 # successful
+        negative_affect:
+          - state_na1 # angry
+          - state_na2 # sad
+          - state_na3 # anxious
+          - state_na4 # lonely
+        scale_endpoints: [1,6]
+      coco_ut:
+        positive_affect:
+          - state_pa1 # happy
+        negative_affect:
+          - state_na1 # angry
+          - state_na2 # worried
+          - state_na3 # sad
+          - state_na4 # stressed
+          - state_na5 # lonely
+        scale_endpoints: [1,4]
+
+  ssc:
+    social_interaction_vars:
+      social_interaction:
+        var_type: binary
+        samples: [ 'emotions', 'coco_int', 'coco_ut' ]
+        min_number_esm_measures: 5  # per binary class
+        raw_values: {'yes': 1, 'no': 2 }
+        value_mapping: {1: 1, 2: 0}
+        exclude_no_interaction_data: false
+      interaction_quantity:  # slurm script handles adding this to coco_ut in ftf
+        var_type: continuous
+        samples: [ 'emotions', 'coco_int' ]  # + coco_ut in ftf
+        min_number_esm_measures: 10 # 10
+        exclude_no_interaction_data: true
+      interaction_closeness:
+        var_type: continuous
+        samples: [ 'coco_int' ]
+        min_number_esm_measures: 10 # 10
+        exclude_no_interaction_data: true
+      interaction_depth:
+        var_type: continuous
+        samples: [ 'coco_int' ]
+        min_number_esm_measures: 10 # 10
+        exclude_no_interaction_data: true
+
+  mse:
+    period_investigated_in_days: 14  # 14
+    min_number_esm_measures: 10 # 10
+    esm_timepoint: created_esm_timepoint
+    filter_for_min_num_days:
+      apply_filter_for_num_days: true  # true
+      min_num_days: 5 # 5
+    major_societal_events: # day of the first nationwide covid lockdown in Germany
+      lockdown_ger_2020:
+        date: '2020-03-22'
+        sample: emotions
+        #esm_timepoint: created_esm_timepoint
+      us_election_2020:
+        date: '2020-11-07'  # day of the official decision of the US election 2020
+        sample: coco_ut
+        #esm_timepoint: created_esm_timepoint
+      uk_war_outbreak_2022:
+        date: '2022-02-24'  # day of the Russo-Ukrainian war outbreak 2022
+        sample: coco_int
+        #esm_timepoint: created_esm_timepoint
+
+trait_data:
+  new_suffix: 'clean'  # for creating cleaned columns that are differentiable from raw columns
+  mse_only: # Features that are excluded for the ssc analysis
+    coco_int: []
+    emotions: [corona_risk, corona_eval, corona_change, corona_policy,
+               corona_aff_cont, corona_aff_binaries, corona_aff_occup, corona_stockpile]
+    coco_ut: [trump_pers, worries_election2020, corona_know, policy_eval,
+              party_affiliation, voting_state, voting_cont, support_election]
+  broad_categories:
+    - socio_demographics
+    - personality
+    - polit_soc_attitudes
+    - country_vars
+  socio_demographics:
+    - name: age
+      time_of_assessment: {coco_int: ['t1'], emotions: ['t1', 't3'], coco_ut: ['t1']}
+      var_type: {coco_int: cont, emotions: cont, coco_ut: cont}
+    - name: sex
+      time_of_assessment: {coco_int: ['t1'], emotions: ['t1', 't3'], coco_ut: ['t1']}
+      var_type: {coco_int: cat, emotions: cat, coco_ut: cat}
+    - name: educational_attainment
+      time_of_assessment: {coco_int: ['t1','t2'], emotions: ['t1', 't3']}
+      var_type: {coco_int: cont, emotions: cont}
+    - name: professional_status
+      time_of_assessment: {coco_int: ['t1','t2'], emotions: ['t1', 't3']}
+      var_type: {coco_int: cat, emotions: cat}
+    - name: quantity_household
+      time_of_assessment: {coco_int: ['t1','t2'], emotions: ['t1', 't3'],  coco_ut: ['t1']}
+      var_type: {coco_int: cont, emotions: cont, coco_ut: cont}
+    - name: relationship_status  #
+      time_of_assessment: {emotions: ['t2', 't3'],  coco_ut: ['t1']}
+      var_type: {emotions: cat, coco_ut: cont}
+    # only in coco_int
+    - name: country
+      time_of_assessment: {coco_int: ['t1']}
+      var_type: {coco_int: cat}
+    - name: citizenship
+      time_of_assessment: {coco_int: ['t1']}
+      var_type: {coco_int: cat}
+    - name: immigrant
+      time_of_assessment: {coco_int: ['t1']}
+      var_type: {coco_int: cat}
+    # only in emotions
+    - name: higher_ed  # uni, fh, nothing -> depends if one assigns an order, I chose a categorical
+      time_of_assessment: {emotions: ['t1', 't3']}
+      var_type: {emotions: cat}
+    - name: int_part_parents
+      time_of_assessment: {emotions: ['t2', 't3']}
+      var_type: {emotions: cat}
+    - name: int_part_grandparents
+      time_of_assessment: {emotions: ['t2', 't3']}
+      var_type: {emotions: cat}
+    - name: int_part_siblings
+      time_of_assessment: {emotions: ['t2', 't3']}
+      var_type: {emotions: cat}
+    - name: int_part_children
+      time_of_assessment: {emotions: ['t2', 't3']}
+      var_type: {emotions: cat}
+    - name: int_part_partner
+      time_of_assessment: {emotions: ['t2', 't3']}
+      var_type: {emotions: cat}
+    # only in coco_ut
+    - name: area
+      time_of_assessment: {coco_ut: ['t1']}
+      var_type: {coco_ut: cat}
+    - name: current_living
+      time_of_assessment: {coco_ut: ['t1']}
+      var_type: {coco_ut: cat}
+    - name: ethnic_group
+      time_of_assessment: {coco_ut: ['t1']}
+      var_type: {coco_ut: cat}
+    - name: birth_order
+      time_of_assessment: {coco_ut: ['t1']}
+      var_type: {coco_ut: cont}
+    - name: first_language
+      time_of_assessment: {coco_ut: ['t1']}
+      var_type: {coco_ut: cat}
+    - name: other_languages
+      time_of_assessment: {coco_ut: ['t1']}
+      var_type: {coco_ut: cont}
+    - name: handedness
+      time_of_assessment: {coco_ut: ['t1']}
+      var_type: {coco_ut: cat}
+    - name: political_orientation
+      time_of_assessment: {coco_ut: ['t1']}
+      var_type: {coco_ut: cont}
+    - name: subj_health_rating
+      time_of_assessment: {coco_ut: ['t1']}
+      var_type: {coco_ut: cont}
+    - name: education_mother
+      time_of_assessment: {coco_ut: ['t1']}
+      var_type: {coco_ut: cont}
+    - name: education_father
+      time_of_assessment: {coco_ut: ['t1']}
+      var_type: {coco_ut: cont}
+    - name: subj_ses
+      time_of_assessment: {coco_ut: ['t1']}
+      var_type: {coco_ut: cont}
+    - name: religion
+      time_of_assessment: {coco_ut: ['t1']}
+      var_type: {coco_ut: cont}
+    - name: religious_affiliation
+      time_of_assessment: {coco_ut: ['t1']}
+      var_type: {coco_ut: cat}
+    - name: job # Q23 # no, part time, full time -> considered continuous
+      time_of_assessment: { coco_ut: [ 't1' ] }
+      var_type: { coco_ut: cont }
+    - name: voting_state  # dont summarize under voting_cont, because categorical
+      number_of_items: { coco_ut: 1 }
+      time_of_assessment: { coco_ut: [ 't1' ] }
+      var_type: { coco_ut: cat }
+    - name: demog_ses
+      time_of_assessment: {coco_ut: ['t1']}
+      var_type: {coco_ut: cont}
+    - name: demog_healthinsurance
+      time_of_assessment: {coco_ut: ['t1']}
+      var_type: {coco_ut: cat}
+    - name: demog_mentalhealth_pre_corona
+      time_of_assessment: {coco_ut: ['t1']}
+      var_type: {coco_ut: cont}
+    - name: demog_physicalhealth_pre_corona
+      time_of_assessment: {coco_ut: ['t1']}
+      var_type: {coco_ut: cont}
+
+  personality:
+    - name: bfi2
+      number_of_items: {coco_int: 60, coco_ut: 60}
+      time_of_assessment: {coco_int: ['t1', 't2'], coco_ut: ['t1']}
+      number_of_dimensions: 5
+      dimension_mapping:
+        extra: [1,6,11,16,21,26,31,36,41,46,51,56]
+        agree: [2,7,12,17,22,27,32,37,42,47,52,57]
+        consc: [3,8,13,18,23,28,33,38,43,48,53,58]
+        neuro: [4,9,14,19,24,29,34,39,44,49,54,59]
+        open: [5,10,15,20,25,30,35,40,45,50,55,60]
+      var_type: {coco_int: cont, coco_ut: cont}
+      scale_endpoints: [1,5]
+      to_recode: [3, 4, 5, 8, 9, 11, 12, 16, 17, 22, 23, 24, 25, 26, 28, 29, 30, 31, 36, 37, 42, 44, 45, 47, 48, 49, 50, 55, 58]
+    - name: bfi2s
+      number_of_items: {emotions: 30}
+      time_of_assessment: {emotions: [ 't1', 't2', 't3', 't4' ]}
+      number_of_dimensions: 5
+      dimension_mapping:
+        extra: [ 1,6,11,16,21,26]
+        agree: [ 2,7,12,17,22,27]
+        consc: [ 3,8,13,18,23,28]
+        neuro: [ 4,9,14,19,24,29]
+        open: [ 5,10,15,20,25,30]
+      var_type: {emotions: cont}
+      scale_endpoints: [1,5]
+      to_recode: [1, 3, 7, 8, 10, 14, 17, 19, 20, 21, 24, 26, 27, 28, 30]
+    - name: narqs
+      number_of_items: {coco_int: 6, emotions: 6, coco_ut: 6}
+      time_of_assessment: {coco_int: ['t1', 't2'], emotions: [ 't1', 't2', 't3', 't4' ], coco_ut: ['t1', 't2']}
+      number_of_dimensions: 2
+      dimension_mapping: {adm: [2,4,5], riv: [1,3,6]}
+      var_type: {coco_int: cont, emotions: cont, coco_ut: cont}
+    - name: stab  # Note: for having high score -> high stability, we need to inverse code the items
+      number_of_items: {coco_int: 5}
+      time_of_assessment: {coco_int: ['t1', 't2']}
+      var_type: {coco_int: cont}
+      scale_endpoints: [1,6]
+      to_recode: [1,2,3,4,5]
+    - name: plas
+      number_of_items: {coco_int: 5}
+      time_of_assessment: {coco_int: ['t1', 't2']}
+      var_type: {coco_int: cont}
+    - name: self_esteem
+      number_of_items: {coco_int: 1, emotions: 1}
+      time_of_assessment: {coco_int: ['t1', 't2'], emotions: [ 't1', 't2', 't3', 't4' ]}
+      var_type: {coco_int: cont, emotions: cont}
+    - name: hex60
+      number_of_items: {coco_int: 10, emotions: 10, coco_ut: 10}
+      time_of_assessment: {coco_int: ['t1', 't2'], emotions: [ 't2', 't3', 't4' ], coco_ut: ['t1']}
+      number_of_dimensions: 1
+      var_type: {coco_int: cont, emotions: cont, coco_ut: cont}
+      scale_endpoints: [1,5]
+      to_recode: [2,4,5,7,8,10]
+    - name: ipa
+      number_of_items: {coco_int: 4}
+      time_of_assessment: {coco_int: ['t1', 't2']}
+      var_type: {coco_int: cont}
+    - name: swls
+      number_of_items: {coco_int: 5, coco_ut: 5}
+      time_of_assessment: {coco_int: ['t1', 't2'], coco_ut: ['t1', 't2']}
+      var_type: {coco_int: cont, coco_ut: cont}
+    - name: panasx
+      number_of_items: {coco_int: 6}
+      time_of_assessment: {coco_int: ['t1', 't2']}
+      number_of_dimensions: 2
+      dimension_mapping: {neg: [1,2,3], pos: [4,5,6]}
+      var_type: {coco_int: cont}
+    - name: awb
+      number_of_items: {coco_ut: 6}
+      time_of_assessment: {coco_ut: ['t1', 't2']}
+      number_of_dimensions: 2
+      dimension_mapping: {neg: [1,2,4], pos: [3,5,6]}
+      var_type: {coco_ut: cont}
+    - name: pwb
+      number_of_items: {coco_int: 18}
+      time_of_assessment: {coco_int: ['t1', 't2']}
+      number_of_dimensions: 6
+      dimension_mapping:
+        autonomy: [15,17,18]
+        env_mastery: [4,8,9]
+        pers_growth: [11,12,14]
+        pos_relations: [6,13,16]
+        purpose_life: [3,7,10]
+        self_accept: [1,2,5]
+      var_type: {coco_int: cont}
+      scale_endpoints: [1,7]
+      to_recode: [1,2,3,8,9,11,12,13,17,18]
+    - name: uls
+      number_of_items: {coco_int: 9, emotions: 9, coco_ut: 9}
+      time_of_assessment: {coco_int: ['t1', 't2'], emotions: [ 't2', 't3', 't4' ], coco_ut: ['t1', 't2']}
+      number_of_dimensions: 3
+      dimension_mapping: {intimate: [1,4,8], relational: [3,5,7], collective: [2,6,9]}
+      var_type: {coco_int: cont, emotions: cont, coco_ut: cont}
+      scale_endpoints: [1,4]
+      to_recode: [2,3,5,6,7,9]
+    - name: vfs
+      number_of_items: {coco_int: 11}
+      time_of_assessment: {coco_int: ['t1', 't2']}
+      var_type: {coco_int: cont}
+      number_of_dimensions: 2
+      dimension_mapping: {values_in_line: [1,2,5,7,9,11], values_not_in_line: [3,4,6,8,10]}
+    - name: cope
+      number_of_items: {coco_int: 28}
+      time_of_assessment: {coco_int: ['t1', 't2']}
+      number_of_dimensions: 14
+      dimension_mapping:
+        active_cope: [2,7]
+        planning: [14,25]
+        pos_reframe: [12,17]
+        acceptance: [20,24]
+        humor: [18,28]
+        religion: [22,27]
+        use_emo_support: [5,15]
+        use_ins_support: [10,23]
+        self_distract: [1,19]
+        denial: [3,8]
+        venting: [9,21]
+        substance_use: [4,11]
+        behavioral_diseng: [6,16]
+        self_blame: [13,26]
+      var_type: {coco_int: cont}
+    - name: lotr
+      number_of_items: {coco_ut: 6}
+      time_of_assessment: {coco_ut: ['t1']}
+      number_of_dimensions: 2
+      dimension_mapping: {neg: [1,3,6], opt: [2,4,5]}  # in the 10-item version, this would be 1,4,10 and 3,7,9
+      var_type: {coco_ut: cont}
+      scale_endpoints: [0,4]
+
+  polit_soc_attitudes:
+    - name: cmq
+      number_of_items: {coco_int: 5, emotions: 5, coco_ut: 5}
+      time_of_assessment: {coco_int: ['t1', 't2'], emotions: [ 't2', 't3', 't4' ], coco_ut: ['t1']}
+      var_type: {coco_int: cont, emotions: cont, coco_ut: cont}
+    - name: ksa3
+      number_of_items: {coco_int: 9}
+      time_of_assessment: {coco_int: ['t1', 't2']}
+      number_of_dimensions: 3
+      dimension_mapping: {aggressive: [1,2,3,4], submissive: [5,6], convent: [7,8,9]}
+      var_type: {coco_int: cont}
+    - name: ksa3s
+      number_of_items: {coco_ut: 3}
+      time_of_assessment: {coco_ut: ['t1', 't2']}
+      var_type: {coco_ut: cont}
+    - name: sdo
+      number_of_items: {coco_int: 8, coco_ut: 4}
+      time_of_assessment: {coco_int: ['t1', 't2'], coco_ut: ['t1']}
+      number_of_dimensions: 2
+      dimension_mapping:
+        coco_int: {dominance: [1,2,3,4], egalitarianism: [5,6,7,8]}
+        coco_ut: {dominance: [1,3], egalitarianism: [2,4]}
+      scale_endpoints: [1,7]
+      to_recode:
+        coco_int: [3,4,7,8]
+        coco_ut: [2,3]
+      var_type: {coco_int: cont, coco_ut: cont}
+    - name: wgm
+      number_of_items: {coco_int: 6, coco_ut: 7}
+      time_of_assessment: {coco_int: ['t1', 't2'], coco_ut: ['t1']}
+      number_of_dimensions: 3
+      dimension_mapping:
+        coco_int: {economic: [1,5], political: [2,4], cultural: [3,6]}
+        coco_ut: {economic: [3,6], political: [1,4], cultural: [2,5,7]}
+      var_type: {coco_int: cont, coco_ut: cont}
+    - name: threat_perception
+      number_of_items: {coco_int: 6}
+      time_of_assessment: {coco_int: ['t1', 't2']}
+      number_of_dimensions: 3
+      dimension_mapping: {symbolic: [1,2], realistic: [3,4], safety: [5,6]}
+      var_type: {coco_int: cont}
+      # gen pol att
+    - name: pol_trust
+      number_of_items: {coco_int: 3}
+      time_of_assessment: {coco_int: ['t1', 't2']}
+      var_type: {coco_int: cont}
+    - name: political_efficacy
+      number_of_items: {coco_int: 4}
+      time_of_assessment: {coco_int: ['t1', 't2']}
+      var_type: {coco_int: cont}
+      scale_endpoints: [1,10]
+      to_recode: [1, 2, 3, 4]
+    - name: pol_outgroup
+      number_of_items: {coco_int: 2}
+      time_of_assessment: {coco_int: ['t1', 't2']}
+      var_type: {coco_int: cont}
+    - name: pol_att_other
+      number_of_items: {coco_int: 5}
+      number_of_dimensions: 5
+      dimension_mapping: {satisf_demo: [1], pol_left_right: [2], religiosity: [3], spirituality: [4], subj_ses: [5]}
+      time_of_assessment: {coco_int: ['t1', 't2']}
+      var_type: {coco_int: cont}
+    - name: media
+      number_of_items: {coco_int: 2, coco_ut: 2}
+      time_of_assessment: {coco_int: ['t1', 't2'], coco_ut: ['t1']}
+      var_type: {coco_int: cont, coco_ut: cont}
+    - name: political_orientation
+      number_of_items: {emotions: 1}
+      time_of_assessment: {emotions: [ 't2', 't3', 't4' ]}
+      var_type: {emotions: cont}
+    - name: tig
+      number_of_items: {coco_ut: 3}
+      time_of_assessment: {coco_ut: ['t1']}
+      var_type: {coco_ut: cont}
+    - name: sfd
+      number_of_items: {coco_ut: 4}
+      time_of_assessment: {coco_ut: ['t1']}
+      scale_endpoints: [1,7]
+      to_recode: [1,2,3]
+      var_type: {coco_ut: cont}
+    - name: political_polar
+      number_of_items: {coco_ut: 2}
+      time_of_assessment: {coco_ut: ['t1']}
+      var_type: {coco_ut: cont}
+      number_of_dimensions: 2
+      dimension_mapping: {favor_dem: [1], favor_rep: [2]}
+    # Emotions COVID-19 related items
+    - name: corona_risk
+      number_of_items: {emotions: 13}
+      time_of_assessment: {emotions: [ 't1', 't2', 't3', 't4' ]}
+      number_of_dimensions: 4
+      dimension_mapping: {self: [1,2,3], family: [4,5,6], closeothers: [7,8,9], society: [10,11,12,13]}
+      var_type: {emotions: cont}
+    - name: corona_eval
+      number_of_items: {emotions: 22}
+      time_of_assessment: {emotions: [ 't1', 't2', 't3', 't4' ]}
+      number_of_dimensions: 3
+      dimension_mapping: {rating: [1,2,3,4], self: [5,6,7,8,9,10,11,12,13,14], others: [15,16,17,18,19,20,21,22]}
+      var_type: {emotions: cont}
+    - name: corona_change
+      number_of_items: {emotions: 25}
+      time_of_assessment: {emotions: [ 't1', 't2', 't3', 't4' ]}
+      var_type: {emotions: cont}
+    - name: corona_policy  # policy_relaxations was only assessed in Wave 1 -> excluded
+      number_of_items: {emotions: 20}  # NEW
+      time_of_assessment: {emotions: [ 't1', 't2', 't3', 't4' ]}
+      var_type: {emotions: cont}
+    - name: corona_aff_binaries
+      number_of_items: {emotions: 7}
+      time_of_assessment: {emotions: [ 't1', 't2', 't3', 't4' ]}
+      var_type: {emotions: cat}  # here a sum score makes sense for summarizing -> is considered in code
+    - name: corona_aff_occup
+      number_of_items: {emotions: 1}
+      time_of_assessment: {emotions: [ 't1', 't2', 't3', 't4' ]}
+      var_type: {emotions: cat}
+    - name: corona_aff_cont
+      number_of_items: {emotions: 9}
+      time_of_assessment: {emotions: [ 't1', 't2', 't3', 't4' ]}
+      number_of_dimensions: 3
+      dimension_mapping: {family: [1,2,3], closeothers: [4,5,6], people: [7,8,9]}
+      var_type: {emotions: cont}
+    - name: corona_stockpile
+      number_of_items: {emotions: 2}
+      time_of_assessment: {emotions: [ 't1', 't2', 't3', 't4' ]}
+      var_type: {emotions: cont}
+    # CoCo UT US election related items
+    - name: trump_pers
+      number_of_items: {coco_ut: 5}
+      time_of_assessment: {coco_ut: ['t1']}
+      number_of_dimensions: 5
+      dimension_mapping: {open: [1], consc: [2], extra: [3], agree: [4], neuro: [5]}
+      var_type: {coco_ut: cont}
+    - name: worries_election2020
+      number_of_items: {coco_ut: 8}
+      time_of_assessment: {coco_ut: ['t1']}
+      var_type: {coco_ut: cont}
+    - name: corona_know
+      number_of_items: {coco_ut: 9}
+      time_of_assessment: {coco_ut: ['t1']}
+      var_type: {coco_ut: cont}
+    - name: policy_eval
+      number_of_items: {coco_ut: 15}
+      time_of_assessment: {coco_ut: ['t1']}
+      var_type: {coco_ut: cont}
+    - name: party_affiliation  # dont summarize under voting_cont, categorical
+      number_of_items: {coco_ut: 1}
+      time_of_assessment: {coco_ut: ['t1']}
+      var_type: {coco_ut: cat}
+    - name: support_election  # dont summarize under voting_cont, categorical
+      number_of_items: { coco_ut: 1 }
+      time_of_assessment: { coco_ut: [ 't1' ] }
+      var_type: { coco_ut: cat }
+    - name: voting_cont
+      number_of_items: {coco_ut: 2}
+      time_of_assessment: {coco_ut: ['t1']}
+      number_of_dimensions: 2
+      dimension_mapping: {voting_behav: [1], winner_elect: [2]}
+      var_type: {coco_ut: cont}
+
+  country_vars: # always 1 dimension per item, always continuous, never inverse_coded
+    - name: hofstede
+      number_of_items: {coco_int: 6}
+      var_names: [pdi, idv, mas, uai, ltowvs, ivr]
+    - name: un
+      number_of_items: {coco_int: 15}
+      var_names:
+        - pop_estimates_mil
+        - pop_density
+        - pop_age_percent_under_14
+        - pop_age_percent_over_60
+        - pop_rate_increase
+        - fertility_rate
+        - infant_mortality
+        - life_exp
+        - migrant_stock_percent
+        - migrant_refugees
+        - migrant_asylum
+        - gdp_absolut
+        - gdp_per_capita
+        - gdp_growth_rate
+        - internet_num_person_percent
+    - name: coco_mixed
+      number_of_items: {coco_int: 4}
+      var_names: [religion_idx, psm_eco_idx, psm_cult_idx, psm_pol_idx]
+
+  country_vars_other:
+    store_path: '../data/external_country_data/preprocessed'
+
+# Config for multilevel analysis, machine learning analysis and results analysis
+analysis:
+  # Multilevel Analysis for extracting the individual reactivities
+  mlm_methods:
+    - get_data
+    #- calc_ols_for_sample
+    #- get_iccs
+    - calc_rs_only_mlm
+    #- calc_ols_for_individuals
+    #- compare_fs_rs_models
+  mlm_params:  # fit params for multilevel models
+    solver:
+      mse: powell
+      ssc: cg
+    # Powell for MSE, CG for SSC, produces the best results
+    # Still, in some supplementary analyses, some models are not converging -> is reported in supplementary tables
+    store:
+      random_effects: true
+      sample_weights: true
+      ols_slopes: false
+
+    reml: true  # true for reml, false for maximum likelihood, will be checked using "assert"
+    dv: 'wb_pmc'
+    calc_rel: true
+    calc_betas: true
+    max_iter: 100000
+
+  mlm_results:
+    store_mlm_results_in_json: false
+    store_ols_results_in_json: false
+    store_lr_test_results_in_json: false
+    store_iccs: false
+    json_result_folder: '../results/prelim_results/multilevel_modeling'
+
+  machine_learning_methods:
+    - adjust_metadata_routing  # for weighting by reliability
+    - get_features
+    - get_criterion
+    - get_sample_weights # only executed if suppl_type = weighting_by_rel
+    - select_features  # only used by the linear_baseline_model
+    - create_pipeline
+    #- nested_cross_val  # commented out if using repeated_nested_cv
+    - repeated_nested_cv
+    - get_average_coefficients  # only used by linear models
+    - store_analysis_results  # Note: CAUTION
+    - store_coefficients  # Note: CAUTION
+
+  random_state: 42  # random_state is 42, increases by 1 for all nested reps -> must be 42 to reproduce results
+  local_result_dir: '../results/local_results'
+
+  cross_validation:
+    num_cv: 10  # 10  # inner and outer cv
+    repetitions: 10 # 10
+
+  scoring_metric:
+    inner_cv_loop:
+      name: r2  # r2, neg_mean_squared_error, spearman_corr, currently only r2 tested
+      greater_is_better: true
+    outer_cv_loop: # only for evaluation in the outer loop, not for fitting, all tested
+      - r2
+      - rmse
+      - spearman
+
+  # Parallelization configuration for local ML-based analyses
+  # In the final calculations on the cluster, inner_cv and shap calculations were parallelized,
+  # because they are carried out sequentially
+  parallelize:
+    parallelize_reps: false
+    reps_n_jobs: null
+    parallelize_shap: true  # in the model specific shap calculations
+    shap_n_jobs: null # 5
+    parallelize_shap_outer_cv: false # in the model agnostic shap wrapper
+    shap_outer_cv_n_jobs: null
+    parallelize_rfe: false
+    rfe_n_jobs: null
+    parallelize_inner_cv: true
+    inner_cv_n_jobs: null # 5
+    parallelize_shap_ia_values: false
+    shap_ia_values_n_jobs: null
+
+  calc_ia_values: false  # only implemented for RFR
+
+  feature_selection:
+    num_cv: 5 # 5
+    scoring_metric:
+      name: r2
+      greater_is_better: true
+    stepsize: 3
+    estimator: decision_tree
+    min_features_to_select: 10
+
+  model_hyperparameters:
+    linearregression: {}
+    lasso:
+      model__alpha: [0.0001, 0.0005, 0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1, 10]
+      model__max_iter: [1000, 10000]
+      model__tol: [0.01, 0.0001]
+    randomforestregressor:
+      model__n_estimators: [100, 1000]
+      model__max_features: ['sqrt']
+      model__max_depth: [2,4,6,8,10,15,20]
+      model__min_samples_split: [2,5,10,15,20,25]
+    svr:
+      model__C: [0.01, 0.05, 0.1, 0.5, 1, 10]
+      model__epsilon: [0.01, 0.1, 1]
+      model__kernel: ['linear', 'rbf', 'poly']
+      model__gamma: [ 'scale', 'auto', 1 ]
+      model__degree: [2, 3] # Only relevant for 'poly' kernel
+      model__max_iter: [100000]
+    rfe:
+      feature_selection__n_features_to_select: [0.1, 0.25, 0.5]
+
+  output_filenames:
+    performance: 'cv_results.json'
+    shap_values: 'shap_values.json'
+    shap_ia_values: 'shap_ia_values.json'
+    coefs: 'lin_model_coefficients.json'
+
+
+  # The following configurations are associated with processing the results and plot / table creation
+
+  result_analysis:
+    features_base_dir: "../data/preprocessed"   # here are the features needed for scaling
+    result_base_dir: "../results/ml_results"  # here are the ml results "../results/ml_results"
+    sum_results_folder: "../results/ml_results_processed" #here are the results for the paper "../results/ml_results_processed"
+    store_results: true
+    shap_ia_values: false
+    keys_non_linear:  # These files are contained in all machine learning results, independent of the specific model
+      - "cv_results.json"
+      - "shap_values.json"
+      - "time.json"
+      - "features"
+    additional_keys_linear:  # This file is only present in analyses using linear models
+      - "lin_model_coefficients.json"
+    additional_keys_ia_values: # This file is only present if shap interaction values were calculated
+      - "shap_ia_values.json"
+    mse_assignment:
+      coco_int: uk_war_outbreak_2022
+      emotions: lockdown_ger_2020
+      coco_ut: us_election_2020
+    methods:
+      - name: load_data_from_folders
+        args: []
+      - name: summarize_results
+        args:
+          - results
+          - ''
+
+  descriptive_results:
+    methods:
+      - set_duplicate_result_warning
+      - calc_ssc_descriptives
+      - calc_wb_items_descriptives
+      - calc_ml_features_descriptives
+      - calc_random_effects_descriptives
+    store_base_path: '../results/prelim_results/descriptives'
+    store_results: true
+
+  cv_results_plots_tables:
+    methods:
+      - create_cv_result_dct_wrapper
+      # - create_cv_result_table_wrapper
+      - plot_cv_results_wrapper
+    base_path: '../results/ml_results_processed'
+    store_plot: true
+    store_table: true
+    plot_path: '../results/plots'
+    sig_results_path: '../results/significance_test_results'
+    orderings: # for correct plotting
+      sample: ["coco_int", "emotions", "coco_ut"]
+      fis: ["single_items", "scale_means", "feature_selection"]
+      model: ["linear_baseline_model", "lasso", "rfr"]
+      model_for_axis: ["LBM", "LASSO", "RFR"]  # SVR
+      soc_int_var: ["social_interaction","interaction_quantity","interaction_depth", "interaction_closeness"]
+      metric: ["r2", "spearman"]
+      stat: ["MEAN", "STD"]
+    table:
+      study_mapping:
+        ssc: ['sep_pa_na', 'sep_ftf_cmc', 'weighting_by_rel']
+        mse: ['sep_pa_na', 'add_wb_change', 'weighting_by_rel']
+      models_to_include: ["linear_baseline_model", "lasso", "rfr", "svr"]
+      metrics_to_include: ['r2', 'spearman', 'rmse']
+      row_idx_names:
+        ssc: [ "Social Situation Variable", "Feature Inclusion Strategy", "Metric" ]
+        mse: [ "Feature Inclusion Strategy", "Metric" ]
+      col_idx_names: [ "ESM Sample", "Model", "Statistic" ]
+    plot:
+      models_to_plot: ["linear_baseline_model", "lasso", "rfr"]
+      metrics_to_plot: ["r2", "spearman"]
+      seaborn_style: false
+      ggplot_style: true
+      filetype: jpeg # jpeg, png, ...
+      axes_facecolor: '#eaeaea'  # lightgrey
+      x_lim: [-0.20, 2.50]
+      sign_height_ratio:
+        ssc: 0.015
+        mse: 0.04
+      metrics:
+        r2:
+          y_lim:
+            ssc:
+              main: [-0.04, 0.14] # [-0.05, 0.11]
+              suppl:
+                sep_ftf_cmc:
+                  ftf: [-0.15, 0.15]
+                  cmc: [-0.15, 0.10]
+                  ftf_pa: [-0.15, 0.15]
+                  ftf_cmc: [-0.16, 0.12]  # [-0.16, 0.12]  # ptimized for coco_int x emotions plot
+                sep_pa_na:
+                  pa: [-0.10, 0.15]
+                  na: [-0.10, 0.15]
+                  pa_na: [-0.04, 0.14]
+                weighting_by_rel:
+                  random_slopes: [-0.10, 0.15]
+                  ols_slopes: [-0.10, 0.15]
+            mse:
+              main: [-0.40, 0.30] # [-0.30, 0.10]
+              suppl:
+                sep_pa_na:
+                  pa: [-0.40, 0.37]
+                  na: [-0.40, 0.37]
+                  pa_na: [-0.40, 0.37]
+                weighting_by_rel:
+                  random_slopes: [-0.40, 0.37]
+                  ols_slopes: [-0.40, 0.37]
+                add_wb_change: [-0.40, 0.37]
+        rho:
+          y_lim:
+            ssc: [-0.15, 0.40]
+            mse: [-0.25, 0.55]
+      single_items:
+        color: darkorange
+        fmt: s
+        shift: -0.15
+        label: Single Items as Features
+      scale_means:
+        color: darkolivegreen
+        fmt: D
+        shift: 0
+        label: Scale Means as Features
+      feature_selection:
+        color: midnightblue
+        fmt: o
+        shift: 0.15
+        label: Feature Selection
+
+      headings:
+        CoCo International:
+          span: [0, 2]  # Spans first two columns
+        Emotions:
+          span: 2       # Spans third column
+        CoCO UT:
+          span: 3       # Spans fourth column
+
+      grid_positions:
+        ssc:
+          coco_int:
+            social_interaction: [ 1, 1 ]
+            interaction_quantity: [ 2, 1 ]
+            interaction_closeness: [ 1, 0 ]
+            interaction_depth: [ 2, 0 ]
+          emotions:
+            social_interaction: [ 1, 2 ]
+            interaction_quantity: [ 2, 2 ]
+          coco_ut:
+            social_interaction: [ 1, 3 ]
+            interaction_quantity: [2, 3]  # only FTF
+        mse: # not needed
+
+      legend:
+        position:
+          ssc: [0.4, 0.2, 0.53, 0.5]
+          mse: [0.5, 0.35, 0.53, 0.5]
+        ax:
+          ssc: [2, 3]
+          mse: [1, 3]
+      title_mapping:
+        mse:
+          coco_int: 'Russo-Ukrainian War Outbreak 2022'
+          emotions: 'German COVID-19 Lockdown 2020'
+          coco_ut: "U.S. Election 2020"
+      num_rows:
+        ssc: 2
+        mse: 1
+      num_cols:
+        ssc: 4
+        mse: 4
+
+    contrast_suppl_vars:
+      grid_positions:
+        ssc: # Seperate grid positions for the different suppl vars
+          coco_int:
+            social_interaction: [[1,0], [1,1]]
+            interaction_quantity: [[2,0], [2,1]]
+            interaction_depth: [[1,2], [1,3]]
+            interaction_closeness: [[2,2], [2,3]]
+          emotions:
+            social_interaction: [ [ 1,0 ], [ 1,1 ] ]
+            interaction_quantity: [ [ 2,0 ], [ 2,1 ] ]
+          coco_ut:
+            social_interaction: [ [ 1,2 ], [ 1,3 ] ]
+            interaction_quantity: [ [ 2,2 ], [2,3] ]
+        ssc_coco_int_emotions:
+          coco_int:
+            social_interaction: [ [ 1,0 ], [ 1,1 ] ]
+            interaction_quantity: [ [ 2,0 ], [ 2,1 ] ]
+          emotions:
+            social_interaction: [ [ 1,2 ], [ 1,3 ] ]
+            interaction_quantity: [ [ 2,2 ], [2,3] ]
+      heading_mapping:
+        ssc:
+          sep_ftf_cmc: # CoCo UT spans col 3 and 4
+            0: # first plot
+              - sample: CoCo International
+                grid_slice: [0, 4]
+            1: # second plot
+              - sample: Emotions
+                grid_slice: [0, 2]
+              - sample: CoCo UT
+                grid_slice: [2, 4]
+            2: # third plot comparing coco_int and emotions
+              - sample: CoCo International
+                grid_slice: [ 0, 2 ]
+              - sample: Emotions
+                grid_slice: [ 2, 4 ]
+          sep_pa_na:  # CoCo UT only spans col 3
+            0: # first plot
+              - sample: CoCo International
+                grid_slice: [ 0, 4 ]
+            1: # second plot
+              - sample: Emotions
+                grid_slice: [ 0, 2 ]
+              - sample: CoCo UT
+                grid_slice: [ 2, 3 ]
+            2: # third plot comparing coco_int and emotions
+              - sample: CoCo International
+                grid_slice: [ 0, 2 ]
+              - sample: Emotions
+                grid_slice: [ 2, 4 ]
+        mse:
+          "CoCo International": 1
+          "Emotions": 2
+          "CoCo UT": 3
+      legend_position:
+        ssc: [[0, 3],[2, 3], [0, 3]]
+        mse: [2, 0]
+      legend_adjustments:
+        mse_add_wb_change:
+          height: -0.155
+          width: 0.04
+        ssc_plots_0_2: 0.07
+        other: -0.03
+
+  significance_tests:
+    methods:
+      - get_result_data
+      - summarize_results_across_fis
+      - apply_significance_tests
+    result_base_path: '../results/ml_results'
+    metric: r2 # used for significance testing
+    alpha: 0.05
+    store_df: true
+    store_json: true
+    store_base_path: '../results/significance_test_results'
+    df_ordering:
+      soc_int_vars:
+        ssc: ['social_interaction', 'interaction_quantity', 'interaction_closeness', 'interaction_depth']
+        mse: ['default']
+      models: ['linear_baseline_model', 'lasso', 'rfr', 'svr']
+      esm_samples: ['coco_int', 'emotions', 'coco_ut']
+      stats: ['t', 'p']
+
+  shap_value_analysis:
+    methods:
+      - load_data_from_folders
+      - apply_shap_analyses
+    paths:
+      # Adjust result path here: Either use path to shap_values, or to shap_ia_values
+      result_path: '../results/ml_results_ia_values' # a) '../results/ml_results_processed', b) '../results/ml_results_ia_values'
+      plot_path: '../results/plots'
+      feature_path: '../data/preprocessed'
+    correlate_shap_values:
+      models_to_compare: ['lasso', 'rfr']
+    categories:
+      - socio_demographics
+      - personality
+      - polit_soc_attitudes
+      - country_vars
+    storing_shap_values:
+      store_abstraction_levels: true
+      models: ['lasso', 'rfr', 'linear_baseline_model']
+      output_dir: "../results/osf_suppl_results/shap_values"
+    storing_shap_ia_values:
+      store: false
+      output_dir: "../results/osf_suppl_results/shap_ia_values"
+
+    plots:
+      store_plots: true
+      filetype: 'jpeg'  # filetype for storing, according to e.g. JPSP submission guidelines
+      ggplot_style: true
+      axes_facecolor: '#eaeaea'
+      plot_types: ['ia_scatter_plot']   # Insert plot types that should be created, must match the results
+      # possible plot_types: ['summary_plot', 'importance_plot', 'ia_scatter_plot', 'ia_heatmap']
+      soc_int_var_order: ['social_interaction', 'interaction_quantity', 'interaction_depth', 'interaction_closeness']
+      esm_sample_order: ['coco_int', 'emotions','coco_ut']
+      cat_color_mapping:
+        socio_demographics: darkgoldenrod
+        personality: maroon
+        polit_soc_attitudes: forestgreen
+        country_vars: darkslategray
+        wb_change: thistle
+      cat_point_style_mapping:
+        socio_demographics: 'o'  # circle
+        personality: 's'         # square
+        polit_soc_attitudes: 'D' # diamond
+        country_vars: 'X'        # triangle up
+        wb_change: 'h'           # triangle down
+      category_mapping:
+        socio_demographics: "Socio-demographics"
+        personality: "Personality variables"
+        polit_soc_attitudes: "Political and societal attitudes"
+        country_vars: 'Country-level variables'
+        wb_change: 'Initial change in well-being'
+      esm_sample_mapping:
+        coco_int: CoCo International
+        emotions: Emotions
+        coco_ut: CoCo UT
+      event_mapping:
+        coco_int: 'Russo-Ukrainian War Outbreak 2022'
+        emotions: 'COVID-19 Lockdown 2020'
+        coco_ut: 'U.S. Election 2020'
+      soc_int_var_mapping:
+        social_interaction: 'Social Interaction'
+        interaction_quantity: 'Interaction Quantity'
+        interaction_closeness: 'Interaction Closeness'
+        interaction_depth: 'Interaction Depth'
+      summary_plot:
+        fis_to_plot: [ 'scale_means', 'single_items', 'feature_selection' ]
+        models_to_plot: [ 'lasso', 'rfr' ]
+        max_display: 6
+        strng_length: 40 # 30 used for the paper plots, use 40 for other plots
+        cmap: copper
+      ia_heatmap:
+        num_features: 15
+        cmap_main_effects: 'binary'
+        cmap_abs_ia_effects: "Reds"
+        cmap_raw_ia_effects: 'coolwarm'
+        # Note: strng_length defines the length of horizontal lines so that wordings of features do not overlap
+        # For the Heatmaps used in the paper, we will manually find the best balance between size and non-overlap
+        # For the Heatmaps in the supplement, we will use default values that guarantee non-overlap
+        # Figure 8: [27,13], Figure 9: [45,13], Figure 13: [50,13]
+        # Supplement 5.1: CoCo UT: [50,13], Emotions: [60,13]
+        strng_length: 50  # adjust
+        strng_length_x: 13  # adjust
+        fmt: '.2f'  # cell formatting
+        txt_x: 0.82 # X coordinate in figure units (0 left, 1 right)
+        txt_y: 0.42 # Y coordinate in figure units (0 bottom, 1 top)
+      scatter_plot:
+        dataset_to_plot: 'train'  # train, test
+        sample_var_combos: # this can be adjusted
+          ssc:
+            - esm_sample: coco_int
+              soc_int_var: interaction_closeness
+            - esm_sample: coco_int
+              soc_int_var: interaction_depth
+          mse:
+            - esm_sample: emotions
+              soc_int_var: dummy
+            - esm_sample: coco_ut
+              soc_int_var: dummy
+        corr_type: spearmanr   # pearsonr, spearmanr
+        txt_x: 0.82 # X coordinate in figure units (0 left, 1 right)
+        txt_y: 0.42 # Y coordinate in figure units (0 bottom, 1 top)
+        strng_length: 20
+        # Automatic labeling does not provide satisfactory results -> Therefore, we manually adjusted the labels,
+        # but only for the plot used in the paper
+        features_to_label:
+          suppl:
+            sep_ftf_cmc:
+              ftf:
+                ssc:
+              cmc:
+                ssc:
+              ftf_pa:
+                ssc:
+                  social_interaction:
+                    coco_int:
+                      scale_means:
+                        age_clean: [ -0.0007, -0.00002 ]
+                        uls_relational_clean: [ -0.0025, 0.00003 ]
+                        political_efficacy_clean: [ -0.0025, 0.00002 ]
+                        internet_num_person_percent: [ -0.0025, 0.00002 ]
+                        cope_behavioral_diseng_clean: [ -0.002, -0.00004 ]
+                        pol_att_other_religiosity_clean: [ -0.002, 0.00002 ]
+                      single_items:
+                        age_clean: [ -0.0005, -0.000006 ]
+                        gdp_growth_rate: [ -0.0013, 0.000008 ]
+                        quantity_household_clean: [ 0.0005, 0 ]
+                        pol_att_other_3_clean: [ -0.0025, 0.000012 ]
+                        uls_3_clean: [ 0.0005, -0.000005 ]
+                        bfi2_1_clean: [ 0.0005,-0.00001 ]
+                    emotions:
+                      scale_means:
+                        uls_relational_clean: [ -0.006, 0.000025 ]
+                        age_clean: [ -0.0009, -0.00003 ]
+                        cmq_clean: [ -0.0025, 0.00004 ]
+                        bfi2s_agree_clean: [ -0.0025, 0.00004 ]
+                        bfi2s_extra_clean: [ -0.0025, 0.00004 ]
+                        educational_attainment_clean: [ -0.004, 0.00004 ]
+                      single_items:
+                        age_clean: [ -0.0004, -0.000018 ]
+                        uls_5_clean: [ -0.004, 0.000003 ]
+                        cmq_2_clean: [ -0.0015, 0.000045 ]
+                        uls_1_clean: [ 0.0005, 0.000003 ]
+                        bfi2s_16_clean: [ -0.0012, -0.000035 ]
+                        sex_clean_1: [ 0.0006, -0.000025 ]
+                        sex_clean_2: [ 0.0005, -0.00001 ]
+
+      importance_plot:
+        samples_to_plot: ['coco_int', 'emotions', 'coco_ut']
+        models_to_include: [ 'lasso', 'rfr' ]  # for categories, if we do not summaries across models
+        max_display: 6
+        esm_sample_mapping:
+          coco_int: CoCo International
+          emotions: Emotions
+          coco_ut: CoCo UT
+        soc_int_var_mapping:
+          social_interaction: Social Interaction
+          interaction_quantity: Interaction Quantity
+          interaction_depth: Interaction Depth
+          interaction_closeness: Interaction Closeness
+        grid_spec:
+          ssc:
+            n_rows: 4
+            n_cols: 4
+          mse:
+            n_rows: 2
+            n_cols: 3
+        subplot_adjust:
+          hspace:
+            mse: 0.18
+            ssc: 0.5
+        grid_positions:
+          ssc:
+            coco_int:
+              social_interaction:
+                mean: [ 0, 1 ]
+                sum: [1, 1]
+              interaction_quantity:
+                mean: [ 2, 1 ]
+                sum: [3, 1]
+              interaction_closeness:
+                mean: [ 0, 0 ]
+                sum: [1, 0]
+              interaction_depth:
+                mean: [ 2, 0 ]
+                sum: [3, 0]
+            emotions:
+              social_interaction:
+                mean: [ 0, 2 ]
+                sum: [1, 2]
+              interaction_quantity:
+                mean: [ 2, 2 ]
+                sum: [ 3, 2 ]
+            coco_ut:
+              social_interaction:
+                mean: [ 0, 3 ]
+                sum: [ 1, 3]
+              interaction_quantity: # only FTF
+                mean: [ 2, 3 ]
+                sum: [ 3, 3 ]
+          mse:
+            coco_int:
+              dummy:
+                mean: [ 0, 0 ]
+                sum: [1, 0]
+            emotions:
+              dummy:
+                mean: [ 0, 1 ]
+                sum: [ 1, 1 ]
+            coco_ut:
+              dummy:
+                mean: [ 0, 2 ]
+                sum: [ 1, 2 ]
+
+      dependence_plot: # Not used ATM, but works
+        model: 'rfr'
+        num_ia_pairs: 3
+        max_display: 6
+        models_to_plot: ['rfr']
+        fis_to_plot: ['scale_means', 'single_items']
+        strng_length: 30
+        cmap: copper
+
+      abstraction_levels_to_plot:  # Not used ATM, but works
+        summary_plot: ['ohe_single_items']
+        dependence_plot: ['ohe_single_items']
+        importance_plot: ['broad_categories']
+
+      str_mapping:
+        fis:
+          single_items: 'Single Items'
+          scale_means: 'Scale Means'
+          feature_selection: 'Feature Selection'
+        models:
+          linear_baseline_model: 'Linear Baseline Model'
+          lasso: 'Lasso Regression'
+          rfr: 'Random Forest'
+          svr: 'Support Vector Regression'
+        dataset:
+          train: 'Train Set'
+          test: 'Test Set'
+
+  osf_suppl_analysis:
+    file_to_collect: "lin_model_coefficients.json"
+    root_dir: "../results/ml_results_processed"
+    output_dir: "../results/osf_suppl_results/lasso_coefs"
+
+
+
+

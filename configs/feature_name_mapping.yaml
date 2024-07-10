@@ -1,0 +1,883 @@
+# This file is utilized for the mapping of feature names utilized in the analysis (thus, abbreviations) back
+# to a comprehensive and complete form (e.g., for the display of these in plots in the paper).
+
+socio_demographics:
+  age: "Age"
+  sex:
+    coco_int:
+      sex_1: 'Sex: Female'
+      sex_2: 'Sex: Male'
+      sex_3: 'Sex: Other'
+    coco_ut:
+      sex_1: 'Sex: Male'
+      sex_2: 'Sex: Female'
+      sex_3: 'Sex: Other'
+    emotions:
+      sex_1: 'Sex: Female'
+      sex_2: 'Sex: Male'
+      sex_3: 'Sex: Other'
+  educational_attainment: "Educational attainment"
+  professional_status:
+    coco_int:
+      professional_status_1: 'Professional status: In school education'
+      professional_status_2: 'Professional status: In study'
+      professional_status_3: 'Professional status: In vocational training'
+      professional_status_4: 'Professional status: In full-time employment'
+      professional_status_5: 'Professional status: In part-time employment'
+      professional_status_6: 'Professional status: Entrepreneur / self-employment'
+      professional_status_7: 'Professional status: In full-time parental or care leave / full-time housewife/househusband'
+      professional_status_8: 'Professional status: Not in employment / looking for work'
+      professional_status_9: 'Professional status: Retired'
+    emotions:
+      professional_status_1: 'Professional status: In school'
+      professional_status_2: 'Professional status: At university'
+      professional_status_3: 'Professional status: In vocational training'
+      professional_status_4: 'Professional status: Completing voluntary national service/voluntary military service'
+      professional_status_5: 'Professional status: Full-time employment'
+      professional_status_6: 'Professional status: Part-time employment'
+      professional_status_7: 'Professional status: Self-employed'
+      professional_status_8: 'Professional status: Full-time parental leave/care leave/full-time homemaker'
+      professional_status_9: 'Professional status: Unemployed / looking for work'
+      professional_status_10: 'Professional status: Retired'
+  quantity_household:
+    coco_int: "How many people (including yourself) live in your household?"
+    emotions: "How many people currently live in your household (including yourself)?"
+    coco_ut: "How many people (including you) live in your household?"
+  relationship_status:  # Note: Cont in CoCo UT, Cat in Emotions
+    coco_ut: "Are you currently in a romantic relationship? (1 = No, 7 = Yes, more than 5 years)"
+    emotions:
+      relationship_status_1: "What is your relationship status? Single"
+      relationship_status_2: "What is your relationship status? In a relationship"
+      relationship_status_3: "What is your relationship status? Married"
+      relationship_status_4: "What is your relationship status? Divorced"
+      relationship_status_5: "What is your relationship status? Widowed"
+  citizenship:
+    citizenship_1: "Do you have citizenship in this country? Yes"
+    citizenship_2: "Do you have citizenship in this country? No"
+  immigrant:
+    immigrant_1: "Do you have an immigrant background (were you or your parents born outside this country)? Yes"
+    immigrant_2: "Do you have an immigrant background (were you or your parents born outside this country)? No"
+  higher_ed:
+    higher_ed_1: "Are you enrolled in higher education? Yes, at a university"
+    higher_ed_2: "Are you enrolled in higher education? Yes, at a university of applied sciences"
+    higher_ed_3: "Are you enrolled in higher education? No"
+  int_part_parents:
+    int_part_parents_1: 'Please indicate whether you have the following social partners: Parents: Yes'
+    int_part_parents_2: 'Please indicate whether you have the following social partners: Parents: No'
+  int_part_grandparents:
+    int_part_grandparents_1: 'Please indicate whether you have the following social partners: Grandparents: Yes'
+    int_part_grandparents_2: 'Please indicate whether you have the following social partners: Grandparents: No'
+  int_part_siblings:
+    int_part_siblings_1: 'Please indicate whether you have the following social partners: Siblings: Yes'
+    int_part_siblings_2: 'Please indicate whether you have the following social partners: Siblings: No'
+  int_part_children:
+    int_part_children_1: 'Please indicate whether you have the following social partners: Children: Yes'
+    int_part_children_2: 'Please indicate whether you have the following social partners: Children: No'
+  int_part_partner:
+    int_part_partner_1: 'Please indicate whether you have the following social partners: Partner: Yes'
+    int_part_partner_2: 'Please indicate whether you have the following social partners: Partner: No'
+  area:
+    area_1: "What area are you from? Austin area"
+    area_2: "What area are you from? Houston area"
+    area_3: "What area are you from? Dallas area"
+    area_4: "What area are you from? Other Texas area"
+    area_5: "What area are you from? In US, but not from Texas"
+    area_6: "What area are you from? Outside the US"
+  current_living:
+    current_living_1: "Where are you currently living in Austin? Parent's home"
+    current_living_2: "Where are you currently living in Austin? Dorm"
+    current_living_3: "Where are you currently living in Austin? Fraternity Sorority"
+    current_living_4: "Where are you currently living in Austin? Apartment"
+    current_living_5: "Where are you currently living in Austin? Co-op"
+    current_living_6: "Where are you currently living in Austin? House"
+    current_living_7: "Where are you currently living in Austin? Other"
+  ethnic_group:
+    ethnic_group_1: "Which ethnic group(s) do you consider yourself? African American / Black"
+    ethnic_group_2: "Which ethnic group(s) do you consider yourself? Asian / Asian American"
+    ethnic_group_3: "Which ethnic group(s) do you consider yourself? Hispanic / Latino"
+    ethnic_group_4: "Which ethnic group(s) do you consider yourself? Anglo / White"
+    ethnic_group_5: "Which ethnic group(s) do you consider yourself? Native American"
+    ethnic_group_6: "Which ethnic group(s) do you consider yourself? Pacific Islander"
+    ethnic_group_7: "Which ethnic group(s) do you consider yourself? Other"
+  birth_order: "What is your birth order? (1 = Only child, 5 = Fourth of later)"
+  first_language:
+    first_language_1: "What is the first language you learned? English"
+    first_language_2: "What is the first language you learned? Spanish"
+    first_language_3: "What is the first language you learned? Other European"
+    first_language_4: "What is the first language you learned? Other Asian"
+    first_language_5: "What is the first language you learned? Other Middle Eastern"
+    first_language_6: "What is the first language you learned? Other African"
+    first_language_7: "What is the first language you learned? Other"
+  other_languages: "In addition to English, how many other languages can you read and speak fluently?"
+  handedness:
+    handedness_1: "Are you right or left handed? Left handed"
+    handedness_2: "Are you right or left handed? Ambidextrous"
+    handedness_3: "Are you right or left handed? Right handed"
+  political_orientation: "How would you characterize your political orientation? (1 = Extremely conservative, 7 = Extremely liberal)"
+  subj_health_rating: "Compared to others your age, how would you rate your health?"
+  education_mother: "What is the highest level of education your mother attained?"
+  education_father: "What is the highest level of education your father attained?"
+  subj_ses: "Which socio-economic class do you perceive yourself as?"
+  religion: "How would you characterize religion in your life?"
+  religious_affiliation:
+    religious_affiliation_1: "How would you characterize your religious affiliation? Unaffiliated"
+    religious_affiliation_2: "How would you characterize your religious affiliation? Christian"
+    religious_affiliation_3: "How would you characterize your religious affiliation? Muslim"
+    religious_affiliation_4: "How would you characterize your religious affiliation? Hindu"
+    religious_affiliation_5: "How would you characterize your religious affiliation? Buddhist"
+    religious_affiliation_6: "How would you characterize your religious affiliation? Jewish"
+    religious_affiliation_7: "How would you characterize your religious affiliation? Other"
+    religious_affiliation_8: "How would you characterize your religious affiliation? Agnostic"
+    religious_affiliation_9: "How would you characterize your religious affiliation? Atheist"
+  job: "Do you currently have a job where you get paid money? (1 = No, 3 = Full-time)"
+  voting_state_1:
+    voting_state_1_1: 'In which state are you registered to vote? Alabama'
+    voting_state_1_2: 'In which state are you registered to vote? Alaska'
+    voting_state_1_3: 'In which state are you registered to vote? Arizona'
+    voting_state_1_4: 'In which state are you registered to vote? Arkansas'
+    voting_state_1_5: 'In which state are you registered to vote? California'
+    voting_state_1_6: 'In which state are you registered to vote? Colorado'
+    voting_state_1_7: 'In which state are you registered to vote? Connecticut'
+    voting_state_1_8: 'In which state are you registered to vote? Delaware'
+    voting_state_1_9: 'In which state are you registered to vote? District of Columbia'
+    voting_state_1_10: 'In which state are you registered to vote? Florida'
+    voting_state_1_11: 'In which state are you registered to vote? Georgia'
+    voting_state_1_12: 'In which state are you registered to vote? Hawaii'
+    voting_state_1_13: 'In which state are you registered to vote? Idaho'
+    voting_state_1_14: 'In which state are you registered to vote? Illinois'
+    voting_state_1_15: 'In which state are you registered to vote? Indiana'
+    voting_state_1_16: 'In which state are you registered to vote? Iowa'
+    voting_state_1_17: 'In which state are you registered to vote? Kansas'
+    voting_state_1_18: 'In which state are you registered to vote? Kentucky'
+    voting_state_1_19: 'In which state are you registered to vote? Louisiana'
+    voting_state_1_20: 'In which state are you registered to vote? Maine'
+    voting_state_1_21: 'In which state are you registered to vote? Maryland'
+    voting_state_1_22: 'In which state are you registered to vote? Massachusetts'
+    voting_state_1_23: 'In which state are you registered to vote? Michigan'
+    voting_state_1_24: 'In which state are you registered to vote? Minnesota'
+    voting_state_1_25: 'In which state are you registered to vote? Mississippi'
+    voting_state_1_26: 'In which state are you registered to vote? Missouri'
+    voting_state_1_27: 'In which state are you registered to vote? Montana'
+    voting_state_1_28: 'In which state are you registered to vote? Nebraska'
+    voting_state_1_29: 'In which state are you registered to vote? Nevada'
+    voting_state_1_30: 'In which state are you registered to vote? New Hampshire'
+    voting_state_1_31: 'In which state are you registered to vote? New Jersey'
+    voting_state_1_32: 'In which state are you registered to vote? New Mexico'
+    voting_state_1_33: 'In which state are you registered to vote? New York'
+    voting_state_1_34: 'In which state are you registered to vote? North Carolina'
+    voting_state_1_35: 'In which state are you registered to vote? North Dakota'
+    voting_state_1_36: 'In which state are you registered to vote? Ohio'
+    voting_state_1_37: 'In which state are you registered to vote? Oklahoma'
+    voting_state_1_38: 'In which state are you registered to vote? Oregon'
+    voting_state_1_39: 'In which state are you registered to vote? Pennsylvania'
+    voting_state_1_40: 'In which state are you registered to vote? Puerto Rico'
+    voting_state_1_41: 'In which state are you registered to vote? Rhode Island'
+    voting_state_1_42: 'In which state are you registered to vote? South Carolina'
+    voting_state_1_43: 'In which state are you registered to vote? South Dakota'
+    voting_state_1_44: 'In which state are you registered to vote? Tennessee'
+    voting_state_1_45: 'In which state are you registered to vote? Texas'
+    voting_state_1_46: 'In which state are you registered to vote? Utah'
+    voting_state_1_47: 'In which state are you registered to vote? Vermont'
+    voting_state_1_48: 'In which state are you registered to vote? Virginia'
+    voting_state_1_49: 'In which state are you registered to vote? Washington'
+    voting_state_1_50: 'In which state are you registered to vote? West Virginia'
+    voting_state_1_51: 'In which state are you registered to vote? Wisconsin'
+    voting_state_1_52: 'In which state are you registered to vote? Wyoming'
+    voting_state_1_53: "In which state are you registered to vote? I don't know"
+    voting_state_1_54: "In which state are you registered to vote? I'm not registered"
+  demog_ses: "Think of this ladder as showing where people stand in the United States. Please mark the rung that represents where you think you stand, relative to other people in the United States."
+  demog_healthinsurance:
+    demog_healthinsurance_1: "Do you have health insurance? Yes, military"
+    demog_healthinsurance_2: "Do you have health insurance? Yes, employer-sponsored"
+    demog_healthinsurance_3: "Do you have health insurance? Yes, individual"
+    demog_healthinsurance_4: "Do you have health insurance? Yes, Medicare"
+    demog_healthinsurance_5: "Do you have health insurance? Yes, Medicaid or CHIP"
+    demog_healthinsurance_6: "Do you have health insurance? Yes, other"
+    demog_healthinsurance_7: "Do you have health insurance? No"
+  demog_mentalhealth_pre_corona: "How would you rate your overall mental/emotional health before the coronavirus/COVID-19 pandemic in your area?"
+  demog_physicalhealth_pre_corona: "How would you rate your overall physical health before the coronavirus/COVID-19 pandemic in your area?"
+
+personality:
+  single_items:
+    bfi2:
+      bfi2_1: 'BFI-2: I am someone who is outgoing, sociable.'
+      bfi2_2: 'BFI-2: I am someone who is compassionate, has a soft heart.'
+      bfi2_3: 'BFI-2: I am someone who tends to be disorganized.*'
+      bfi2_4: 'BFI-2: I am someone who is relaxed, handles stress well.*'
+      bfi2_5: 'BFI-2: I am someone who has few artistic interests.*'
+      bfi2_6: 'BFI-2: I am someone who has an assertive personality.'
+      bfi2_7: 'BFI-2: I am someone who is respectful, treats others with respect.'
+      bfi2_8: 'BFI-2: I am someone who tends to be lazy.*'
+      bfi2_9: 'BFI-2: I am someone who stays optimistic after experiencing a setback.*'
+      bfi2_10: 'BFI-2: I am someone who is curious about many different things.'
+      bfi2_11: 'BFI-2: I am someone who rarely feels excited or eager.*'
+      bfi2_12: 'BFI-2: I am someone who tends to find fault with others.*'
+      bfi2_13: 'BFI-2: I am someone who is dependable, steady.'
+      bfi2_14: 'BFI-2: I am someone who is moody, has up and down mood swings.'
+      bfi2_15: 'BFI-2: I am someone who is inventive, finds clever ways to do things.'
+      bfi2_16: 'BFI-2: I am someone who tends to be quiet.*'
+      bfi2_17: 'BFI-2: I am someone who feels little sympathy for others.*'
+      bfi2_18: 'BFI-2: I am someone who is systematic, likes to keep things in order.'
+      bfi2_19: 'BFI-2: I am someone who can be tense.'
+      bfi2_20: 'BFI-2: I am someone who is fascinated by art, music, or literature.'
+      bfi2_21: 'BFI-2: I am someone who is dominant, acts as a leader.'
+      bfi2_22: 'BFI-2: I am someone who starts arguments with others.*'
+      bfi2_23: 'BFI-2: I am someone who has difficulty getting started on tasks.*'
+      bfi2_24: 'BFI-2: I am someone who feels secure, comfortable with self.*'
+      bfi2_25: 'BFI-2: I am someone who avoids intellectual, philosophical discussions.*'
+      bfi2_26: 'BFI-2: I am someone who is less active than other people.*'
+      bfi2_27: 'BFI-2: I am someone who has a forgiving nature.'
+      bfi2_28: 'BFI-2: I am someone who can be somewhat careless.*'
+      bfi2_29: 'BFI-2: I am someone who is emotionally stable, not easily upset.*'
+      bfi2_30: 'BFI-2: I am someone who has little creativity.*'
+      bfi2_31: 'BFI-2: I am someone who is sometimes shy, introverted.*'
+      bfi2_32: 'BFI-2: I am someone who is helpful and unselfish with others.'
+      bfi2_33: 'BFI-2: I am someone who keeps things neat and tidy.'
+      bfi2_34: 'BFI-2: I am someone who worries a lot.'
+      bfi2_35: 'BFI-2: I am someone who values art and beauty.'
+      bfi2_36: 'BFI-2: I am someone who finds it hard to influence people.*'
+      bfi2_37: 'BFI-2: I am someone who is sometimes rude to others.*'
+      bfi2_38: 'BFI-2: I am someone who is efficient, gets things done.'
+      bfi2_39: 'BFI-2: I am someone who often feels sad.'
+      bfi2_40: 'BFI-2: I am someone who is complex, a deep thinker.'
+      bfi2_41: 'BFI-2: I am someone who is full of energy.'
+      bfi2_42: "BFI-2: I am someone who is suspicious of others' intentions.*"
+      bfi2_43: 'BFI-2: I am someone who is reliable, can always be counted on.'
+      bfi2_44: 'BFI-2: I am someone who keeps their emotions under control.*'
+      bfi2_45: 'BFI-2: I am someone who has difficulty imagining things.*'
+      bfi2_46: 'BFI-2: I am someone who is talkative.'
+      bfi2_47: 'BFI-2: I am someone who can be cold and uncaring.*'
+      bfi2_48: "BFI-2: I am someone who leaves a mess, doesn't clean up.*"
+      bfi2_49: 'BFI-2: I am someone who rarely feels anxious or afraid.*'
+      bfi2_50: 'BFI-2: I am someone who thinks poetry and plays are boring.*'
+      bfi2_51: 'BFI-2: I am someone who prefers to have others take charge.'
+      bfi2_52: 'BFI-2: I am someone who is polite, courteous to others.'
+      bfi2_53: 'BFI-2: I am someone who is persistent, works until the task is finished.'
+      bfi2_54: 'BFI-2: I am someone who tends to feel depressed, blue.'
+      bfi2_55: 'BFI-2: I am someone who has little interest in abstract ideas.*'
+      bfi2_56: 'BFI-2: I am someone who shows a lot of enthusiasm.'
+      bfi2_57: 'BFI-2: I am someone who assumes the best about people.'
+      bfi2_58: 'BFI-2: I am someone who sometimes behaves irresponsibly.*'
+      bfi2_59: 'BFI-2: I am someone who is temperamental, gets emotional easily.'
+      bfi2_60: 'BFI-2: I am someone who is original, comes up with new ideas.'
+    bfi2s:
+      bfi2s_1: 'BFI-2-S: I am someone who tends to be quiet.*'
+      bfi2s_2: 'BFI-2-S: I am someone who is compassionate, has a soft heart.'
+      bfi2s_3: 'BFI-2-S: I am someone who tends to be disorganized.*'
+      bfi2s_4: 'BFI-2-S: I am someone who worries a lot.'
+      bfi2s_5: 'BFI-2-S: I am someone who can get excited about art, music, or literature.'
+      bfi2s_6: 'BFI-2-S: I am someone who tends to take the lead.'
+      bfi2s_7: 'BFI-2-S: I am someone who is sometimes rude to others.*'
+      bfi2s_8: 'BFI-2-S: I am someone who tends to procrastinate on tasks.*'
+      bfi2s_9: 'BFI-2-S: I am someone who often feels depressed, blue.'
+      bfi2s_10: 'BFI-2-S: I am someone who has little interest in abstract ideas.*'
+      bfi2s_11: 'BFI-2-S: I am someone who is full of energy.'
+      bfi2s_12: 'BFI-2-S: I am someone who tends to trust others easily, believes in the goodness of people.'
+      bfi2s_13: 'BFI-2-S: I am someone who is reliable, can always be counted on.'
+      bfi2s_14: 'BFI-2-S: I am someone who is emotionally stable, not easily upset.*'
+      bfi2s_15: 'BFI-2-S: I am someone who is original, comes up with new ideas.'
+      bfi2s_16: 'BFI-2-S: I am someone who is outgoing, sociable.'
+      bfi2s_17: 'BFI-2-S: I am someone who can be cold and uncaring towards others.*'
+      bfi2s_18: 'BFI-2-S: I am someone who likes things clean and tidy.'
+      bfi2s_19: 'BFI-2-S: I am someone who remains calm even in stressful situations.*'
+      bfi2s_20: 'BFI-2-S: I am someone who has few artistic interests.*'
+      bfi2s_21: 'BFI-2-S: I am someone who prefers to let others take charge in a group.'
+      bfi2s_22: 'BFI-2-S: I am someone who is respectful, treats others with respect.'
+      bfi2s_23: "BFI-2-S: I am someone who persists on a task until it's finished."
+      bfi2s_24: 'BFI-2-S: I am someone who feels secure and comfortable with myself.*'
+      bfi2s_25: 'BFI-2-S: I am someone who enjoys thinking thoroughly about complex things and understanding them.'
+      bfi2s_26: 'BFI-2-S: I am someone who is less active and adventurous than others.*'
+      bfi2s_27: 'BFI-2-S: I am someone who tends to find fault with others.*'
+      bfi2s_28: 'BFI-2-S: I am someone who can be somewhat careless.*'
+      bfi2s_29: 'BFI-2-S: I am someone who gets easily irritated or annoyed.'
+      bfi2s_30: 'BFI-2-S: I am someone who has little creativity.*'
+    narqs:
+      narqs_1: "NARQ-S: I react annoyed if another person steals the show from me."
+      narqs_2: "NARQ-S: I deserve to be seen as a great personality."
+      narqs_3: "NARQ-S: I want my rivals to fail."
+      narqs_4: "NARQ-S: Being a very special person gives me a lot of strength."
+      narqs_5: "NARQ-S: I manage to be the center of attention with my outstanding contributions."
+      narqs_6: "NARQ-S: Most people are somehow losers."
+    stab:
+      stab_1: "Meta-traits: I get out of control."
+      stab_2: "Meta-traits: I am self-destructive."
+      stab_3: "Meta-traits: I find life difficult."
+      stab_4: "Meta-traits: I feel that others misunderstand me."
+      stab_5: "Meta-traits: I feel that my life lacks direction."
+    plas:
+      plas_1: "Meta-traits: I have a strong personality."
+      plas_2: "Meta-traits: I have a natural talent for influencing people."
+      plas_3: "Meta-traits: I am able to come up with new and different ideas."
+      plas_4: "Meta-traits: I have leadership abilities."
+      plas_5: "Meta-traits: I am an original thinker."
+    self_esteem:
+      self_esteem_1: "RSES: All in all, I am satisfied with myself."
+    hex60:
+      hex60_1: "HEXACO-60: I wouldn't use flattery to get a raise or promotion at work, even if I thought it would succeed."
+      hex60_2: "HEXACO-60: If I knew that I could never get caught, I would be willing to steal a million dollars.*"
+      hex60_3: "HEXACO-60: Having a lot of money is not especially important to me."
+      hex60_4: "HEXACO-60: I think that I am entitled to more respect than the average person is.*"
+      hex60_5: "HEXACO-60: If I want something from someone, I will laugh at that person's worst jokes.*"
+      hex60_6: "HEXACO-60: I would never accept a bribe, even if it were very large."
+      hex60_7: "HEXACO-60: I would get a lot of pleasure from owning expensive luxury goods.*"
+      hex60_8: "HEXACO-60: I want people to know that I am an important person of high status.*"
+      hex60_9: "HEXACO-60: I wouldn't pretend to like someone just to get that person to do favors for me."
+      hex60_10: "HEXACO-60: I'd be tempted to use counterfeit money, if I were sure I could get away with it.*"
+    ipa:
+      ipa_1: "IPA: I often have a strong desire to be alone."
+      ipa_2: "IPA: I enjoy spending time alone."
+      ipa_3: "IPA: I need a lot of time for myself."
+      ipa_4: "IPA: I like to spend an evening at home by myself."
+    swls:
+      swls_1: "SWLS: In most ways my life is close to my ideal."
+      swls_2: "SWLS: The conditions of my life are excellent."
+      swls_3: "SWLS: I am satisfied with my life."
+      swls_4: "SWLS: So far I have gotten the important things I want in life."
+      swls_5: "SWLS: If I could live my life over, I would change almost nothing."
+    awb:
+      awb_1: 'AWB: Please indicate how often or rarely you experienced feeling angry in the last four weeks'
+      awb_2: 'AWB: Please indicate how often or rarely you experienced feeling worried in the last four weeks'
+      awb_3: 'AWB: Please indicate how often or rarely you experienced feeling happy in the last four weeks'
+      awb_4: 'AWB: Please indicate how often or rarely you experienced feeling sad in the last four weeks'
+      awb_5: 'AWB: Please indicate how often or rarely you experienced feeling enthusiastic in the last four weeks'
+      awb_6: 'AWB: Please indicate how often or rarely you experienced feeling relaxed in the last four weeks'
+    panasx:
+      panasx_1: "PANAS-X: I feel angry."
+      panasx_2: "PANAS-X: I feel afraid."
+      panasx_3: "PANAS-X: I feel sad."
+      panasx_4: "PANAS-X: I feel happy."
+      panasx_5: "PANAS-X: I feel enthusiastic."
+      panasx_6: "PANAS-X: I feel relaxed."
+    pwb:
+      pwb_1: "PWB-18: I like most parts of my personality.*"
+      pwb_2: "PWB-18: When I look at the story of my life, I am pleased with how things have turned out so far.*"
+      pwb_3: "PWB-18: Some people wander aimlessly through life, but I am not one of them.*"
+      pwb_4: "PWB-18: The demands of everyday life often get me down."
+      pwb_5: "PWB-18: In many ways I feel disappointed about my achievements in life.*"
+      pwb_6: "PWB-18: Maintaining close relationships has been difficult and frustrating for me."
+      pwb_7: "PWB-18: I live life one day at a time and don't really think about the future."
+      pwb_8: "PWB-18: In general, I feel I am in charge of the situation in which I live.*"
+      pwb_9: "PWB-18: I am good at managing the responsibilities of daily life.*"
+      pwb_10: "PWB-18: I sometimes feel as if I've done all there is to do in life."
+      pwb_11: "PWB-18: For me, life has been a continuous process of learning, changing, and growth.*"
+      pwb_12: "PWB-18: I think it is important to have new experiences that challenge how I think about myself and the world.*"
+      pwb_13: "PWB-18: People would describe me as a giving person, willing to share my time with others.*"
+      pwb_14: "PWB-18: I gave up trying to make big improvements or changes in my life a long time ago."
+      pwb_15: "PWB-18: I tend to be influenced by people with strong opinions."
+      pwb_16: "PWB-18: I have not experienced many warm and trusting relationships with others.*"
+      pwb_17: "PWB-18: I have confidence in my own opinions, even if they are different from the way most other people think.*"
+      pwb_18: "PWB-18: I judge myself by what I think is important, not by the values of what others think is important.*"
+    uls:
+      uls_1: "UCLA-S: How often do you feel that you lack companionship?"
+      uls_2: "UCLA-S: How often do you feel that you are 'in tune' with the people around you?*"
+      uls_3: "UCLA-S: How often do you feel that there are people you can talk to?*"
+      uls_4: "UCLA-S: How often do you feel left out?"
+      uls_5: "UCLA-S: How often do you feel that there are people you can turn to?*"
+      uls_6: "UCLA-S: How often do you feel that you have a lot in common with the people around you?*"
+      uls_7: "UCLA-S: How often do you feel close to people?*"
+      uls_8: "UCLA-S: How often do you feel isolated from others?"
+      uls_9: "UCLA-S: How often do you feel part of a group of friends?"
+    vfs:
+      vfs_1: "VFS: I am making good progress toward achieving my values."
+      vfs_2: "VFS: I am generally successful in living up to my values."
+      vfs_3: "VFS: I often find myself in situations where two or more of my values are in conflict with each other."
+      vfs_4: "VFS: Sometimes I don't think that I will ever be able to fulfill all of my important values."
+      vfs_5: "VFS: I live out my values on a daily basis."
+      vfs_6: "VFS: I have difficulty integrating my values into my everyday life."
+      vfs_7: "VFS: My values support each other and fit well together."
+      vfs_8: "VFS: I have doubts about whether some of my values are right for me."
+      vfs_9: "VFS: My closest friends think that I am living up to my values well."
+      vfs_10: "VFS: I often find that pursuing one of my values causes problems for me."
+      vfs_11: "VFS: I often pursue activities that fulfill multiple of my values."
+    cope:
+      cope_1: "Brief COPE: I've been turning to work or other activities to take my mind off things."
+      cope_2: "Brief COPE: I've been concentrating my efforts on doing something about the situation I'm in."
+      cope_3: "Brief COPE: I've been saying to myself 'This isn't real'."
+      cope_4: "Brief COPE: I've been using alcohol or other drugs to make myself feel better."
+      cope_5: "Brief COPE: I've been getting emotional support from others."
+      cope_6: "Brief COPE: I've been giving up trying to deal with the COVID-19 pandemic."
+      cope_7: "Brief COPE: I've been taking action to try to make my own situation better."
+      cope_8: "Brief COPE: I've been refusing to believe that it has happened."
+      cope_9: "Brief COPE: I've been giving free rein to my feelings."
+      cope_10: "Brief COPE: I've been getting help and advice from other people."
+      cope_11: "Brief COPE: I've been using alcohol or other drugs to help me get through the current Covid-19 pandemic."
+      cope_12: "Brief COPE: I've been trying to see things in a different light."
+      cope_13: "Brief COPE: I've been criticizing and blaming myself."
+      cope_14: "Brief COPE: I've been trying to come up with a strategy about what to do."
+      cope_15: "Brief COPE: I've been getting comfort and understanding from someone."
+      cope_16: "Brief COPE: I've been giving up the attempt to cope."
+      cope_17: "Brief COPE: I've been looking for something good in what has happened to us in the course of the COVID-19 pandemic."
+      cope_18: "Brief COPE: I've been making jokes about the COVID-19 pandemic."
+      cope_19: "Brief COPE: I've been doing something to take my mind off things."
+      cope_20: "Brief COPE: I've been accepting the reality of the fact that the COVID-19 pandemic has happened."
+      cope_21: "Brief COPE: I've been showing openly how bad I feel."
+      cope_22: "Brief COPE: I've been trying to find comfort in my religion or spiritual beliefs."
+      cope_23: "Brief COPE: I've been trying to get advice or help from other people about what to do."
+      cope_24: "Brief COPE: I've been learning to live with it."
+      cope_25: "Brief COPE: I've been thinking hard about what behavior would be appropriate in the COVID-19 pandemic."
+      cope_26: "Brief COPE: I've been blaming myself for things that happened."
+      cope_27: "Brief COPE: I've been praying or meditating."
+      cope_28: "Brief COPE: I've been making fun of the situation."
+    lotr:
+      lotr_1: "LOT-R: In uncertain times, I usually expect the best."
+      lotr_2: "LOT-R: If something can go wrong for me, it will."
+      lotr_3: "LOT-R: I'm always optimistic about my future."
+      lotr_4: "LOT-R: I hardly ever expect things to go my way."
+      lotr_5: "LOT-R: I rarely count on good things happening to me."
+      lotr_6: "LOT-R: Overall, I expect more good things to happen to me than bad."
+
+  scale_means:
+    bfi2:
+      bfi2_extra: 'BFI-2: Extraversion'
+      bfi2_agree: 'BFI-2: Agreeableness'
+      bfi2_consc: 'BFI-2: Conscientiousness'
+      bfi2_neuro: 'BFI-2: Neuroticism'
+      bfi2_open: 'BFI-2: Openness'
+    bfi2s:
+      bfi2s_extra: 'BFI-2-S: Extraversion'
+      bfi2s_agree: 'BFI-2-S: Agreeableness'
+      bfi2s_consc: 'BFI-2-S: Conscientiousness'
+      bfi2s_neuro: 'BFI-2-S: Neuroticism'
+      bfi2s_open: 'BFI-2-S: Openness'
+    narqs:
+      narqs_adm: 'NARQ-S: Admiration'
+      narqs_riv: 'NARQ-S: Rivalry'
+    meta_traits:
+      stab: 'Meta-traits: Stability'
+      plas: 'Meta-traits: Plasticity'
+    self_esteem:
+      self_esteem: 'RSES: Self-esteem'
+    hex60:
+      hex60: 'HEXACO-60: Honesty-humility'
+    ipa:
+      ipa: 'IPA: Preference for solitude'
+    swls:
+      swls: 'SWLS: Life satisfaction'
+    panasx:
+      panasx_pos: 'PANAS-X: Positivity'
+      panasx_neg: 'PANAS-X: Negativity'
+    awb:
+      awb_pos: 'AWB: Positivity'
+      awb_neg: 'AWB: Negativity'
+    pwb: # TODO: PWB-18 or Psychological Well-Being?
+      pwb_autonomy: 'PWB-18: Autonomy'
+      pwb_env_mastery: 'PWB-18: Environmental mastery'
+      pwb_pers_growth: 'PWB-18: Personal growth'
+      pwb_pos_relations: 'PWB-18: Positive relations'
+      pwb_purpose_life: 'PWB-18: Purpose in life'
+      pwb_self_accept: 'PWB-18: Self acceptance'
+    uls:
+      uls_intimate: 'UCLA-S: Intimate loneliness'
+      uls_relational: 'UCLA-S: Relational loneliness'
+      uls_collective: 'UCLA-S: Collective loneliness'
+    vfs:  # No validated scale yet
+      vfs_values_in_line: 'VFS: Values in line'
+      vfs_values_not_in_line: 'VFS: Values not in line'
+    cope:
+      cope_active_cope: 'Brief COPE: Active coping'
+      cope_planning: 'Brief COPE: Planning'
+      cope_pos_reframe: 'Brief COPE: Positive reframing'
+      cope_acceptance: 'Brief COPE: Acceptance'
+      cope_humor: 'Brief COPE: Humor'
+      cope_religion: 'Brief COPE: Religion'
+      cope_use_emo_support: 'Brief COPE: Use of emotional support'
+      cope_use_ins_support: 'Brief COPE: Use of instrumental support'
+      cope_self_distract: 'Brief COPE: Self-distraction'
+      cope_denial: 'Brief COPE: Denial'
+      cope_venting: 'Brief COPE: Venting'
+      cope_substance_use: 'Brief COPE: Substance use'
+      cope_behavioral_diseng: 'Brief COPE: Behavioral disengagement'
+      cope_self_blame: 'Brief COPE: Self-blame'
+    lotr:  # TODO: Check subscales
+      lotr_opt: 'LOT-R: Optimism'
+      lotr_neg: 'LOT-R: Pessimism'
+
+polit_soc_attitudes:
+  single_items:
+    cmq:
+      cmq_1: "CMQ: I think that many very important things happen in the world that the public never gets informed about."
+      cmq_2: "CMQ: I think that politicians usually do not tell us the true motives for their decisions."
+      cmq_3: "CMQ: I think that government agencies closely monitor all citizens."
+      cmq_4: "CMQ: I think that events which superficially seem to lack a connection are often the result of secret activities."
+      cmq_5: "CMQ: I think that there are secret organizations that greatly influence political decisions."
+    ksa3:
+      ksa3_1: "KSA-3: We should take strong action against misfits and slackers in society."
+      ksa3_2: "KSA-3: Troublemakers should really be made to feel that they are not welcome in society."
+      ksa3_3: "KSA-3: Societal rules should be enforced without pity."
+      ksa3_4: "KSA-3: We need strong leaders so that we can live safely in society."
+      ksa3_5: "KSA-3: People should leave important societal decisions up to leader figures."
+      ksa3_6: "KSA-3: We should be grateful for leaders telling us exactly what we can do."
+      ksa3_7: "KSA-3: Traditions should definitely be maintained and kept alive."
+      ksa3_8: "KSA-3: Well-established behaviors should not be questioned."
+      ksa3_9: "KSA-3: It's always best to do things the usual way."
+    ksa3s:
+      ksa3s_1: "KSA-3-S: Troublemakers should be made to feel that they are not welcome in society."
+      ksa3s_2: "KSA-3-S: People should leave important decisions in society to their leaders."
+      ksa3s_3: "KSA-3-S: Well-established behavior should not be questioned."
+    sdo:
+      coco_int:
+        sdo_1: "SDO: An ideal society requires some groups to be on top and others to be on the bottom."
+        sdo_2: "SDO: Some groups of people are simply inferior to other groups."
+        sdo_3: "SDO: No single group should dominate in society.*"
+        sdo_4: "SDO: Groups at the bottom are just as deserving as groups at the top.*"
+        sdo_5: "SDO: Group equality should not be our primary goal."
+        sdo_6: "SDO: It is unjust to try to make groups equal."
+        sdo_7: "SDO: We should do what we can to equalize conditions for different groups.*"
+        sdo_8: "SDO: We should work to give all groups an equal chance to succeed.*"
+      coco_ut:
+        sdo_1: "SDO: An ideal society requires some groups to be on top and others to be on the bottom."
+        sdo_2: "SDO: We should do what we can to equalize conditions for different groups.*"
+        sdo_3: "SDO: No one group should dominate in society.*"
+        sdo_4: "SDO: It is unjust to try to make groups equal."
+    wgm:
+      coco_int:
+        wgm_1: "WGM: The work of people like me is not valued enough by society."
+        wgm_2: "WGM: Most politicians do not care what people like me think."
+        wgm_3: "WGM: The values of people like me are becoming less and less important in society."
+        wgm_4: "WGM: The problems of people like me are unimportant to most politicians."
+        wgm_5: "WGM: No matter how hard we work, people like me are not appreciated."
+        wgm_6: "WGM: The customs, traditions, and manners of people like me are less and less appreciated."
+      coco_ut:
+        wgm_1: "WGM: Most politicians do not care what people like me think."
+        wgm_2: "WGM: The values of people like me are becoming less and less important in society."
+        wgm_3: "WGM: The work of people like me is not recognized enough in society."
+        wgm_4: "WGM: The problems of people like me are unimportant to most politicians."
+        wgm_5: "WGM: The customs, traditions, and manners of people like me are less and less appreciated."
+        wgm_6: "WGM: No matter how hard we work, people like me are not appreciated."
+        wgm_7: "WGM: People like me are no longer allowed to express their opinions freely in public."
+    threat_perception:
+      threat_perception_1: "Threat: These people threaten the way of life and the values in our country."
+      threat_perception_2: "Threat: The values and beliefs of these people are incompatible with those of people in our country."
+      threat_perception_3: "Threat: The costs of integration programs for these people put a strain on our country."
+      threat_perception_4: "Threat: These people threaten the economic situation in our country."
+      threat_perception_5: "Threat: These people threaten the public safety in our country."
+      threat_perception_6: "Threat: Because of these people, there are more acts of violence in our country."
+    pol_trust:
+      pol_trust_1: "Political Attitudes: Generally speaking: Do you think that most people can be trusted, or that you cannot be careful enough when dealing with other people?'"
+      pol_trust_2: "Political Attitudes: How much do you trust the government in your country?"
+      pol_trust_3: "Political Attitudes: How much do you trust scientific people and institutions?"
+    political_efficacy:
+      political_efficacy_1: "Political Efficacy: Political issues are often difficult for me to understand."
+      political_efficacy_2: "Political Efficacy: The parties only want the votes, they are not interested in their voters' opinions."
+      political_efficacy_3: "Political Efficacy: Today's problems are so complicated that politics can no longer solve them."
+      political_efficacy_4: "Political Efficacy: The world has become so confusing."
+    pol_outgroup:
+      pol_outgroup_1: "Outgroup Perceptions: How much contact do you have with people in your country who belong to a different ethnic, religious, or national group than yourself?"
+      pol_outgroup_2: "Outgroup Perceptions: Overall, how would you rate your contact with people in your country who belong to a different ethnic, religious, or national group than yourself?"
+    pol_att_other:
+      pol_att_other_1: "Political Attitudes: How satisfied are you - all in all - with the way democracy works in your country?"
+      pol_att_other_2: "Political Attitudes: How do you GENERALLY view your political attitudes, on a scale from extreme left to extreme right?"
+      pol_att_other_3: "How religious do you consider yourself to be?"
+      pol_att_other_4: 'Regardless of whether you consider yourself religious: How spiritual do you consider yourself to be?'
+      pol_att_other_5: "SES: Imagine a 10-step ladder that represents the social positions of the population in your country. Where would you place yourself and your own family on this ladder if 1 means 'at the bottom' and 10 means 'at the top'?"
+    media:
+      coco_int:
+        media_1: "Media: How closely do you follow news about national politics including those related to the COVID-19 pandemic) on television, radio, printed newspapers, or the internet?"
+        media_2: "Media: How much trust do you have in the mass media (e.g., television stations, newspapers, etc.) to report the news completely, accurately, and fairly?"
+      coco_ut:
+        media_1: "Media: How much attention do you pay to news about national politics (including as it relates to coronavirus) on TV, radio, printed newspapers, or the Internet?"
+        media_2: "Media: How much trust do you have in the mass media (e.g. TV networks, newspapers, etc.) when it comes to reporting the news fully, accurately, and fairly?"
+    political_orientation:  # NOTE: Currently handled via hotfix in "self.create_cfg_category_mapping"
+      political_orientation_1: "Political Attitudes: In politics we often speak of 'left' and 'right'. Where would you place yourself on the left-right spectrum?"
+    tig:
+      tig_1: "Trust in government: How often can you trust the federal government to do what is right?"
+      tig_2: "Trust in government: How satisfied are you with the work of the federal government in the current coronavirus pandemic?"
+      tig_3: "Trust in government: How satisfied are you with the work of your state's government in the current coronavirus pandemic?"
+    sfd:
+      sfd_1: "Support for Democracy: To what extent do you agree with the following statements? Having experts, not congress, make decisions according to what they think is better for the country.*"
+      sfd_2: "Support for Democracy: To what extent do you agree with the following statements? Having a strong leader who doesn't have to bother with congress and elections is needed.*"
+      sfd_3: "Support for Democracy: To what extent do you agree with the following statements? Having the military govern the country.*"
+      sfd_4: "Support for Democracy: To what extent do you agree with the following statements? Having a democratic political system."
+    political_polar:
+      political_polar_1: "Political Polarization: How favorable do you feel about the Democratic Party?"
+      political_polar_2: "Political Polarization: How favorable do you feel about the Republican Party?"
+    corona_risk:
+      corona_risk_1: "COVID-19 risk estimations: How high do you estimate the risk of the coronavirus for yourself? For your health"
+      corona_risk_2: "COVID-19 risk estimations: How high do you estimate the risk of the coronavirus for yourself? For your social life"
+      corona_risk_3: "COVID-19 risk estimations: How high do you estimate the risk of the coronavirus for yourself? For your work/university studies"
+      corona_risk_4: "COVID-19 risk estimations: How high do you estimate the risk of the coronavirus for your family (parents, grandparents, siblings, children)? For their health"
+      corona_risk_5: "COVID-19 risk estimations: How high do you estimate the risk of the coronavirus for your family (parents, grandparents, siblings, children)? For their social life"
+      corona_risk_6: "COVID-19 risk estimations: How high do you estimate the risk of the coronavirus for your family (parents, grandparents, siblings, children)? For their working life/university studies"
+      corona_risk_7: "COVID-19 risk estimations: How high do you estimate the risk of the coronavirus for your close personal environment (partner, close friends)? For their health"
+      corona_risk_8: "COVID-19 risk estimations: How high do you estimate the risk of the coronavirus for your close personal environment (partner, close friends)? For their social life"
+      corona_risk_9: "COVID-19 risk estimations: How high do you estimate the risk of the coronavirus for your close personal environment (partner, close friends)? For their working life/university studies"
+      corona_risk_10: "COVID-19 risk estimations: How high do you estimate the risk of the coronavirus for the society as a whole? For the healthcare system"
+      corona_risk_11: "COVID-19 risk estimations: How high do you estimate the risk of the coronavirus for the society as a whole? For social cohesion"
+      corona_risk_12: "COVID-19 risk estimations: How high do you estimate the risk of the coronavirus for the society as a whole? For the economy/working life"
+      corona_risk_13: "COVID-19 risk estimations: How high do you estimate the risk of the coronavirus for the society as a whole? For cultural life"
+    corona_eval:
+      corona_eval_1: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, the government's crisis management is:"
+      corona_eval_2: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, people's panic is:"
+      corona_eval_3: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, journalists' reporting is:"
+      corona_eval_4: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, the discussion on social media is:"
+      corona_eval_5: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, I am acting with caution."
+      corona_eval_6: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, I am placing restrictions on myself."
+      corona_eval_7: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, I am acting somewhat too uncautiously."
+      corona_eval_8: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, I am following the recommended measures."
+      corona_eval_9: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, I am acting irresponsibly."
+      corona_eval_10: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, I am anxious/worried."
+      corona_eval_11: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, I am relaxed."
+      corona_eval_12: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, I am panicking."
+      corona_eval_13: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, I believe that we as a society can get the situation under control."
+      corona_eval_14: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, I feel like I am in the same boat with everyone else."
+      corona_eval_15: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, others are acting with caution."
+      corona_eval_16: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, others are placing restrictions on themselves."
+      corona_eval_17: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, others are acting a little too uncautiously."
+      corona_eval_18: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, others are following the recommended measures."
+      corona_eval_19: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, others are acting irresponsibly."
+      corona_eval_20: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, others are anxious/worried."
+      corona_eval_21: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, others are relaxed."
+      corona_eval_22: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, others are panicking."
+    corona_change:
+      corona_change_1: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I wash my hands."
+      corona_change_2: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? If I have to sneeze/cough, I do so into the crook of my arm."
+      corona_change_3: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I keep distance to other people."
+      corona_change_4: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I go on planned trips."
+      corona_change_5: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I ride my bike."
+      corona_change_6: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I use public transport."
+      corona_change_7: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I visit my family."
+      corona_change_8: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I meet up with my friends."
+      corona_change_9: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I attend public events (> 50 persons)."
+      corona_change_10: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I attend public events (< 50 persons)."
+      corona_change_11: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I attend private events/meetings (> 10 persons)."
+      corona_change_12: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I attend private events/meetings (< 10 persons)."
+      corona_change_13: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I invite people to my home."
+      corona_change_14: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I work/study at home."
+      corona_change_15: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I study in the library."
+      corona_change_16: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I do grocery shopping in supermarkets."
+      corona_change_17: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I go to discos, nightclubs."
+      corona_change_18: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I go to cafes, bars."
+      corona_change_19: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I visit cultural facilities (e.g. museums, cinemas, theatres)."
+      corona_change_20: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I visit public places (e.g. markets, shopping centres, shopping streets)."
+      corona_change_21: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I go to a fitness studio, gymnasium."
+      corona_change_22: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I go to work/university."
+      corona_change_23: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I go for walks."
+      corona_change_24: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I go jogging outside."
+      corona_change_25: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I stay home."
+    corona_policy:
+      corona_policy_1: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Cancellation of large-scale events with more than 1000 persons."
+      corona_policy_2: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Cancellation of events with less than 1000 persons."
+      corona_policy_3: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Cancellation of private events with more than 50 persons."
+      corona_policy_4: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Discontinuation of local public transport service (bus, train)."
+      corona_policy_5: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Discontinuation of long-distance public transport service (bus, train)."
+      corona_policy_6: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Discontinuation of air travel (short-haul, flights within Europe)."
+      corona_policy_7: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Discontinuation of air travel (long-haul, flights to and from Europe)."
+      corona_policy_8: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Closure of universities, higher education institutions."
+      corona_policy_9: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Closure of day-care centres and nursery schools."
+      corona_policy_10: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Closure of schools."
+      corona_policy_11: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Closure of discos, nightclubs."
+      corona_policy_12: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Closure of bars, cafes."
+      corona_policy_13: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Closure of museums, zoos, amusement parks, swimming pools, sports facilities."
+      corona_policy_14: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Closure of retail stores (with the exception of supermarkets, drugstores and pharmacies)."
+      corona_policy_15: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Border closures for people seeking to enter the country."
+      corona_policy_16: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Ban on travel abroad."
+      corona_policy_17: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. General ban on travel even within Germany."
+      corona_policy_18: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Imposition of home quarantine for everyone, including corresponding curfews (everyone must stay at home and may only leave the house for shopping, work, doctor's visits or to care for relatives)."
+      corona_policy_19: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Imposition of home quarantine including a total curfew (with no exceptions for a large majority of population)."
+      corona_policy_20: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Rationing and, if necessary, seizure of food and other essential goods."
+    corona_aff_binaries:
+      corona_aff_binaries_1_1: "COVID-19 exposure: Do you follow social distancing measures (keep social distance to other people)? Yes"
+      corona_aff_binaries_1_2: "COVID-19 exposure: Do you follow social distancing measures (keep social distance to other people)? No"
+      corona_aff_binaries_2_1: "COVID-19 exposure: Are you in voluntary quarantine (not leaving the house even to go grocery shopping)? Yes"
+      corona_aff_binaries_2_2: "COVID-19 exposure: Are you in voluntary quarantine (not leaving the house even to go grocery shopping)? No"
+      corona_aff_binaries_3_1: "COVID-19 exposure: Are you in prescribed quarantine (not leaving the house even to go grocery shopping)? Yes"
+      corona_aff_binaries_3_2: "COVID-19 exposure: Are you in prescribed quarantine (not leaving the house even to go grocery shopping)? No"
+      corona_aff_binaries_4_1: "COVID-19 exposure: Do you have or have you had the typical symptoms of the disease (e.g. fever, cough)? Yes"
+      corona_aff_binaries_4_2: "COVID-19 exposure: Do you have or have you had the typical symptoms of the disease (e.g. fever, cough)? No"
+      corona_aff_binaries_5_1: "COVID-19 exposure: Have you been tested for the coronavirus? Yes"
+      corona_aff_binaries_5_2: "COVID-19 exposure: Have you been tested for the coronavirus? No"
+      corona_aff_binaries_6_1: "COVID-19 exposure: Do you believe that one or more people in your household belong to the coronavirus risk group? Yes"
+      corona_aff_binaries_6_2: "COVID-19 exposure: Do you believe that one or more people in your household belong to the coronavirus risk group? No"
+      corona_aff_binaries_7_1: "COVID-19 exposure: Can you continue to pursue your occupation/part-time job? Yes"
+      corona_aff_binaries_7_2: "COVID-19 exposure: Can you continue to pursue your occupation/part-time job? No"
+    corona_aff_occup:
+      corona_aff_occup_1_1: "COVID-19 job affected: Can you continue to pursue your occupation/part-time job? I am not currently employed"
+      corona_aff_occup_1_2: "COVID-19 job affected: Can you continue to pursue your occupation/part-time job? Yes, I will continue to pursue my occupation/side job on site as usual"
+      corona_aff_occup_1_3: "COVID-19 job affected: Can you continue to pursue your occupation/part-time job? Yes, I will continue to pursue my occupation/side job by working from home"
+      corona_aff_occup_1_4: "COVID-19 job affected: Can you continue to pursue your occupation/part-time job? No, due to the coronavirus crisis, it is not possible to engage in my occupation/side job"
+    corona_aff_cont:
+      corona_aff_cont_1: "COVID-19 exposure: How many people in your family (parents, grandparents, siblings, children) are in quarantine (do not leave the house even to go grocery shopping)?"
+      corona_aff_cont_2: "COVID-19 exposure: How many people in your family (parents, grandparents, siblings, children) have been tested for the coronavirus?"
+      corona_aff_cont_3: "COVID-19 exposure: How many people in your family (parents, grandparents, siblings, children) have tested positive, are or were therefore infected?"
+      corona_aff_cont_4: "COVID-19 exposure: How many people from your close personal environment (partner, close friends) are in quarantine (do not leave the house even to go grocery shopping)?"
+      corona_aff_cont_5: "COVID-19 exposure:  How many people from your close personal environment (partner, close friends) have been tested for the coronavirus?"
+      corona_aff_cont_6: "COVID-19 exposure: How many people from your close personal environment (partner, close friends) have tested positive, are or were therefore infected?"
+      corona_aff_cont_7: "COVID-19 exposure: How many people from your wider social environment (fellow university students, other acquaintances) are in quarantine (do not leave the house even to go grocery shopping)?"
+      corona_aff_cont_8: "COVID-19 exposure: How many people from your wider social environment (fellow university students, other acquaintances) have been tested for the coronavirus?"
+      corona_aff_cont_9: "COVID-19 exposure: How many people from your wider social environment (fellow university students, other acquaintances) have tested positive, are or were therefore infected?"
+    corona_stockpile:
+      corona_stockpile_1: "COVID-19 stockpiling: How many rolls of toilet paper do you currently have in your household?"
+      corona_stockpile_2: "COVID-19 stockpiling: How many packages of pasta do you currently have in your household?"
+
+    trump_pers:
+      trump_pers_1: 'BFI: How would you rate Donald Trump on the following Trait: Openness'
+      trump_pers_2: 'BFI: How would you rate Donald Trump on the following Trait: Conscientiousness'
+      trump_pers_3: 'BFI How would you rate Donald Trump on the following Trait: Extraversion'
+      trump_pers_4: 'BFI: How would you rate Donald Trump on the following Trait: Agreeableness'
+      trump_pers_5: 'BFI: How would you rate Donald Trump on the following Trait: Neuroticism'
+    worries_election2020:
+      worries_election2020_1: "US Election 2020: To what degree are you worried about each of the following happening during the election? That the results will be contested."
+      worries_election2020_2: "US Election 2020: To what degree are you worried about each of the following happening during the election? That there will be widespread voter fraud."
+      worries_election2020_3: "US Election 2020: To what degree are you worried about each of the following happening during the election? That mail-in ballots will not be counted correctly."
+      worries_election2020_4: "US Election 2020: To what degree are you worried about each of the following happening during the election? That people will protest the results violently."
+      worries_election2020_5: "US Election 2020: To what degree are you worried about each of the following happening during the election? That President Trump will not leave office if he loses."
+      worries_election2020_6: "US Election 2020: To what degree are you worried about each of the following happening during the election? That members of the losing party will not honor the election results."
+      worries_election2020_7: "US Election 2020: To what degree are you worried about each of the following happening during the election? That there will be widespread voter suppression."
+      worries_election2020_8: "US Election 2020: To what degree are you worried about each of the following happening during the election? That voters will be intimidated at the polls."
+    corona_know:
+      corona_know_1: "COVID-19 wrong knowledge: To what degree have you felt that people are making too big of a deal about COVID-19?"
+      corona_know_2: "COVID-19 wrong knowledge: To what degree have you felt that COVID-19 might be the result of a government conspiracy?"
+      corona_know_3: "COVID-19 wrong knowledge: To what degree have you felt that COVID-19 is a result of climate change?"
+      corona_know_4: "COVID-19 wrong knowledge: To what degree have you felt that COVID-19 is just a normal thing that happens every now and then?"
+      corona_know_5: "COVID-19 wrong knowledge: To what degree have you felt that COVID-19 is a result of immigrants coming to your country?"
+      corona_know_6: "COVID-19 wrong knowledge: To what degree have you felt that COVID-19 is a result of the introduction of the 5G mobile network?"
+      corona_know_7: "COVID-19 wrong knowledge: To what degree have you felt that COVID-19 is no worse than getting the flu?"
+      corona_know_8: "COVID-19 wrong knowledge: To what degree have you felt that COVID-19 can be cured by hydrochloroquine?"
+      corona_know_9: "COVID-19 wrong knowledge: To what degree have you felt that wearing a mask does not help limit the spread of the coronavirus?"
+    party_affiliation:
+      party_affiliation_1_1: "US Election 2020: With which party do you most identify? Republican party"
+      party_affiliation_1_2: "US Election 2020: With which party do you most identify? Democratic party"
+      party_affiliation_1_3: "US Election 2020: With which party do you most identify? Other"
+      party_affiliation_1_4: "US Election 2020: With which party do you most identify? I am not politically engaged"
+    support_election:
+      support_election_1_1: "US Election 2020: Who do you support in the 2020 presidential election? Trump"
+      support_election_1_2: "US Election 2020: Who do you support in the 2020 presidential election? Biden"
+      support_election_1_3: "US Election 2020: Who do you support in the 2020 presidential election? Other"
+    voting_cont:
+      voting_cont_voting_behav: 'US Election 2020: Do you intend to vote? (1 = Yes, 6 = No, not interested)'
+      voting_cont_winner_elect: 'US Election 2020: Who do you think will win the 2020 U.S. presidential election? (1 = Certainly Trump, 5 = Certainly Biden)'
+
+  scale_means:
+    cmq:
+      cmq: 'CMQ: Conspiracy mentality'
+    ksa3:
+      ksa3_aggressive: 'KSA-3: Aggressive right-wing authoritarianism'
+      ksa3_submissive: 'KSA-3: Submissive right-wing authoritarianism'
+      ksa3_convent: 'KSA-3: Conventional right-wing authoritarianism'
+    ksa3s:
+      ksa3s: 'KSA-3-S: Right-wing authoritarianism'
+    sdo:
+      sdo_dominance: 'SDO: Dominance'
+      sdo_egalitarianism: 'SDO: Egalitarianism'
+    wgm:
+      wgm_economic: 'WGM: Economic marginalization'
+      wgm_political: 'WGM: Political marginalization'
+      wgm_cultural: 'WGM: Cultural marginalization'
+    threat_perception:
+      threat_perception_symbolic: 'Threat perception: Symbolic threat'
+      threat_perception_realistic: 'Threat percetion: Realistic threat'
+      threat_perception_safety: 'Threat perception: Safety threat'
+    pol_trust:
+      pol_trust: 'Political trust'
+    political_efficacy:
+      political_efficacy: 'Political efficacy'
+    pol_outgroup:
+      pol_outgroup: 'Political attitudes towards outgroups'
+    pol_att_other:
+      pol_att_other_satisf_demo: 'Satisfaction with democracy'
+      pol_att_other_pol_left_right: 'Political orientation (1 = Extreme left, 10 = Extreme right)'
+      pol_att_other_religiosity: 'Religiosity'
+      pol_att_other_spirituality: 'Spirituality'
+      pol_att_other_subj_ses: 'Subjective socio-economic status'
+    media:
+      media: 'Degree of media consumption'
+    political_orientation: # NOTE: Duplicate name, currently handled via hotfix in "self.create_cfg_category_mapping"
+      political_orientation: 'Political orientation (1 = Extremely conservative, 7 = Extremely liberal)'
+    tig:
+      tig: 'Trust in government'
+    sfd:
+      sfd: 'Support for democracy'
+    political_polar:
+      political_polar_favor_dem: 'Political polarization: Attitudes towards Democrats'
+      political_polar_favor_rep: 'Political polarization: Attitudes towards Republicans'
+    corona_risk:
+      corona_risk_self: 'COVID-19: Self-related risk estimations'
+      corona_risk_family: 'COVID-19: Family-related risk estimations'
+      corona_risk_closeothers: 'COVID-19: Close others-related risk estimations'
+      corona_risk_society: 'COVID-19: Society-related risk estimations'
+    corona_eval:
+      corona_eval_rating: 'COVID-19: Evaluation of public reactions'
+      corona_eval_self: 'COVID-19: Self-related behavioral evaluations'
+      corona_eval_others: 'COVID-19: Behavioral evaluations of others'
+    corona_change:
+      corona_change: 'COVID-19: Self-related behavioral changes'
+    corona_policy:
+      corona_policy: 'COVID-19: Policy evaluations'
+    corona_aff:
+      corona_aff_binaries: 'COVID-19: Exposure of oneself'
+      corona_aff_occup:
+        corona_aff_occup_1_1: "COVID-19 job affected: Can you continue to pursue your occupation/part-time job? I am not currently employed"
+        corona_aff_occup_1_2: "COVID-19 job affected: Can you continue to pursue your occupation/part-time job? Yes, I will continue to pursue my occupation/side job on site as usual"
+        corona_aff_occup_1_3: "COVID-19 job affected: Can you continue to pursue your occupation/part-time job? Yes, I will continue to pursue my occupation/side job by working from home"
+        corona_aff_occup_1_4: "COVID-19 job affected: Can you continue to pursue your occupation/part-time job? No, due to the coronavirus crisis, it is not possible to engage in my occupation/side job"
+      corona_aff_cont_family: 'COVID-19: Exposure of the family'
+      corona_aff_cont_closeothers: 'COVID-19: Exposure of close others'
+      corona_aff_cont_people: 'COVID-19: Exposure of distant others'
+    corona_stockpile:
+      corona_stockpile: 'COVID-19: Stockpiling'
+    trump_pers:
+      trump_pers_open: 'BFI ratings of Trumps personality: Openness'
+      trump_pers_consc: 'BFI ratings of Trumps personality: Conscientiousness'
+      trump_pers_extra: 'BFI ratings of Trumps personality: Extraversion'
+      trump_pers_agree: 'BFI ratings of Trumps personality: Agreeableness'
+      trump_pers_neuro: 'BFI ratings of Trumps personality: Neuroticism'
+    worries_election2020:
+      worries_election2020: 'US election 2020-related worries'
+    corona_know:
+      corona_know: 'Wrong beliefs about COVID-19'
+    policy_eval:
+      policy_eval: 'COVID-19 related policy evaluations'
+    party_affiliation:
+      party_affiliation_1_1: "With which party do you most identify? Republican party"
+      party_affiliation_1_2: "With which party do you most identify? Democratic party"
+      party_affiliation_1_3: "With which party do you most identify? Other"
+      party_affiliation_1_4: "With which party do you most identify? I am not politically engaged"
+    support_election:
+      support_election_1_1: "Who do you support in the 2020 presidential election? Trump"
+      support_election_1_2: "Who do you support in the 2020 presidential election? Biden"
+      support_election_1_3: "Who do you support in the 2020 presidential election? Other"
+    voting_cont:
+      voting_cont_voting_behav: 'US Election 2020 voting intention (1 = Yes, 6 = No, not interested)'
+      voting_cont_winner_elect: 'US Election 2020 guessing the winner (1 = Certainly Trump, 5 = Certainly Biden)'
+
+country_vars:
+  hofstede:
+    pdi: {coco_int: 'Country-level: Power vs. distance'}
+    idv: {coco_int: 'Country-level: Individualism vs. collectivism'}
+    mas: {coco_int: 'Country-level: Motivation towards achievement and success'}
+    uai: {coco_int: 'Country-level: Uncertainty avoidance'}
+    ltowvs: {coco_int: 'Country-level: Short-term vs. long-term orientation'}
+    ivr: {coco_int: 'Country-level: Indulgance vs. restraint'}
+  un_data:
+    political_participation: {coco_int: 'Country-level: Political participation'}
+    pop_estimates_mil: {coco_int: 'Country-level: Population estimates (mio)'}
+    pop_density: {coco_int: 'Country-level: Population density (per sq.km)'}
+    pop_age_percent_under_14: {coco_int: 'Country-level: Population percentage under 14'}
+    pop_age_percent_over_60: {coco_int: 'Country-level: Population percentage over 60'}
+    pop_rate_increase: {coco_int: 'Country-level: Population increase rate (%)'}
+    fertility_rate: {coco_int: 'Country-level: Fertility rate'}
+    infant_mortality: {coco_int: 'Country-level: Infant mortality (per 1000 live births)'}
+    life_exp: {coco_int: 'Country-level: Life expectancy'}
+    migrant_stock_percent: {coco_int: 'Country-level: Migrant stock (%)'}
+    migrant_refugees: {coco_int: 'Country-level: Number of refugees (Mio)'}
+    migrant_asylum: {coco_int: 'Country-level: Number of asylum seekers (Mio)'}
+    gdp_absolut: {coco_int: 'Country-level: GDP (Quadrillion)'}
+    gdp_per_capita: {coco_int: 'Country-level: GDP per capita (1000)'}
+    gdp_growth_rate: {coco_int: 'Country-level: GDP growth rate (%)'}
+    internet_num_person_percent: {coco_int: 'Country-level: Access to internet (%)'}
+  coco_mixed: # Country-level Variables
+    religion_idx: {coco_int: 'Country-level: Religiosity index'}
+    psm_eco_idx: {coco_int: 'Country-level: Gini coefficient'}
+    psm_cult_idx: {coco_int: 'Country-level: Civil liberties index'}
+    psm_pol_idx: {coco_int: 'Country-level: Political participation index'}
+
+wb_change:
+  wb_change_pre_post_event: 'Initial change in well-being'
+
+
+
+
+
+
+
+

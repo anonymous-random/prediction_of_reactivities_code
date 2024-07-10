@@ -1,0 +1,47 @@
+country_variables:
+  store_data: false
+  store_path: '../data/external_country_data/preprocessed'
+  samples: # select here
+    - hofstede
+    - un
+    - coco_mixed
+
+  # Information for preprocessing the samples -> is currently done in the helper function
+  general_raw_data_path: '../data/external_country_data/raw'
+  un:
+    un_subsamples:
+      - name: un_pop_1
+        pivot_column_name_mapping: {'unnamed: 1': 'country',
+                                    'series': 'pop_1_var'}
+        value_column_name_mapping:  {'Population mid-year estimates (millions)': 'pop_estimates_mil',
+                                     'Population density': 'pop_density',
+                                     'Population aged 0 to 14 years old (percentage)': 'pop_age_percent_under_14',
+                                     'Population aged 60+ years old (percentage)': 'pop_age_percent_over_60'}
+        pivot_columns: 'pop_1_var'
+      - name: un_pop_2
+        pivot_column_name_mapping: { 'unnamed: 1': 'country',
+                                     'series': 'pop_2_var' }
+        value_column_name_mapping: {'Population annual rate of increase (percent)': 'pop_rate_increase',
+                                    'Total fertility rate (children per women)': 'fertility_rate',
+                                    'Infant mortality for both sexes (per 1,000 live births)': 'infant_mortality',
+                                    'Life expectancy at birth for both sexes (years)': 'life_exp'}
+        pivot_columns: 'pop_2_var'
+      - name: un_migrant
+        pivot_column_name_mapping: { 'unnamed: 1': 'country',
+                                     'series': 'migrant_var' }
+        value_column_name_mapping: {'International migrant stock: Both sexes (% total population)': 'migrant_stock_percent',
+                                    'Total refugees and people in refugee-like situations (number)': 'migrant_refugees',
+                                    'Asylum seekers, including pending cases (number)': 'migrant_asylum'}
+        pivot_columns: 'migrant_var'
+      - name: un_gdp
+        pivot_column_name_mapping: { 'unnamed: 1': 'country',
+                                     'series': 'gdp_var' }
+        value_column_name_mapping: { 'GDP in current prices (millions of US dollars)': 'gdp_absolut',
+                                     'GDP per capita (US dollars)': 'gdp_per_capita',
+                                     'GDP real rates of growth (percent)': 'gdp_growth_rate' }
+        pivot_columns: 'gdp_var'
+      - name: un_internet
+        pivot_column_name_mapping: { 'unnamed: 1': 'country',
+                                     'series': 'internet_var' }
+        value_column_name_mapping: { 'Percentage of individuals using the internet': 'internet_num_person_percent'}
+        pivot_columns: 'internet_var'
