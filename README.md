@@ -19,6 +19,7 @@ This repository contains the complete analysis code.
    - [Troubleshooting](#troubleshooting)
 4. [Reproducing Results](#reproducing-results)
 5. [Project Structure](#project-structure)
+6. [License](#license)
 
 ## Introduction
 
@@ -66,7 +67,7 @@ This method does not require any special software and is perfect for those unfam
    - Navigate to the OSF project that contains the data by clicking on the link provided in the manuscript. Download the zip file **data**.  
 
 2. **Unzip the data**:
-   - Unzip the **data** file without changing its structure.  
+   - Unzip the **data** file without changing its structure. (e.g., unpacking the folder to the **downloads** directory) 
 
 3. **Paste the data in the repository**:
    - Paste the unzipped **data** folder in the repository. Ensure that the data folder is placed directly within the main repository directory as shown below. 
@@ -359,7 +360,9 @@ psychological_reactivities_analysis/
 └── .gitignore
 └── README.md
 └── requirements.txt
+```
 
+## License
 
-
+CC-By Attribution 4.0 International
 
