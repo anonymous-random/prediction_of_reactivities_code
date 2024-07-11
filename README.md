@@ -40,14 +40,14 @@ To begin working with the project, you first need to copy it to your local machi
 If you are comfortable with the command line, you can use the following commands:
 
 ```bash
-git clone https://github.com/your-username/psychological_reactivities_analysis.git
-cd psychological_reactivities_analysis
+git clone https://github.com/anonymous-random/prediction_of_reactivities_code.git
+cd prediction_of_reactivities_code
 ```
 
 #### Cloning via GitHub Website
 
 1. **Navigate to the Repository**:
-   - Open your web browser and go to the repository's page on GitHub. Use the URL: `https://github.com/your-username/psychological_reactivities_analysis`
+   - Open your web browser and go to the repository's page on GitHub. Use the URL: `https://github.com/anonymous-random/prediction_of_reactivities_code`
 
 2. **Clone the Repository**:
    - Above the file list, click the green button labeled **Code**.
@@ -72,7 +72,7 @@ This method does not require any special software and is perfect for those unfam
 3. **Paste the data in the repository**:
    - Paste the unzipped **data** folder in the repository. Ensure that the data folder is placed directly within the main repository directory as shown below. 
 ```plaintext
-psychological_reactivities_analysis/
+prediction_of_reactivities_code/
 │
 ├── configs/
 ├── data/
@@ -309,7 +309,7 @@ For example, if one want to execute the whole procedure for the supplementary an
 ## Project Structure
 
 ```plaintext
-psychological_reactivities_analysis/
+prediction_of_reactivities_code/
 │
 ├── configs/
 │   ├── config_country_data.yaml
@@ -317,9 +317,9 @@ psychological_reactivities_analysis/
 │   └── feature_name_mapping.yaml
 │
 ├── data/
-│   ├── external_country_data
-│   ├── preprocessed
-│   └── raw
+│   ├── external_country_data/ # raw external country-level data 
+│   ├── preprocessed/  # preprocessed data for machine learning-based analysis 
+│   └── raw/ # raw ESM and trait level data
 │
 ├── logs/  # created when producing logs 
 │
