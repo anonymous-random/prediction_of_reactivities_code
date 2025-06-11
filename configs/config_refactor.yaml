@@ -7,11 +7,11 @@ general:
   # To prevent confusion, I recommend to use only one method at a time
   preprocessing: false
   calc_mlms: false
-  ml_analysis: true
+  ml_analysis: false
   result_analysis: false
   prelim_results_analysis: false
   significance_tests: false
-  cv_results_plots: false
+  cv_results_plots: true
   shap_value_analysis: false
   osf_suppl_analysis: false
 
@@ -29,8 +29,8 @@ general:
   #           combinations and is for one specific plot in the paper
 
   analysis: main # suppl # main / suppl, ['main', 'suppl']
-  suppl_type:  # sep_pa_na, sep_ftf_cmc, weighting_by_rel, add_wb_change, mse_no_day_agg, ['main', 'add_wb_change']
-  suppl_var:  # pa, na; ftf, cmc, ftf_pa; random_slopes, ols_slopes, ['pa', 'na'], ['ftf', 'cmc']
+  suppl_type: x # sep_pa_na, sep_ftf_cmc, weighting_by_rel, add_wb_change, mse_no_day_agg, ['main', 'add_wb_change']
+  suppl_var: x # pa, na; ftf, cmc, ftf_pa; random_slopes, ols_slopes, ['pa', 'na'], ['ftf', 'cmc']
   study: ssc # ssc / mse
   social_interaction_variable: social_interaction # social_interaction, interaction_quantity, interaction_depth, interaction_closeness
   esm_sample: coco_int  # coco_int, emotions, coco_ut, for classes that use only a single sample at a time
@@ -757,7 +757,7 @@ analysis:
     features_base_dir: "../data/preprocessed"   # here are the features needed for scaling
     result_base_dir: "../results/ml_results"  # here are the ml results "../results/ml_results"
     sum_results_folder: "../results/ml_results_processed" #here are the results for the paper "../results/ml_results_processed"
-    store_results: true
+    store_results: false
     shap_ia_values: false
     keys_non_linear:  # These files are contained in all machine learning results, independent of the specific model
       - "cv_results.json"
@@ -794,10 +794,11 @@ analysis:
     methods:
       - create_cv_result_dct_wrapper
       # - create_cv_result_table_wrapper
-      - plot_cv_results_wrapper
+      # - plot_cv_results_wrapper
+      - compare_feature_inclusion_strategies
     base_path: '../results/ml_results_processed'
     store_plot: true
-    store_table: true
+    store_table: false
     plot_path: '../results/plots'
     sig_results_path: '../results/significance_test_results'
     orderings: # for correct plotting
@@ -824,16 +825,16 @@ analysis:
       seaborn_style: false
       ggplot_style: true
       filetype: jpeg # jpeg, png, ...
-      axes_facecolor: '#eaeaea'  # lightgrey
+      axes_facecolor: 'white'  # white!
       x_lim: [-0.20, 2.50]
       sign_height_ratio:
-        ssc: 0.015
+        ssc: 0.02  # 0.015
         mse: 0.04
       metrics:
         r2:
           y_lim:
             ssc:
-              main: [-0.04, 0.14] # [-0.05, 0.11]
+              main: [-0.05, 0.14] # [-0.05, 0.11]
               suppl:
                 sep_ftf_cmc:
                   ftf: [-0.15, 0.15]
@@ -1032,7 +1033,7 @@ analysis:
       store_plots: true
       filetype: 'jpeg'  # filetype for storing, according to e.g. JPSP submission guidelines
       ggplot_style: true
-      axes_facecolor: '#eaeaea'
+      axes_facecolor: "white"  # '#eaeaea'
       plot_types: ['ia_scatter_plot']   # Insert plot types that should be created, must match the results
       # possible plot_types: ['summary_plot', 'importance_plot', 'ia_scatter_plot', 'ia_heatmap']
       soc_int_var_order: ['social_interaction', 'interaction_quantity', 'interaction_depth', 'interaction_closeness']
@@ -1090,8 +1091,8 @@ analysis:
         txt_x: 0.82 # X coordinate in figure units (0 left, 1 right)
         txt_y: 0.42 # Y coordinate in figure units (0 bottom, 1 top)
       scatter_plot:
-        dataset_to_plot: 'train'  # train, test
-        sample_var_combos: # this can be adjusted
+        dataset_to_plot: 'test'  # train, test  # adjust here
+        sample_var_combos: # adjust here
           ssc:
             - esm_sample: coco_int
               soc_int_var: interaction_closeness

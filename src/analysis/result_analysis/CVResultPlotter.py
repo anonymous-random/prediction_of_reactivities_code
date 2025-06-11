@@ -229,6 +229,62 @@ class CVResultPlotter:
                 )
         setattr(self, "cv_result_dct", results)
 
+    def compare_feature_inclusion_strategies(self) -> dict:
+        """
+        Summarizes metrics (r2, rmse, spearman) for each feature inclusion strategy across
+        samples, models, and interaction variables.
+
+        This method:
+          - Filters out 'svr' model entirely.
+          - Includes 'linearb_baseline_model' only under 'scale_means' strategy.
+          - Aggregates metric values from all combinations of sample, model, and interaction variable.
+          - Computes mean ('m') and standard deviation ('sd') for each metric per strategy.
+
+        Returns:
+            Dict[str, Dict[str, Dict[str, float]]]:
+                Top-level keys are feature inclusion strategies,
+                next level keys are metrics,
+                innermost dict has keys 'm' (mean) and 'sd' (standard deviation).
+        """
+        # Initialize storage
+        results = {}
+        for strat in ("feature_selection", "scale_means", "single_items"):
+            results[strat] = {metric: [] for metric in ("r2", "rmse", "spearman")}
+
+        # Iterate through the stored cv results
+        for sample_dct in self.cv_result_dct["ssc"].values():
+            for strat, models_dct in sample_dct.items():
+                if strat not in results:
+                    continue
+                for model_name, interactions_dct in models_dct.items():
+                    # Exclude svr entirely, otherwise conclusions may be biased
+                    if model_name in ["svr", "linear_baseline_model"]:
+                        continue
+
+                    for interaction_dct in interactions_dct.values():
+                        # Each interaction_dct has a 'metrics' dict
+                        metrics = interaction_dct.get("metrics", {})
+                        for metric_name in ("r2", "rmse", "spearman"):
+                            value = metrics.get(metric_name, {}).get("mean")
+                            if value is None:
+                                continue
+                            results[strat][metric_name].append(value)
+
+        # Build summary dict
+        summary = {}
+        for strat, metrics_dct in results.items():
+            summary[strat] = {}
+            for metric_name, values in metrics_dct.items():
+                if values:
+                    mean_val = np.mean(values)
+                    sd_val = np.std(values) if len(values) > 1 else 0.0
+                else:
+                    mean_val = "NaN"
+                    sd_val = "NaN"
+                summary[strat][metric_name] = {"m": mean_val, "sd": sd_val}
+
+        return summary
+
     def create_cv_result_dct(self, result_dict, path):
         """
         This function walks through all subdirectories of a given root directory and extracts all machine learning
@@ -1244,6 +1300,16 @@ class CVResultPlotter:
             ax.set_ylim(self.cvr_cfg["plot"]["metrics"]["rho"]["y_lim"][study])
             ax.yaxis.set_major_formatter(ticker.FuncFormatter(self.custom_formatter))
 
+        # Only show left and top spines
+        ax.spines['right'].set_visible(False)
+        ax.spines['bottom'].set_visible(True)
+        ax.spines['left'].set_visible(True)
+        ax.spines['top'].set_visible(False)
+
+        # Optional: set their color if needed
+        ax.spines['left'].set_color('black')
+        ax.spines['bottom'].set_color('black')
+
     def get_r2_ylim(self, study):
         """
         This function returns the y-lim that fits best for a certain setting based on the config.
@@ -1338,6 +1404,8 @@ class CVResultPlotter:
         bottom, top = ax.get_ylim()
         yrange = top - bottom
         highest_point = self.find_max_point(result_dct)
+        # introduce some margin
+        highest_point += 0.005
         # Show only significant differences
         significant_combinations = [
             val
@@ -1362,13 +1430,13 @@ class CVResultPlotter:
                 )
                 # Significance levels and associated symbols
                 p = significant_combination[1]
-                if p == "<.001":
-                    sig_symbol = "***"
-                elif p < 0.01:
-                    sig_symbol = "**"
-                else:  # <= .05
-                    sig_symbol = "*"
-                text_height = bar_height + 0.0001
+
+                if isinstance(p, float):
+                    sig_symbol = f"*$\\it{{p}}$ = {p:.3f}".lstrip("0")
+                else:
+                    sig_symbol = f"*$\\it{{p}}$ {p}"
+
+                text_height = bar_height + 0.002  # 0.0001
                 plt.text((x1 + x2) * 0.5, text_height, sig_symbol, ha="center", c="k")
 
     @staticmethod

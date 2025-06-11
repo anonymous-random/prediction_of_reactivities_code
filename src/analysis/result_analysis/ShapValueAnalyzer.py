@@ -541,14 +541,14 @@ class ShapValueAnalyzer:
                             )
 
         # Store the SHAP values for different abstraction levels
-        if self.shap_config["storing_shap_values"]["store_abstraction_levels"]:
-            spec_output_dir = os.path.join(
-                self.shap_config["storing_shap_values"]["output_dir"],
-                self.result_plot_inter_path,
-            )
-            self.create_dir_structure(
-                shap_dct=shap_agg_dict, output_dir=spec_output_dir
-            )
+        #if self.shap_config["storing_shap_values"]["store_abstraction_levels"]:
+        #    spec_output_dir = os.path.join(
+        #        self.shap_config["storing_shap_values"]["output_dir"],
+        #        self.result_plot_inter_path,
+        #    )
+        #    self.create_dir_structure(
+        #        shap_dct=shap_agg_dict, output_dir=spec_output_dir
+        #    )
 
         # Create global importance plot for broad categories
         if "importance_plot" in self.shap_config["plots"]["plot_types"]:
@@ -1392,6 +1392,11 @@ class ShapValueAnalyzer:
         ax.tick_params(axis="both", labelsize=14)
         ax.legend(loc="lower right", fontsize=15)
 
+        ax.spines['bottom'].set_visible(True)
+        ax.spines['left'].set_visible(True)
+        ax.spines['bottom'].set_color('black')
+        ax.spines['left'].set_color('black')
+
     @staticmethod
     def split_string_based_on_list(input_string, prefix_list):
         """
@@ -1481,11 +1486,11 @@ class ShapValueAnalyzer:
             raise NotImplementedError(f"corr type {corr_type} not implemented")
         if corr:
             formatted_corr = f"{corr:.2f}".replace("0.", ".")
-            if p_val < 0.001:
-                sig_symbol = "***"
-            elif p_val < 0.01:
-                sig_symbol = "**"
-            elif p_val < 0.05:
+            #if p_val < 0.001:
+             #   sig_symbol = "***"
+            #elif p_val < 0.01:
+            #    sig_symbol = "**"
+            if p_val < 0.05:
                 sig_symbol = "*"
             else:
                 sig_symbol = ""
@@ -1957,95 +1962,97 @@ class ShapValueAnalyzer:
         Args:
             data_dct: Dict, containing the raw SHAP values
         """
-        for dataset in ["train", "test"]:
-            data_agg_across_categories = self.summarize_abstraction_shap_for_plot(
-                data_dct=data_dct, sum_across_models=True
-            )
-            fig = plt.figure(figsize=(24, 13))
-            gs = gridspec.GridSpec(
-                nrows=self.shap_config["plots"]["importance_plot"]["grid_spec"][
-                    self.study
-                ]["n_rows"],
-                ncols=self.shap_config["plots"]["importance_plot"]["grid_spec"][
-                    self.study
-                ]["n_cols"],
-            )
-            axes = {}
-            # create an importance plot for each ESM sample soc_int_var combination
-            for esm_sample, esm_sample_vals in data_agg_across_categories.items():
-                if self.study == "ssc":
-                    ordered_soc_int_vars = [
-                        i
-                        for i in self.shap_config["plots"]["soc_int_var_order"]
-                        if i in esm_sample_vals.keys()
-                    ]
-                elif self.study == "mse":
-                    ordered_soc_int_vars = ["dummy"]
-                else:
-                    raise ValueError("Study must be ssc or mse")
-
-                for soc_int_var in ordered_soc_int_vars:
-                    for summary_stat in ["sum", "mean"]:
-                        # Adjusted to access the nested dictionary structure
-                        grid_position = (
-                            self.shap_config["plots"]["importance_plot"][
-                                "grid_positions"
-                            ][self.study]
-                            .get(esm_sample)
-                            .get(soc_int_var)
-                            .get(summary_stat)
-                        )
-                        print(grid_position)
-                        if grid_position:
-                            ax = fig.add_subplot(
-                                gs[tuple(grid_position)]
-                            )  # Convert list to tuple
-                            axes[(esm_sample, soc_int_var, summary_stat)] = ax
-                        else:
-                            raise ValueError("grid position not available on Figure")
-                        current_data = esm_sample_vals[soc_int_var]["shap_values"][
-                            dataset
-                        ]["abs_avg_across_cat"]
-                        self.create_importance_plot(
-                            data=current_data,
-                            ax=ax,
-                            shap_summary_type=summary_stat,
-                            esm_sample=esm_sample,
-                            soc_int_var=soc_int_var,
-                        )
-
-            # Apply some formatting
-            plt.tight_layout(pad=2.5)
-            plt.subplots_adjust(
-                hspace=self.shap_config["plots"]["importance_plot"]["subplot_adjust"][
-                    "hspace"
-                ][self.study]
-            )
-            if self.study == "ssc":
-                row_1_axes = [
-                    ax
-                    for (esm_sample, soc_int_var, metric), ax in axes.items()
-                    if 0.25 < ax.get_position().y0 < 0.35
-                ]
-                row_2_axes = [
-                    ax
-                    for (esm_sample, soc_int_var, metric), ax in axes.items()
-                    if 0.45 < ax.get_position().y0 < 0.55
-                ]
-                for ax in row_1_axes:
-                    pos = ax.get_position()
-                    ax.set_position([pos.x0, pos.y0 - 0.018, pos.width, pos.height])
-                for ax in row_2_axes:
-                    pos = ax.get_position()
-                    ax.set_position([pos.x0, pos.y0 + 0.018, pos.width, pos.height])
-            if self.shap_config["plots"]["store_plots"]:
-                self.store_plot(
-                    plot_type="importance_plot",
-                    dataset=dataset,
+        for model in ["lasso", "rfr"]:
+            for dataset in ["train", "test"]:
+                data_agg_across_categories = self.summarize_abstraction_shap_for_plot(
+                    data_dct=data_dct, sum_across_models=False  # True
                 )
-            else:
-                plt.show()
-                self.check_plot_grayscale(fig=fig, filename_raw=None, show_plot=True)
+                fig = plt.figure(figsize=(24, 13))
+                gs = gridspec.GridSpec(
+                    nrows=self.shap_config["plots"]["importance_plot"]["grid_spec"][
+                        self.study
+                    ]["n_rows"],
+                    ncols=self.shap_config["plots"]["importance_plot"]["grid_spec"][
+                        self.study
+                    ]["n_cols"],
+                )
+                axes = {}
+                # create an importance plot for each ESM sample soc_int_var combination
+                for esm_sample, esm_sample_vals in data_agg_across_categories.items():
+                    if self.study == "ssc":
+                        ordered_soc_int_vars = [
+                            i
+                            for i in self.shap_config["plots"]["soc_int_var_order"]
+                            if i in esm_sample_vals.keys()
+                        ]
+                    elif self.study == "mse":
+                        ordered_soc_int_vars = ["dummy"]
+                    else:
+                        raise ValueError("Study must be ssc or mse")
+
+                    for soc_int_var in ordered_soc_int_vars:
+                        for summary_stat in ["sum", "mean"]:
+                            # Adjusted to access the nested dictionary structure
+                            grid_position = (
+                                self.shap_config["plots"]["importance_plot"][
+                                    "grid_positions"
+                                ][self.study]
+                                .get(esm_sample)
+                                .get(soc_int_var)
+                                .get(summary_stat)
+                            )
+                            print(grid_position)
+                            if grid_position:
+                                ax = fig.add_subplot(
+                                    gs[tuple(grid_position)]
+                                )  # Convert list to tuple
+                                axes[(esm_sample, soc_int_var, summary_stat)] = ax
+                            else:
+                                raise ValueError("grid position not available on Figure")
+                            current_data = esm_sample_vals[soc_int_var]["shap_values"][
+                                dataset
+                            ]["abs_avg_across_cat"][model]
+                            self.create_importance_plot(
+                                data=current_data,
+                                ax=ax,
+                                shap_summary_type=summary_stat,
+                                esm_sample=esm_sample,
+                                soc_int_var=soc_int_var,
+                            )
+
+                # Apply some formatting
+                plt.tight_layout(pad=2.5)
+                plt.subplots_adjust(
+                    hspace=self.shap_config["plots"]["importance_plot"]["subplot_adjust"][
+                        "hspace"
+                    ][self.study]
+                )
+                if self.study == "ssc":
+                    row_1_axes = [
+                        ax
+                        for (esm_sample, soc_int_var, metric), ax in axes.items()
+                        if 0.25 < ax.get_position().y0 < 0.35
+                    ]
+                    row_2_axes = [
+                        ax
+                        for (esm_sample, soc_int_var, metric), ax in axes.items()
+                        if 0.45 < ax.get_position().y0 < 0.55
+                    ]
+                    for ax in row_1_axes:
+                        pos = ax.get_position()
+                        ax.set_position([pos.x0, pos.y0 - 0.018, pos.width, pos.height])
+                    for ax in row_2_axes:
+                        pos = ax.get_position()
+                        ax.set_position([pos.x0, pos.y0 + 0.018, pos.width, pos.height])
+                if self.shap_config["plots"]["store_plots"]:
+                    self.store_plot(
+                        plot_type="importance_plot",
+                        dataset=dataset,
+                        model=model,
+                    )
+                else:
+                    plt.show()
+                    self.check_plot_grayscale(fig=fig, filename_raw=None, show_plot=True)
 
     def summarize_abstraction_shap_for_plot(self, data_dct, sum_across_models):
         """
@@ -2404,6 +2411,10 @@ class ShapValueAnalyzer:
         fig.axes[-1].tick_params(labelsize=5)
         fig.axes[-1].set_ylabel("Feature Value", fontsize=6)
 
+        ax.spines['bottom'].set_visible(True)
+        ax.spines['bottom'].set_color('black')
+
+
     def create_importance_plot(
         self, data, ax, shap_summary_type, esm_sample, soc_int_var
     ):
@@ -2492,6 +2503,16 @@ class ShapValueAnalyzer:
                     pad=15,
                     fontweight="bold",
                 )
+        # Add axis if background is white
+        # Only show left and top spines
+        ax.spines['right'].set_visible(False)
+        ax.spines['bottom'].set_visible(True)
+        ax.spines['left'].set_visible(True)
+        ax.spines['top'].set_visible(False)
+
+        # Optional: set their color if needed
+        ax.spines['left'].set_color('black')
+        ax.spines['bottom'].set_color('black')
 
     def create_dependence_plot(
         self, data, dataset, features, ax, ia_pair=None, num_feature=None
@@ -2540,6 +2561,7 @@ class ShapValueAnalyzer:
         dataset=None,
         soc_int_var=None,
         esm_sample=None,
+        model=None,
         fis=None,
         name_suffix=None,
     ):
@@ -2561,6 +2583,8 @@ class ShapValueAnalyzer:
             filename += f"_{fis}"
         if dataset:
             filename += f"_{dataset}"
+        if model:
+            filename += f"_{model}"
         if name_suffix:
             filename += f"_{name_suffix}"
         if esm_sample:
