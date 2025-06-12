@@ -1,5 +1,3 @@
-import os
-
 import numpy as np
 import shap
 from joblib import Parallel, delayed
@@ -37,10 +35,6 @@ class SVRAnalyzer(BaseMLAnalyzer):
         Returns:
             explainer(instance.reshape(1, -1)).values: array containing the SHAP values for "n_instance"
         """
-        # if n_instance < 20:
-            # print(
-            #     f"Calculating SHAP for instance {n_instance} in process {os.getpid()}"
-            # )
         return explainer(instance.reshape(1, -1)).values
 
     def calculate_shap_values(self, X, pipeline):
@@ -76,8 +70,6 @@ class SVRAnalyzer(BaseMLAnalyzer):
             max_evals=max_evals,
             npermutations=200,
         )
-        #print("-----")
-        #print("now starting parallel shap computations for one outer fold")
         shap_values_list = Parallel(
             n_jobs=self.config["analysis"]["parallelize"]["shap_n_jobs"],
             verbose=0,

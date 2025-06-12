@@ -59,7 +59,7 @@ class MultilevelModeling:
 
     @property
     def study(self):
-        """Study of the analysis, specified in config, either ssc or mse."""
+        """Study of the analysis, specified in config (i.e., ssc)."""
         return self.config["general"]["study"]
 
     @property
@@ -80,7 +80,6 @@ class MultilevelModeling:
         return (
             self.config["general"]["suppl_var"]
             if self.suppl_type
-            and self.suppl_type not in ["add_wb_change", "mse_no_day_agg"]
             else None
         )
 
@@ -94,7 +93,7 @@ class MultilevelModeling:
         return (
             None
             if self.suppl_type
-            in ["sep_ftf_cmc", "sep_pa_na", "add_wb_change", "mse_no_day_agg"]
+            in ["sep_ftf_cmc", "sep_pa_na"]
             else "main"
         )
 
@@ -123,7 +122,7 @@ class MultilevelModeling:
 
     @property
     def mlm_solver(self):
-        """Set mlm solver dynamically depending on whether we investigate mse or ssc."""
+        """Set mlm solver dynamically."""
         return self.config["analysis"]["mlm_params"]["solver"][self.study]
 
     @property
@@ -133,7 +132,7 @@ class MultilevelModeling:
             a) loading the states for generating the multilevel models and
             b) storing the extracted random effects.
         This is based on the analysis type (main / suppl).
-        An example of the level of abstraction would be "../data/preprocessed/add_wb_change/mse".
+        An example of the level of abstraction would be "../data/preprocessed/main/ssc".
         """
         path_components = [
             self.base_path,
@@ -763,11 +762,6 @@ class MultilevelModeling:
         if self.study == "ssc":
             # extract social int var from filename
             iv = "_".join(df_name.split("_")[-2:]) + "_pmc"
-        elif self.study == "mse":
-            if self.suppl_type == "mse_no_day_agg":
-                iv = "hours_since_event"
-            else:
-                iv = "days_since_event"
         else:
             raise ValueError("Study not implemented")
         dv = self.config["analysis"]["mlm_params"]["dv"]

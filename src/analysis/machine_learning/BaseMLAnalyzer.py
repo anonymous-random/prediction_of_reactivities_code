@@ -33,7 +33,7 @@ class BaseMLAnalyzer(ABC):
 
     Attributes:
         output_dir: str, Specific directory where the result files of the machine learning analysis are stored.
-            This depends on multiple parameters, such as the analysis_type (main / suppl), the study (ssc/mse),
+            This depends on multiple parameters, such as the analysis_type (main / suppl), the study (ssc),
             the esm-sample, the feature inclusion strategy, the prediction model, and in SSC the social situation
             variable. An example would be "../results/main/ssc/coco_int/scale_means/lasso/social_interaction".
                 If the models are computed locally, the root directory is defined in the config.
@@ -116,8 +116,8 @@ class BaseMLAnalyzer(ABC):
         return self.config["general"]["esm_sample"]
 
     @property
-    def study_name(self):  # ssc or mse
-        """Name of the Study of the current analysis, Study 1 (ssc) or Study 2 (mse)."""
+    def study_name(self):
+        """Name of the Study of the current analysis (i.e., ssc)."""
         return self.config["general"]["study"]
 
     @property
@@ -138,7 +138,6 @@ class BaseMLAnalyzer(ABC):
         return (
             self.config["general"]["suppl_var"]
             if self.suppl_type
-            and self.suppl_type not in ["add_wb_change", "mse_no_day_agg"]
             else None
         )
 
@@ -157,7 +156,7 @@ class BaseMLAnalyzer(ABC):
         return (
             None
             if self.suppl_type
-            in ["sep_ftf_cmc", "sep_pa_na", "add_wb_change", "mse_no_day_agg"]
+            in ["sep_ftf_cmc", "sep_pa_na"]
             else "main"
         )
 
@@ -181,12 +180,8 @@ class BaseMLAnalyzer(ABC):
 
     @property
     def soc_int_var(self):
-        """Define the social interaction variable if study is 'ssc', None if study is 'mse'."""
-        return (
-            self.config["general"]["social_interaction_variable"]
-            if self.study_name == "ssc"
-            else None
-        )
+        """Define the current social situation variable."""
+        return self.config["general"]["social_interaction_variable"]
 
     @property
     def data_inter_path(self):
@@ -194,7 +189,7 @@ class BaseMLAnalyzer(ABC):
         Sets the intermediate path where the criterion (random_effects / ols_slopes) and the features (df with traits)
         are stored as a class attribute. Therefore, it combines the data_base_path (where all preprocessed data is
         stored) with the information on the analysis type and the Study.
-        Examples would be "../data/preprocessed/main/mse" or "../data/preprocessed/sep_ftf_cmc/ftf/ssc".
+        Examples would be "../data/preprocessed/main/ssc" or "../data/preprocessed/sep_ftf_cmc/ftf/ssc".
         """
         path_components = [
             self.data_base_path,
@@ -211,7 +206,7 @@ class BaseMLAnalyzer(ABC):
     def feature_folder(self):
         """
         Sets the folder where the features for the specific analysis are stored as a class attribute.
-        An example would be "../data/preprocessed/main/mse/traits/scale_means"
+        An example would be "../data/preprocessed/main/ssc/traits/scale_means"
         """
         if self.feature_inclusion_strategy in ("single_items", "feature_selection"):
             fis_subfolder_name = "single_items"
@@ -229,7 +224,7 @@ class BaseMLAnalyzer(ABC):
     def crit_folder(self):
         """
         Sets the folder where the criterion (e.g., random slopes) for the specific analysis are stored.
-        An example would be "../data/preprocessed/main/mse/random_effects"
+        An example would be "../data/preprocessed/main/ssc/random_effects"
         """
         crit_folder = os.path.normpath(
             os.path.join(self.data_inter_path, self.crit_var)
@@ -397,12 +392,6 @@ class BaseMLAnalyzer(ABC):
                 str(file)
                 for file in os.listdir(getattr(self, folder_att))
                 if file.startswith(sample_soc_int_var)
-            ][0]
-        elif self.study_name == "mse":
-            dataset_name = [
-                str(file)
-                for file in os.listdir(getattr(self, folder_att))
-                if file.startswith(self.raw_sample_name)
             ][0]
         else:
             raise ValueError("Study not implemented")

@@ -28,15 +28,11 @@ class PreprocessorSSC(BasePreprocessor):
         """Dict containing the socio-demographics in each ESM-sample."""
         soc_dem_dct = dict()
         for esm_sample in self.samples_for_analysis:
-            # Apply additional filtering based on self.trait_cfg['mse_only']
+            # Apply additional filtering
             soc_dem_dct[esm_sample] = [
                 dem
                 for dem in self.trait_cfg["socio_demographics"]
                 if esm_sample in dem["time_of_assessment"].keys()
-                and not any(
-                    dem["name"].startswith(prefix)
-                    for prefix in self.trait_cfg["mse_only"][esm_sample]
-                )
             ]
         return soc_dem_dct
 
@@ -49,10 +45,6 @@ class PreprocessorSSC(BasePreprocessor):
                 pers
                 for pers in self.trait_cfg["personality"]
                 if esm_sample in pers["time_of_assessment"].keys()
-                and not any(
-                    pers["name"].startswith(prefix)
-                    for prefix in self.trait_cfg["mse_only"][esm_sample]
-                )
             ]
         return pers_dct
 
@@ -65,10 +57,6 @@ class PreprocessorSSC(BasePreprocessor):
                 pol_soc
                 for pol_soc in self.trait_cfg["polit_soc_attitudes"]
                 if esm_sample in pol_soc["time_of_assessment"].keys()
-                and not any(
-                    pol_soc["name"].startswith(prefix)
-                    for prefix in self.trait_cfg["mse_only"][esm_sample]
-                )
             ]
         return pol_soc_dct
 
@@ -88,23 +76,6 @@ class PreprocessorSSC(BasePreprocessor):
             if esm_sample == "coco_ut" and self.suppl_var in ["ftf", "ftf_pa"]:
                 soc_int_var_dct[esm_sample].append("interaction_quantity")
         return soc_int_var_dct
-
-    def remove_mse_specific_items(self):
-        """
-        This function removes the items that are specific for the analysis of major societal events
-        from the trait dfs and from the dictionaries defining the traits for preprocessing in the config
-        (i.e., election specific items in coco_ut and COVID-specific items in emotions).
-        """
-        self.logger.info(">>>>>>remove_mse_specific_items<<<<<<")
-        for sample_name in self.samples_for_analysis:
-            df_traits_tmp = getattr(self, "trait_dct")[sample_name]
-            remove_lst = list()
-            for ques in self.trait_cfg["mse_only"][sample_name]:
-                remove_lst.extend(
-                    [col for col in df_traits_tmp if col.startswith(ques)]
-                )
-            df_traits_tmp = df_traits_tmp.drop(remove_lst, axis=1)
-            getattr(self, "trait_dct")[sample_name] = df_traits_tmp
 
     def filter_states_num_iv(self, esm_sample):
         """

@@ -20,21 +20,20 @@ from sklearn.preprocessing import MultiLabelBinarizer
 class BasePreprocessor(ABC):
     """
     Abstract base class for data preprocessing. This class serves as a template for specific
-    preprocessor implementations such as PreprocessorMSE and PreprocessorSSC. It encapsulates
-    methods and attributes used across multiple preprocessor variants that are independent of
-    the Study (SSC/MSE), e.g. sth like inverse coding of items.
+    preprocessor implementations such as PreprocessorSSC. It encapsulates
+    methods and attributes used across multiple preprocessor variants, e.g. sth like inverse coding of items.
 
     Attributes:
         config: YAML config providing details on the preprocessing logic
         sample_dct: Dictionary that is passed to the preprocessor containing trait and state df of the ESM samples
-        study: Study 1 ("ssc") or Study 2 ("mse"), defined by the corresponding subclass
+        study: Study 1 ("ssc"), defined by the corresponding subclass
         config_path: str, relative path to the config file
         trait_dct: Dictionary containing the raw traits as str:df pairs at the beginning (keys are e.g. "coco_int")
             and the processed traits as str:df pairs at the end (keys are e.g. "coco_int_social_interaction")
         state_dct: Dictionary containing the raw traits as str:df pairs at the beginning (keys are e.g. "coco_int")
             and the processed states as str:df pairs at the end (keys are e.g. "coco_int_social_interaction")
-        proc_esm_sample_lst: Lst of processed sample names, that are either structured like this in SSC:
-            (f'{esm_sample}_{soc_int_var}'), or like this in MSE: (f'{esm_sample}_{event}')
+        proc_esm_sample_lst: Lst of processed sample names, that structured like this:
+            (f'{esm_sample}_{soc_int_var}')
     """
 
     @abstractmethod
@@ -50,7 +49,7 @@ class BasePreprocessor(ABC):
         Args:
             config_path: str, relative path to the config file
             sample_dct: Dictionary that is passed to the preprocessor containing trait and state df of the ESM samples
-            study: Study 1 ("ssc") or Study 2 ("mse"), defined by the corresponding subclass
+            study: Study 1 ("ssc"), defined by the corresponding subclass
         """
         with open(config_path, "r") as f:
             self.config = yaml.safe_load(f)
@@ -140,7 +139,7 @@ class BasePreprocessor(ABC):
         return (
             None
             if self.suppl_type
-            in ["sep_ftf_cmc", "sep_pa_na", "add_wb_change", "mse_no_day_agg"]
+            in ["sep_ftf_cmc", "sep_pa_na"]
             else "main"
         )
 
@@ -172,7 +171,7 @@ class BasePreprocessor(ABC):
         """
         The specific path where the processed data is stored. Depending on the analysis (main/suppl), suppl_type,
         study, etc...
-        An example would be store_base_path/main/ssc or store_base_path/suppl/sep_pa_na/na/mse.
+        An example would be store_base_path/main/ssc.
         """
         path_components = [
             self.store_base_path,
@@ -276,19 +275,19 @@ class BasePreprocessor(ABC):
     @property
     @abstractmethod
     def soc_dem_dct(self):
-        """Variables used differ between ssc and mse, therefore implement this in the subclasses."""
+        """Implement this in the subclasses."""
         pass
 
     @property
     @abstractmethod
     def pers_dct(self):
-        """Variables used differ between ssc and mse, therefore implement this in the subclasses."""
+        """Implement this in the subclasses."""
         pass
 
     @property
     @abstractmethod
     def pol_soc_dct(self):
-        """Variables used differ between ssc and mse, therefore implement this in the subclasses."""
+        """Implement this in the subclasses."""
         pass
 
     @property
@@ -501,7 +500,7 @@ class BasePreprocessor(ABC):
         Args:
             sample_name: str, ESM-sample name given
             df_states: df containing the states of a given ESM-sample
-            new_sample_name: combo of esm_sample-ssc (SSC) or esm_sample-mse (MSE)
+            new_sample_name: combo of esm_sample-ssc (SSC)
 
         """
         df_traits_scale_means = getattr(self, "trait_dct")["scale_means"][
@@ -651,14 +650,9 @@ class BasePreprocessor(ABC):
 
         for proc_sample_name in self.proc_esm_sample_lst:
             print(f"---{proc_sample_name}---")
-            if self.study == "mse":
-                if self.suppl_type == "mse_no_day_agg":
-                    self.assign_well_being_to_timevar(proc_sample_name)
-                else:
-                    self.aggregate_well_being_for_days(proc_sample_name)
+
             self.person_mean_center_wb_score(proc_sample_name)
-            if self.study == "ssc":
-                self.person_mean_center_iv(proc_sample_name)
+            self.person_mean_center_iv(proc_sample_name)
 
     def filter_states_wb_items(self, esm_sample):
         """
@@ -714,14 +708,6 @@ class BasePreprocessor(ABC):
         df_states["wb_score"] = wb_score_per_esm
         getattr(self, "state_dct")[esm_sample] = df_states
 
-    def aggregate_well_being_for_days(self, proc_sample_name):
-        """This function aggregates the well-being score on a day level, is only implemented in the mse subclass."""
-        pass
-
-    def assign_well_being_to_timevar(self, proc_sample_name):
-        """This method assigns each measurement to a linear time variable in the mse subclass."""
-        pass
-
     def person_mean_center_wb_score(self, proc_sample_name):
         """
         This function person-mean centers the dependent variable for the multilevel models that we
@@ -742,13 +728,7 @@ class BasePreprocessor(ABC):
 
     @abstractmethod
     def filter_states_num_iv(self, esm_sample):
-        """
-        This method must be implemented in the subclasses, because the filtering applied in this method
-        depends entirely on the iv type (social situation characteristics or major societal events).
-        Further, in both applications (ssc/mse), this function changes the level of operation of
-        the dataframes (instead of raw sample names, we use the sample-ssc / sample-mse combination
-        for all further processing).
-        """
+        """Implement this in the subclasses."""
         pass
 
     def person_mean_center_iv(self, proc_sample_name):
@@ -764,12 +744,11 @@ class BasePreprocessor(ABC):
         and the following adjustments of the trait data.
         This is the final step that reduces the sample sizes ot the traits and states.
 
-
         Args:
             proc_sample_name: str, name of the processed samples, e.g. coco_int_social_interaction
             state_df: df containing the states corresponding to proc_sample_name
             min_number_esm_measures: Minimum number of complete ESM measurements for a given variable
-            current_var: Variable for filtering, could be a social situation variable or a major societal event
+            current_var: Variable for filtering (i.e., social situationm variable)
         """
         self.logger.info(
             f"len {proc_sample_name} state data after filtering out rows with less than "
@@ -785,16 +764,7 @@ class BasePreprocessor(ABC):
         self.logger.info(
             f"SD EMS surveys per person: {np.round(state_df.groupby(self.person_id_col).size().std(), 2)}"
         )
-        if self.study == "mse":
-            num_days_per_person = state_df.groupby(self.person_id_col)[
-                self.esm_tp_col
-            ].apply(lambda x: x.dt.date.nunique())
-            self.logger.info(
-                f"Mean num days with EMS surveys per person: {np.round(num_days_per_person.mean(), 2)}"
-            )
-            self.logger.info(
-                f"SD num days with EMS surveys per person: {np.round(num_days_per_person.std(), 2)}"
-            )
+
         self.logger.info("\n")
 
     def one_hot_encode_categoricals(self, esm_sample):
@@ -849,8 +819,6 @@ class BasePreprocessor(ABC):
         """
         This function gets the categorical columns based on the config specifications for a given df and var type.
         Var_type should be in ['soc_dem', 'pers', 'pol_soc'].
-        Using e.g. the soc_dem_dct that is stored as a class attribute ensures that the item differences between
-        ssc and mse are reflected here.
 
         Args:
             sample_name: str, raw name of a given ESM-sample, e.g. coco_int
