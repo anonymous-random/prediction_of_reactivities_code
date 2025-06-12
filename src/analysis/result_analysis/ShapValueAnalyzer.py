@@ -110,7 +110,7 @@ class ShapValueAnalyzer:
         """
         return (
             None
-            if self.suppl_type in ["sep_ftf_cmc", "sep_pa_na", "add_wb_change"]
+            if self.suppl_type in ["sep_ftf_cmc", "sep_pa_na"]
             else "main"
         )
 
@@ -137,7 +137,7 @@ class ShapValueAnalyzer:
         """Var of supplementary analysis, only defined if self.suppl_type exists, e.g. 'ftf'."""
         return (
             None
-            if self.analysis_type == "main" or self.suppl_type == "add_wb_change"
+            if self.analysis_type == "main"
             else self.config["general"]["suppl_var"]
         )
 
@@ -152,7 +152,7 @@ class ShapValueAnalyzer:
 
     @property
     def study(self):
-        """Study, either mse or ssc."""
+        """Study, i.e., ssc."""
         return self.config["general"]["study"]
 
     @property
@@ -297,12 +297,6 @@ class ShapValueAnalyzer:
         if self.study == "ssc":
             soc_int_var = components[2]
             file_name = f"{sample}_{soc_int_var}_one_hot_encoded_preprocessed.pkl"
-        elif self.study == "mse":
-            soc_int_var = None
-            major_soc_event = self.config["analysis"]["result_analysis"][
-                "mse_assignment"
-            ][sample]
-            file_name = f"{sample}_{major_soc_event}_one_hot_encoded_preprocessed.pkl"
         else:
             raise ValueError("study not implemented")
 
@@ -393,11 +387,8 @@ class ShapValueAnalyzer:
         """
         if sample not in getattr(self, f"col_order_{time_var}_scaling"):
             getattr(self, f"col_order_{time_var}_scaling")[sample] = {}
-        if self.study == "mse":
-            getattr(self, f"col_order_{time_var}_scaling")[sample][
-                fis
-            ] = features.columns.tolist()
-        elif self.study == "ssc":
+
+        if self.study == "ssc":
             if fis not in getattr(self, f"col_order_{time_var}_scaling")[sample]:
                 getattr(self, f"col_order_{time_var}_scaling")[sample][fis] = {}
             getattr(self, f"col_order_{time_var}_scaling")[sample][fis][
@@ -415,16 +406,8 @@ class ShapValueAnalyzer:
         """
         if sample not in getattr(self, f"col_order_mapping"):
             getattr(self, f"col_order_mapping")[sample] = {}
-        if self.study == "mse":
-            mapping = {
-                old_col: new_col
-                for old_col, new_col in zip(
-                    self.col_order_before_scaling[sample][fis],
-                    self.col_order_after_scaling[sample][fis],
-                )
-            }
-            getattr(self, f"col_order_mapping")[sample][fis] = mapping
-        elif self.study == "ssc":
+
+        if self.study == "ssc":
             if fis not in getattr(self, f"col_order_mapping")[sample]:
                 getattr(self, f"col_order_mapping")[sample][fis] = {}
             mapping = {
@@ -464,13 +447,12 @@ class ShapValueAnalyzer:
                 data=plot_data,
             )
 
-        # Having applied "structure_shap_values_for_plots", we can use the same loop for mse and ssc
         for esm_sample, esm_sample_vals in plot_data.items():
             shap_agg_dict[esm_sample] = {}
             for (
                 soc_int_var,
                 soc_int_var_vals,
-            ) in esm_sample_vals.items():  # if mse: ['dummy']
+            ) in esm_sample_vals.items():
                 shap_agg_dict[esm_sample][soc_int_var] = {}
                 # summary plots for multiple fis and models
                 print(esm_sample, soc_int_var)
@@ -631,7 +613,7 @@ class ShapValueAnalyzer:
                 for dataset, dataset_dct in corrected_ia_values.items()
             }
             if soc_int_var is None:
-                soc_int_var = "dummy"  # for MSE
+                soc_int_var = "dummy"
             store_path = os.path.join(
                 self.shap_config["storing_shap_ia_values"]["output_dir"],
                 self.result_plot_inter_path,
@@ -889,8 +871,7 @@ class ShapValueAnalyzer:
                             category_mapping[category].append(var_name)
                     else:
                         category_mapping[category].append(item["name"])
-        if self.suppl_type == "add_wb_change":
-            category_mapping["wb_change"] = ["wb_change_pre_post_event"]
+
         return category_mapping
 
     @staticmethod
@@ -940,7 +921,7 @@ class ShapValueAnalyzer:
         Args:
             ia_values: the different summaries of the shap interaction values for train and test set
             esm_sample: ESM-sample
-            soc_int_var: [str, None], Current soc_int_var (if SSC) or dummy/None (if MSE)
+            soc_int_var: str, Current soc_int_var
         """
         for fis, fis_vals in ia_values.items():
             if fis == "feature_selection":  # no ia_values for fs
@@ -973,7 +954,7 @@ class ShapValueAnalyzer:
         Args:
             ia_values: Dict, contaning the IA values
             esm_sample: str, ESM sample
-            soc_int_var: [str, None], Current soc_int_var (if SSC) or dummy/None (if MSE)
+            soc_int_var: str, Current soc_int_var
 
         Returns:
             best_pair_dct: Dict containing the most interacting pairs of variables
@@ -1022,7 +1003,7 @@ class ShapValueAnalyzer:
 
         Args:
             data: Dict, containing the SHAP ia_values
-            soc_int_var: [str, None], Current soc_int_var (if SSC) or dummy/None (if MSE)
+            soc_int_var: str, Current soc_int_var
         """
         fis_to_plot = ["single_items", "scale_means"]
         combos_to_plot = self.shap_config["plots"]["scatter_plot"]["sample_var_combos"][
@@ -1098,7 +1079,7 @@ class ShapValueAnalyzer:
             shap_ia_dct: Dict containing the different shap_ia_value summaries for train and test set
             esm_sample: Given ESM sample
             fis: given feature inclusion strategy
-            soc_int_var: [str, None], Current soc_int_var (if SSC) or dummy/None (if MSE)
+            soc_int_var: str, Current soc_int_var
 
         Returns:
             corrected_ia_dct: Dict, like shap_ia_dct, but with correctly assigned feature names and DataFrames
@@ -1107,8 +1088,6 @@ class ShapValueAnalyzer:
         new_dct = {}
         if self.study == "ssc":
             feature_mapping = self.col_order_mapping[esm_sample][fis][soc_int_var]
-        elif self.study == "mse":
-            feature_mapping = self.col_order_mapping[esm_sample][fis]
         else:
             raise ValueError("Unknown study")
 
@@ -1369,15 +1348,8 @@ class ShapValueAnalyzer:
                 fontweight="bold",
                 pad=20,
             )
-        elif self.study == "mse":
-            event_pretty = self.shap_config["plots"]["event_mapping"][esm_sample]
-            ax.set_title(
-                f"Main and Interaction Effects for the {event_pretty} in "
-                f"{esm_sample_pretty} for {fis_pretty}",
-                fontsize=17,
-                fontweight="bold",
-                pad=20,
-            )
+        else:
+            raise ValueError("Study must be ssc")
         ax.set_xlabel(
             "Sum of the Absolute Main Effects of a Feature Across Persons",
             fontsize=16,
@@ -1517,7 +1489,7 @@ class ShapValueAnalyzer:
             fis: Feature Inclusion Strategy
             esm_sample: Current esm_sample
             dataset: Current ML dataset, "train" or "test"
-            soc_int_var: [str, None], Current soc_int_var (if SSC) or dummy/None (if MSE)
+            soc_int_var: str, Current soc_int_var
         """
         category_mapping = self.create_cfg_category_mapping()
         df_abs_corr = data["abs_agg_ia_persons"]
@@ -1956,7 +1928,7 @@ class ShapValueAnalyzer:
         This function creates and stores several shap importance plots on a root plot.
         The specifications how many importance plots are created and which are defined in the config.
         Currently, we plot the mean and the sum of the shap values summarized across categories per
-        soc_int_var and sample (or only per sample for MSE), so that it results in one plot for one analysis
+        soc_int_var and sample, so that it results in one plot for one analysis
         (e.g., one plot for main/ssc with all ESM-samples and soc_int_vars)
 
         Args:
@@ -1985,10 +1957,8 @@ class ShapValueAnalyzer:
                             for i in self.shap_config["plots"]["soc_int_var_order"]
                             if i in esm_sample_vals.keys()
                         ]
-                    elif self.study == "mse":
-                        ordered_soc_int_vars = ["dummy"]
                     else:
-                        raise ValueError("Study must be ssc or mse")
+                        raise ValueError("Study must be ssc")
 
                     for soc_int_var in ordered_soc_int_vars:
                         for summary_stat in ["sum", "mean"]:
@@ -2185,7 +2155,7 @@ class ShapValueAnalyzer:
 
         Args:
             data: Dict, contains the SHAP values
-            study: str, ssc or mse, processing depends on this
+            study: str, "ssc"
 
         Returns:
             reordered_dct: Dict, contains the same values as data, but reordered
@@ -2207,11 +2177,6 @@ class ShapValueAnalyzer:
                             reordered_dct[esm_sample][soc_int_var][fis][
                                 model
                             ] = soc_int_var_vals
-        elif study == "mse":
-            for esm_sample, esm_sample_vals in dct.items():
-                if esm_sample not in reordered_dct:
-                    reordered_dct[esm_sample] = {}
-                reordered_dct[esm_sample]["dummy"] = dct[esm_sample]
         else:
             raise ValueError("Unknown study")
         return reordered_dct
@@ -2465,12 +2430,9 @@ class ShapValueAnalyzer:
             ][esm_sample]
             y_x_fontsize = 12
             title_fontsize = 14
-        elif self.study == "mse":
-            title_pretty = self.config["analysis"]["cv_results_plots_tables"]["plot"][
-                "title_mapping"
-            ]["mse"][esm_sample]
-            y_x_fontsize = 16
-            title_fontsize = 18
+        else:
+            raise ValueError("Study must be ssc")
+
         ax.set_aspect(aspect="auto")
         ax.invert_yaxis()
         ax.set_yticklabels(top_features_pretty, fontsize=y_x_fontsize)
@@ -2496,13 +2458,9 @@ class ShapValueAnalyzer:
                     pad=15,
                     fontweight="bold",
                 )
-            elif self.study == "mse":
-                ax.set_title(
-                    f"{title_pretty}",
-                    fontsize=title_fontsize,
-                    pad=15,
-                    fontweight="bold",
-                )
+            else:
+                raise ValueError("Study must be ssc")
+
         # Add axis if background is white
         # Only show left and top spines
         ax.spines['right'].set_visible(False)
@@ -2572,7 +2530,7 @@ class ShapValueAnalyzer:
             plot_type: str, type specifying the plot (e.g., "summary_plot")
             dataset: [str, None]: if str, "train" or "test", if None, than the plot contains content of train
                 and test together
-            soc_int_var: [str,None], soc_int_var if ssc or None is mse
+            soc_int_var: str, soc_int_var if ssc
             esm_sample: str, the given ESM sample
             fis: str, feature inclusion strategy
             name_suffix: str, given suffix for more adequately specifyin the result plot
@@ -2595,6 +2553,7 @@ class ShapValueAnalyzer:
             current_plot_path = os.path.join(self.plot_path, esm_sample, soc_int_var)
         os.makedirs(current_plot_path, exist_ok=True)
         file_path = os.path.join(current_plot_path, filename)
+
         if self.shap_config["plots"]["filetype"] == "jpeg":
             filename_jpeg = file_path + ".jpg"
             plt.savefig(

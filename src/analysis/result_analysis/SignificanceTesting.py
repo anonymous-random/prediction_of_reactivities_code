@@ -15,9 +15,8 @@ class SignificanceTesting:
     """
     This class computes test of significance to compare the prediction results for different models
     across different analysis settings. Results for different feature selection strategies were pooled.
-        Thus, in Study 1 (ssc / main analysis), 6 comparisons (pairwise comparisons of models) are computed
+        Thus, in this study (ssc / main analysis), 6 comparisons (pairwise comparisons of models) are computed
         for each ESM sample - soc_int_var combination, resulting in 42 statistical tests.
-        In Study 2, 6 comparisons are computed for each event, resulting in 18 statistical tests.
     Due to multiple testing, tests of significance are False-Discovery-Rate corrected.
     Results are stored as a table for the supplementary results and as a JSON that is used by the CVResultPlotter
     to include the results of the significance tests as annotations in the CV result plots.
@@ -77,7 +76,7 @@ class SignificanceTesting:
         return (
             None
             if self.suppl_type
-            in ["sep_ftf_cmc", "sep_pa_na", "add_wb_change", "weighting_by_rel"]
+            in ["sep_ftf_cmc", "sep_pa_na", "weighting_by_rel"]
             else "main"
         )
 
@@ -86,13 +85,13 @@ class SignificanceTesting:
         """Var of supplementary analysis, only defined if self.suppl_type exists, e.g. 'ftf'."""
         return (
             self.config["general"]["suppl_var"]
-            if self.suppl_type and self.suppl_type != "add_wb_change"
+            if self.suppl_type
             else None
         )
 
     @property
     def study(self):
-        """Study, either "ssc" or "mse"."""
+        """Study, i.e., "ssc". """
         return self.config["general"]["study"]
 
     @property
@@ -226,7 +225,6 @@ class SignificanceTesting:
                     if model not in aggregated_results[esm_sample]:
                         aggregated_results[esm_sample][model] = {}
 
-                    # This sets a variable "default" in mse to mirror the ssc dict hierarchy
                     if self.study == "ssc":
                         for soc_int_var, data in results[esm_sample][fis][
                             model
@@ -234,11 +232,8 @@ class SignificanceTesting:
                             self.process_cv_results(
                                 data, aggregated_results[esm_sample][model], soc_int_var
                             )
-                    elif self.study == "mse":
-                        data = results[esm_sample][fis][model]
-                        self.process_cv_results(
-                            data, aggregated_results[esm_sample][model]
-                        )
+                    else:
+                        raise ValueError("Study must be ssc")
 
             self.calculate_means(aggregated_results[esm_sample])
 

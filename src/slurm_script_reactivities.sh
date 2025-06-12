@@ -13,7 +13,7 @@ Changeable variables/settings from the command line or from a SLURM script are
     - analysis ("main", "suppl")
     - suppl_type ( only if analysis==suppl, e.g., "sep_ftf_cmc")
     - suppl_var (only in certain suppl analyses, e.g., "ftf")
-    - study ("ssc", "mse")
+    - study ("ssc")
     - esm_sample ("coco_int", "emotions", "coco_ut")
     - feature_inclusion_strategy ("single_items", "scale_means", "feature_selection")
     - model ("linear_baseline_model", "lasso", "rfr", "svr")
@@ -23,9 +23,9 @@ Changeable variables/settings from the command line or from a SLURM script are
 '
 # Possible parameters
 ANALYSIS="suppl"  # main, suppl
-SUPPL_TYPE="add_wb_change" # "weighting_by_rel" "sep_ftf_cmc" "add_wb_change" "sep_pa_na"
+SUPPL_TYPE="weighting_by_rel" # "weighting_by_rel" "sep_ftf_cmc" "sep_pa_na"
 SUPPL_VAR="x" # pa, na; ftf, cmc; random_slopes, ols_slopes
-STUDIES=("mse") # ssc, mse
+STUDIES=("ssc") # ssc
 ESM_SAMPLES=("coco_int") # "emotions" "coco_ut" "coco_int"
 FEATURE_STRATEGIES=("scale_means")  # single_items, scale_means, feature_selection
 MODELS=("svr")  # linear_baseline_model, lasso, rfr, svr
@@ -67,10 +67,6 @@ for study in "${STUDIES[@]}"; do
               ;;
       esac
 
-      # For the 'mse' study, we don't need to consider the SOC_INT_VARS
-      if [ "$study" == "mse" ]; then
-          CURRENT_SOC_INT_VARS=("")
-      fi
       # Adjust the CPUs and time dynamically based on fis and model
       for strategy in "${FEATURE_STRATEGIES[@]}"; do
          STRATEGY_MULT=1
@@ -113,21 +109,21 @@ for study in "${STUDIES[@]}"; do
                       # Initially, set the path to BASE_DIR and SUPPL_TYPE
                       RESULT_DIR="${BASE_DIR}/${SUPPL_TYPE[0]}"
 
-                      # Check and add SUPPL_VAR if it's set, not empty, and SUPPL_TYPE isn't 'add_wb_change'
-                      if [ -n "${SUPPL_VAR[0]}" ] && [ "${SUPPL_TYPE[0]}" != "add_wb_change" ]; then
+                      # Check and add SUPPL_VAR if it's set and not empty
+                      if [ -n "${SUPPL_VAR[0]}" ]; then
                           RESULT_DIR="${RESULT_DIR}/${SUPPL_VAR[0]}"
                       fi
 
                       # Add the remaining common elements
                       RESULT_DIR="${RESULT_DIR}/${study}/${sample}/${strategy}/${model}"
 
-                      # Add soc_int_var for 'ssc' study, except when SUPPL_TYPE is 'add_wb_change'
-                      if [ "$study" == "ssc" ] && [ "${SUPPL_TYPE[0]}" != "add_wb_change" ]; then
+                      # Add soc_int_var for 'ssc' study
+                      if [ "$study" == "ssc" ]; then
                           RESULT_DIR="${RESULT_DIR}/${soc_int_var}"
                       fi
 
                       # Check if SUPPL_TYPE is among the accepted values
-                      if [[ ! "${SUPPL_TYPE[0]}" =~ ^(sep_ftf_cmc|sep_pa_na|weighting_by_rel|add_wb_change)$ ]]; then
+                      if [[ ! "${SUPPL_TYPE[0]}" =~ ^(sep_ftf_cmc|sep_pa_na|weighting_by_rel)$ ]]; then
                           echo "Supplementary analysis not implemented!"
                           exit 1
                       fi
@@ -149,7 +145,7 @@ for study in "${STUDIES[@]}"; do
               fi
 
               # Append subdirectory for SUPPL_VAR[0] if defined
-              if [ "${ANALYSIS[0]}" == "suppl" ] && [ "${SUPPL_TYPE[0]}" != "add_wb_change" ] && [ -n "${SUPPL_VAR[0]}" ]; then
+              if [ "${ANALYSIS[0]}" == "suppl" ] && [ -n "${SUPPL_VAR[0]}" ]; then
                   LOG_BASE_PATH="${LOG_BASE_PATH}/${SUPPL_VAR[0]}"
               fi
 

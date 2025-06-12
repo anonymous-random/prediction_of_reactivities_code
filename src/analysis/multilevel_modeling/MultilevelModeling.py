@@ -575,7 +575,7 @@ class MultilevelModeling:
 
         Args:
             df_name: Key of the dct of the class attribute storing the state data, contains the sample
-                and the social situation variable (e.g., coco_int_social_interaction) or the major societal event
+                and the social situation variable (e.g., coco_int_social_interaction)
             df: pd.DataFrame containing the state data for a given ESM sample
             results_mlm: Results of a random slope only multilevel model
             person_id: Column that identifies if state observations belong to the same person
@@ -753,7 +753,7 @@ class MultilevelModeling:
 
         Args:
             df_name: Key of the dct of the class attribute storing the state data, contains the sample
-                and the social situation variable (e.g., coco_int_social_interaction) or the major societal event
+                and the social situation variable (e.g., coco_int_social_interaction)
 
         Returns:
             iv: Column name of the independent variable

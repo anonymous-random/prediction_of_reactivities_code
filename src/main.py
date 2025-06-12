@@ -53,7 +53,6 @@ from src.main_utils import (
     construct_output_path,
     sanity_checks_cfg_cluster,
 )
-from src.preprocessing.PreprocessorMSE import PreprocessorMSE
 from src.preprocessing.PreprocessorSSC import PreprocessorSSC
 from src.preprocessing.helper_functions import load_data, preprocess_country_data
 
@@ -81,11 +80,6 @@ if __name__ == "__main__":
                 config_path=config_path, sample_dct=df_dct
             )
             preprocessor_ssc.apply_preprocessing_methods()
-        elif config["general"]["study"] == "mse":
-            preprocessor_mse = PreprocessorMSE(
-                config_path=config_path, sample_dct=df_dct
-            )
-            preprocessor_mse.apply_preprocessing_methods()
 
     if config["general"]["calc_mlms"]:
         mlm_class = MultilevelModeling(config_path=config_path)
@@ -126,7 +120,7 @@ if __name__ == "__main__":
             raise ValueError("Model not implemented")
 
     if config["general"]["result_analysis"]:
-        for sample in config["general"]["samples_for_analysis"]:
+        for sample in ["coco_int"]: # config["general"]["samples_for_analysis"]:
             result_analyzer = ResultAnalyzer(config_path=config_path, esm_sample=sample)
             result_analyzer.apply_methods()
 

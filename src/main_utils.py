@@ -26,7 +26,7 @@ def get_slurm_vars(config):
             "help": "e.g., sep_ftf_cmc",
         },
         "--suppl_var": {"default": config["general"]["suppl_var"], "help": "e.g., ftf"},
-        "--study": {"default": config["general"]["study"], "help": "ssc or mse"},
+        "--study": {"default": config["general"]["study"], "help": "ssc"},
         "--esm_sample": {
             "default": config["general"]["esm_sample"],
             "help": "e.g. coco_int",
@@ -262,26 +262,21 @@ def construct_output_path(config):
 
     elif analysis == "suppl":
         suppl_analysis = config["general"]["suppl_type"]
-        suppl_var = (
-            None
-            if suppl_analysis == "add_wb_change"
-            else config["general"].get("suppl_var", "")
-        )
+        suppl_var = config["general"].get("suppl_var", "")
+
         paths = (
             [suppl_analysis]
             + ([suppl_var] if suppl_var else [])
             + [study, esm_sample, feature_inclusion_strategy, model]
         )
 
-        if study == "ssc" and suppl_analysis not in ["add_wb_change"]:
+        if study == "ssc":
             paths.append(soc_int_var)
 
         if suppl_analysis not in [
             "sep_ftf_cmc",
             "sep_pa_na",
             "weighting_by_rel",
-            "add_wb_change",
-            "mse_no_day_agg",
         ]:
             raise ValueError("Supplementary analysis not implemented")
 

@@ -21,7 +21,6 @@ class CVResultPlotter:
         Which analysis settings are included in a plot are specified in the config. It is possible to
             compare all settings in one analysis (e.g., plot all sample-soc_int_var combinations in main/ssc)
             compare different suppl_vars (e.g., plot certain sample-soc_int_var combinations comparing PA/NA)
-            compare different analysis (this is only implemented for the comparison main/mse and add_wb_change)
 
     Attributes:
         config: YAML config determining certain specifications of the analysis.
@@ -61,7 +60,7 @@ class CVResultPlotter:
 
     @property
     def study(self):
-        """Study of the analysis, specified in config, either ssc or mse."""
+        """Study of the analysis (i.e., ssc)."""
         return self.config["general"]["study"]
 
     @property
@@ -96,7 +95,6 @@ class CVResultPlotter:
         return (
             None
             if self.analysis_type == "main"
-            or self.suppl_type == "add_wb_change"
             or isinstance(self.analysis, list)
             else self.config["general"]["suppl_var"]
         )
@@ -134,8 +132,6 @@ class CVResultPlotter:
         that are compared. Two examples:
             If suppl_type is sep_ftf_cmc and ftf and cmc are compared in the plot, this plot
             will be stored in the folder sep_ftf_cmc
-            If main and add_wb_change will be compared in the plot, this plot will be stored in
-            the first provided variable (the "main" folder, in this case).
         """
         if isinstance(self.analysis, str):
             path_components = [
@@ -358,9 +354,9 @@ class CVResultPlotter:
     def create_cv_result_table(self, data, suppl_var):
         """
         This function creates a df that contains all numerical cv results for one specific analysis setting.
-        More specifically, this table contains the results for all ESM-sample / soc_int_var (if study == ssc) /
+        More specifically, this table contains the results for all ESM-sample / soc_int_var /
         feature inclusion strategy / model combinations. We integrated these variables in the MultiIndex structure.
-            Row Indices: SSC: soc_int_vars, fis, metric / MSE: fis, metric
+            Row Indices: SSC: soc_int_vars, fis, metric
             Col Indices: ESM-sample, model, statistic
 
         Args:
@@ -395,16 +391,6 @@ class CVResultPlotter:
                         names=df_final.index.names,
                     )
                 )
-            elif study == "mse":
-                df_final = df_final.reindex(
-                    pd.MultiIndex.from_product(
-                        [
-                            self.order_dct["fis"],
-                            self.cvr_cfg["table"]["metrics_to_include"],
-                        ],
-                        names=df_final.index.names,
-                    )
-                )
             else:
                 raise ValueError(f"Study {study} not known")
 
@@ -424,10 +410,6 @@ class CVResultPlotter:
                 if study == "ssc":
                     df_final.loc[(slice(None), slice(None), metric), :] = df_final.loc[
                         (slice(None), slice(None), metric), :
-                    ].applymap(lambda x: self.custom_df_formatter(x, metric))
-                elif study == "mse":
-                    df_final.loc[(slice(None), metric), :] = df_final.loc[
-                        (slice(None), metric), :
                     ].applymap(lambda x: self.custom_df_formatter(x, metric))
             df_final.replace("nan", np.nan, inplace=True)
 
@@ -455,7 +437,7 @@ class CVResultPlotter:
         Returns:
             transformed: Dict, containing the prediction results, new nesting hierarchy
         """
-        transformed = {"ssc": {}, "mse": {}}
+        transformed = {"ssc": {}}
         for study, study_data in data.items():
             for esm_sample, esm_sample_data in study_data.items():
                 for (
@@ -484,20 +466,6 @@ class CVResultPlotter:
                                         transformed["ssc"].setdefault(row_key, {})[
                                             col_key
                                         ] = value
-                        elif study == "mse":
-                            for metric, metrics_data in model_data["metrics"].items():
-                                for statistic, value in metrics_data.items():
-                                    # Tuple for row index
-                                    row_key = (
-                                        feature_inclusion_strategy,
-                                        metric,
-                                    )
-                                    # Tuple for column index
-                                    col_key = (esm_sample, model, statistic.upper())
-                                    # Populate the transformed dictionary
-                                    transformed["mse"].setdefault(row_key, {})[
-                                        col_key
-                                    ] = value
                         else:
                             raise ValueError("Unknown study")
         return transformed
@@ -523,7 +491,7 @@ class CVResultPlotter:
     def plot_cv_results_wrapper(self):
         """
         This is a wrapper function for creating the CV_Result plots. It sets certain global parameters (e.g.,
-        plot styles, colors of axes), and exerts the more specific functions "plot_ssc" and "plot_mse"
+        plot styles, colors of axes), and exerts the more specific function "plot_ssc"
         depending on the values of certain class attributes. These possibilities exist
             1) isinstance(self.suppl_var, str): Supplementary analysis and suppl_var is defined. Then we plot
             all settings for this suppl_var (e.g., one plot for all settings of sep_ftf_cmc/ftf)
@@ -531,9 +499,7 @@ class CVResultPlotter:
             of the same supplementary analysis. Then we plot one or multiple plots were the different suppl_vars
             are compared. Which settings to include in which plot is defined in the config (e.g., present the
             predictability differences for ftf and cmc for certain soc_int_var-esm sample combinations)
-            3) isinstance(self.suppl_type, list): Compare results for different suppl_types or analysis. Only usecase
-            at the moment is ['main'; 'add_wb_change']. Then the results for these two are compared in one plot.
-            4) everything else: Create one plot for a certain analysis setting where suppl_var is not defined,
+            3) everything else: Create one plot for a certain analysis setting where suppl_var is not defined,
             (e.g., plot all esm_sample-soc_int_var combinations for main)
         """
         # Global plot settings
@@ -568,12 +534,6 @@ class CVResultPlotter:
                                 metric=metric,
                                 suppl_var=suppl_var,
                             )
-                        elif study == "mse":
-                            self.plot_mse(
-                                study_vals=study_vals,
-                                metric=metric,
-                                suppl_var=suppl_var,
-                            )
 
         if isinstance(self.suppl_var, list):  # e.g. ['pa', 'na']
             for metric in self.cvr_cfg["plot"]["metrics_to_plot"]:
@@ -584,19 +544,6 @@ class CVResultPlotter:
                         continue
                     if study == "ssc":
                         self.contrast_suppl_vars_ssc(data, metric)
-                    elif study == "mse":
-                        self.contrast_suppl_vars_mse(data, metric)
-
-        if isinstance(
-            self.suppl_type, list
-        ):  # e.g. ['main', 'add_wb_change'], not spotless yet
-            for metric in self.cvr_cfg["plot"]["metrics_to_plot"]:
-                for study in list(
-                    set.intersection(*(set(vals.keys()) for vals in data.values()))
-                ):  # only implemented for the comparison of main and add_wb_change, thus, only for MSE
-                    if study == "mse":
-                        # Use same function that contrasts suppl_vars for contrasting analyses, ok for now
-                        self.contrast_suppl_vars_mse(data, metric)
 
         else:  # e.g. if suppl_var is None, for example in main
             for study, study_vals in data.items():
@@ -619,10 +566,6 @@ class CVResultPlotter:
                 for metric in self.cvr_cfg["plot"]["metrics_to_plot"]:
                     if study == "ssc":
                         self.plot_ssc(
-                            study_vals=study_vals, metric=metric, suppl_var=None
-                        )
-                    elif study == "mse":
-                        self.plot_mse(
                             study_vals=study_vals, metric=metric, suppl_var=None
                         )
 
@@ -767,8 +710,8 @@ class CVResultPlotter:
 
             # Define which analysis settings are compared in which main plot
             current_vars = {
-                sample: vars
-                for sample, vars in soc_int_vars_ordered.items()
+                sample: variables
+                for sample, variables in soc_int_vars_ordered.items()
                 if sample in current_samples
             }
             if num_plot == 2:
@@ -857,7 +800,6 @@ class CVResultPlotter:
             )
             ax_legend = self.adjust_legend_position(
                 ax_legend=ax_legend,
-                study="ssc",
                 num_plot=num_plot,
             )
             self.set_legend(ax_legend=ax_legend, study="ssc")
@@ -882,7 +824,7 @@ class CVResultPlotter:
 
         Args:
             ax_legend: matplotlib.axes.Axes.legend, Legend object that is changed through this function.
-            study: str, either mse or ssc, influences the position of the legend in the plot.
+            study: str, ssc, influences the position of the legend in the plot.
         """
         legend_lst = []
         for fis in self.order_dct["fis"]:
@@ -911,36 +853,18 @@ class CVResultPlotter:
         legend_frame.set_boxstyle("square, pad=0.5")
 
     def adjust_legend_position(
-        self, ax_legend, study, num_plot=None, compare_analyses=False
+        self, ax_legend, num_plot=None
     ):
         """
         This function adjusts the position of the legend based on the config specifications and some manual processing.
 
         Args:
             ax_legend: matplotlib.axes.Axes.legend, Legend object that is changed through this function.
-            study: str, either mse or ssc, influences the needed position adjustments.
             num_plot: [int, None], needed for custom position adjustments, e.g., if the number of subplots differ
                 between num_plots
-            compare_analyses: bool, if analysis are compared (e.g., pa/na), or not (e.g., only pa)
 
         Returns: ax_legend: Specific position of the legend
         """
-        # Custom adjustments if certain analyses are compared (e.g., suppl_vars)
-        if compare_analyses:
-            height_adjustment = self.cvr_cfg["contrast_suppl_vars"][
-                "legend_adjustments"
-            ]["mse_add_wb_change"]["height"]
-            width_adjustment = self.cvr_cfg["contrast_suppl_vars"][
-                "legend_adjustments"
-            ]["mse_add_wb_change"]["width"]
-            pos = ax_legend.get_position()
-            new_pos = [
-                pos.x0 + width_adjustment,
-                pos.y0 + height_adjustment,
-                pos.width,
-                pos.height,
-            ]
-            ax_legend.set_position(new_pos)
         # Custom adjustments if num_plot is given
         if num_plot in [0, 2]:
             height_adjustment = self.cvr_cfg["contrast_suppl_vars"][
@@ -950,7 +874,7 @@ class CVResultPlotter:
             new_pos = [pos.x0, pos.y0 + height_adjustment, pos.width, pos.height]
             ax_legend.set_position(new_pos)
         # Custom adjustments for the setting specified
-        if study == "mse" or self.suppl_type == "sep_pa_na" and num_plot != 0:
+        if self.suppl_type == "sep_pa_na" and num_plot != 0:
             width_adjustment = self.cvr_cfg["contrast_suppl_vars"][
                 "legend_adjustments"
             ]["other"]
@@ -958,191 +882,6 @@ class CVResultPlotter:
             new_pos = [pos.x0 + width_adjustment, pos.y0, pos.width, pos.height]
             ax_legend.set_position(new_pos)
         return ax_legend
-
-    def plot_mse(self, study_vals, metric, suppl_var=None):
-        """
-        This function creates the main plot for the mse plots. It always contains 3 smaller subplots,
-        ESM-sample / event names as headings, and a common legend for the feature inclusion strategy.
-        It exerts the function "prepare_and_plot" that plots the results in the subplots.
-        Further, it adjusts the positions of the subplots and the legend when all subplots are filled,
-        so that the whole plot looks appealing.
-
-        Args:
-            study_vals: Dict, containing the prediction results for a specific analysis setting and study
-                (e.g., hierarchy could be coco_int/scale_means/social_interaction/lasso/...)
-            metric: str, current metric to plot, list of metrics is defined in the config
-            suppl_var: [str,None], suppl_var if defined in the current analysis setting
-        """
-        # Create and configure main plot, subplots, and headings for all main plots
-        fig = plt.figure(figsize=(16, 4))
-        gs = gridspec.GridSpec(
-            self.cvr_cfg["plot"]["num_rows"]["mse"] + 1,
-            self.cvr_cfg["plot"]["num_cols"]["mse"],
-            height_ratios=[0.001, 0.999],
-        )
-        headings = {
-            "CoCo International": 0,
-            "Emotions": 1,
-            "CoCo UT": 2,
-        }
-        for title, cols in headings.items():
-            heading_ax = fig.add_subplot(gs[0, cols])
-            heading_ax.set_title(title, fontsize=15, weight="bold")
-            heading_ax.axis("off")
-
-        axes = {}
-        for col, esm_sample in enumerate(self.cvr_cfg["orderings"]["sample"]):
-            ax = fig.add_subplot(gs[1, col])
-            axes[esm_sample] = ax
-            esm_sample_vals = study_vals[esm_sample]
-            # Plot data in the subplots
-            self.prepare_and_plot(
-                study="mse",
-                metric=metric,
-                esm_sample_vals=esm_sample_vals,
-                ax=ax,
-                esm_sample=esm_sample,
-            )
-            # Set the title for each row
-            title = self.cvr_cfg["plot"]["title_mapping"]["mse"][esm_sample]
-            ax.set_title(
-                title,
-                fontsize=11,
-                fontweight="bold",
-                loc="center",
-                pad=15,
-            )
-        # Set subplot adjustments
-        plt.subplots_adjust(hspace=0.65, wspace=0.4)
-        legend_grid_position = self.cvr_cfg["plot"]["legend"]["ax"]["mse"]
-        ax_legend = fig.add_subplot(
-            gs[legend_grid_position[0], legend_grid_position[1]]
-        )
-        self.set_legend(ax_legend=ax_legend, study="mse")
-
-        # Store or present plots
-        if self.config["analysis"]["cv_results_plots_tables"]["store_plot"]:
-            self.store_plot(study="mse", metric=metric, suppl_var=suppl_var)
-            plt.close(fig)
-        else:
-            plt.show()
-            self.check_plot_grayscale(fig=fig, filename_raw=None, show_plot=True)
-
-    def contrast_suppl_vars_mse(self, data, metric):
-        """
-        This function creates the main plot for contrasting mse plots. It always contains 6 smaller subplots
-        (so that the three events can be compared on different suppl_vars or for different analysis),
-        ESM-sample / event names as headings, and a common legend for the feature inclusion strategy.
-        It exerts the function "prepare_and_plot" that plots the results in the subplots.
-        Further, it adjusts the positions of the subplots and the legend when all subplots are filled,
-        so that the whole plot looks appealing.
-
-        Args:
-            data: Dict, containing the prediction results for a specific analysis setting and study
-                (e.g., hierarchy could be coco_int/scale_means/social_interaction/lasso/...)
-            metric: str, current metric to plot, list of metrics is defined in the config
-        """
-        # Create and configure main plot, subplots, and headings for all main plots
-        fig = plt.figure(figsize=(22, 12))  # Adjust the figure size as needed
-        gs = gridspec.GridSpec(
-            self.cvr_cfg["plot"]["num_rows"]["mse"] + 2,
-            self.cvr_cfg["plot"]["num_cols"]["mse"],
-            height_ratios=[0.001, 0.999, 0.999],
-        )
-        headings = self.cvr_cfg["contrast_suppl_vars"]["heading_mapping"]["mse"]
-        for title, cols in headings.items():
-            heading_ax = fig.add_subplot(gs[0, cols])
-            heading_ax.set_title(title, fontsize=18, weight="bold")
-            heading_ax.axis("off")
-
-        axes = {}
-        for col, esm_sample in enumerate(self.cvr_cfg["orderings"]["sample"], 1):
-            for num, suppl_var in enumerate(data.keys()):
-                # adjusted significance path
-                setattr(
-                    self,
-                    "current_sig_path",
-                    os.path.join(self.sig_results_path, suppl_var, "mse"),
-                )
-                ax = fig.add_subplot(gs[num + 1, col])
-                axes[esm_sample] = ax
-                esm_sample_vals = data[suppl_var]["mse"][esm_sample]
-                # Plot data in the subplots
-                self.prepare_and_plot(
-                    study="mse",
-                    metric=metric,
-                    esm_sample_vals=esm_sample_vals,
-                    ax=ax,
-                    esm_sample=esm_sample,
-                )
-                # Set the title for each row
-                maj_soc_event = self.cvr_cfg["plot"]["title_mapping"]["mse"][esm_sample]
-                if isinstance(self.suppl_type, list):
-                    title = maj_soc_event
-                else:
-                    title = maj_soc_event + " - " + suppl_var.upper()
-                ax.set_title(
-                    title,
-                    fontsize=13,
-                    fontweight="bold",
-                    loc="center",
-                    pad=15,
-                )
-        # Set subplot adjustments
-        plt.subplots_adjust(hspace=0.4, wspace=0.4)
-        legend_grid_position = self.cvr_cfg["contrast_suppl_vars"]["legend_position"][
-            "mse"
-        ]
-        ax_legend = fig.add_subplot(
-            gs[legend_grid_position[0], legend_grid_position[1]]
-        )
-        if isinstance(self.suppl_type, list):
-            compare_analyses = True
-        else:
-            compare_analyses = False
-        ax_legend = self.adjust_legend_position(
-            ax_legend=ax_legend,
-            study="mse",
-            compare_analyses=compare_analyses,
-        )
-        self.set_legend(ax_legend=ax_legend, study="mse")
-        # Add a row description in the left column for comparing main and add_wb_change
-        ax_upper = fig.add_subplot(gs[1, 0])
-        ax_upper.text(
-            0.7,
-            0.8,
-            "Main analysis",
-            ha="center",
-            va="center",
-            fontweight="bold",
-            fontsize=20,
-        )
-        ax_upper.axis("off")
-        ax_lower = fig.add_subplot(gs[2, 0])
-        ax_lower.text(
-            0.7,
-            0.8,
-            "Supplementary \nanalysis: Add the \ninitial change in \nwell-being",
-            ha="center",
-            va="center",
-            fontweight="bold",
-            fontsize=20,
-        )
-        ax_lower.axis("off")
-
-        # Store or present results
-        if self.config["analysis"]["cv_results_plots_tables"]["store_plot"]:
-            suppl_var_1, suppl_var_2 = list(data.keys())[:2]
-            self.store_plot(
-                study="mse",
-                metric=metric,
-                suppl_var=(suppl_var_1, suppl_var_2),
-                num_plot=None,
-            )
-            plt.close(fig)
-        else:
-            plt.show()
-            self.check_plot_grayscale(fig=fig, filename_raw=None, show_plot=True)
 
     def prepare_and_plot(
         self, study, metric, esm_sample_vals, ax, esm_sample, soc_int_var=None
@@ -1153,7 +892,7 @@ class CVResultPlotter:
         It gets the specific plot data (this step is study-specific) and then runs "plot_cv_graphs"
 
         Args:
-            study: str, either ssc or mse
+            study: str, i.e., ssc
             metric: str, in ['r2', 'rmse', 'spearman']
             esm_sample_vals: Dict, containing the prediction results for a specific analysis setting, study, and
                 esm sample (e.g., hierarchy could be scale_means/social_interaction/lasso/...)
@@ -1163,12 +902,13 @@ class CVResultPlotter:
         """
         sorted_models = self.cvr_cfg["orderings"]["model"]
         sorted_models_axis_names = self.cvr_cfg["orderings"]["model_for_axis"]
-        if soc_int_var:  # ssc
+        if self.study == "ssc":
             result_dct = self.get_cv_plot_data(
                 sorted_models, metric, esm_sample_vals, soc_int_var
             )
-        else:  # mse
-            result_dct = self.get_cv_plot_data(sorted_models, metric, esm_sample_vals)
+        else:
+            raise NotImplemented(f"Study {study} not implemented")
+
         # This actually plots the data
         self.plot_cv_graphs(
             result_dct=result_dct,
@@ -1235,7 +975,7 @@ class CVResultPlotter:
 
         Args:
             result_dct: Dict, containing the prediction results for the current analysis setting.
-            study: str, either ssc or mse
+            study: str, i.e., ssc
             metric: str, in ['r2', 'rmse', 'spearman']
             sorted_models: lst of str, sorted models for the plot, as they are represented in the code (e.g., lasso)
             sorted_models_axis_names: lst of str, str representations of sorted_models for the paper (e.g., LASSO)
@@ -1315,7 +1055,7 @@ class CVResultPlotter:
         This function returns the y-lim that fits best for a certain setting based on the config.
 
         Args:
-            study: str, either ssc or mse
+            study: str, i.e., ssc
 
         Returns:
             ylim: lst, contains the optimal minimum and maximum y value for the current setting.
@@ -1324,16 +1064,11 @@ class CVResultPlotter:
         if self.analysis == "main":
             ylim = ylim_r2_cfg["main"]
         elif self.analysis == "suppl":
-            if self.suppl_type == "add_wb_change":
-                ylim = ylim_r2_cfg["suppl"][self.suppl_type]
+            if isinstance(self.suppl_var, list):
+                y_lim_map_var = "_".join(self.suppl_var)
             else:
-                if isinstance(self.suppl_var, list):
-                    y_lim_map_var = "_".join(self.suppl_var)
-                else:
-                    y_lim_map_var = self.suppl_var
-                ylim = ylim_r2_cfg["suppl"][self.suppl_type][y_lim_map_var]
-        elif "add_wb_change" in self.suppl_type:
-            ylim = ylim_r2_cfg["suppl"]["add_wb_change"]
+                y_lim_map_var = self.suppl_var
+            ylim = ylim_r2_cfg["suppl"][self.suppl_type][y_lim_map_var]
         else:
             raise ValueError("Check analysis/suppl_type/suppl_var combinations")
         return ylim
@@ -1396,7 +1131,7 @@ class CVResultPlotter:
                 in the following format: [[(0, 2), 0.01], [(0, 1), 0.0011]]. Thus, the first tuple denotes the
                 models x-positions (e.g., 0,2) and the associated float (e.g., 0.01) is the FDR-adjusted p-value
                 of this comparison. The model-x_position assignment is: 0: LBM, 1: LASSO, 2: RFR
-            study: str, either ssc or mse
+            study: str, i.e., ssc
             ax: matplotlib.ax Object, specifies in which subplots the significance annotations are plotted
             result_dct: Dict, contains the prediction results for the current setting
         """
@@ -1488,8 +1223,9 @@ class CVResultPlotter:
         (600 DPI). It stores the plot in color and in grayscale (because of the printed version of journals).
 
         Args:
-            study: str, either ssc or mse
+            study: str, i.e., ssc
             metric: str, in ['r2', 'rmse', 'spearman']
+            num_plot: Integer for identifying certain plots.
             suppl_var: [None, str, lst], Can be a) None, b) a string representing the current suppl_var of
                 the analysis or c) a tuple-like (e.g., list) containing two suppl_vars that are contrasted in a plot
         """

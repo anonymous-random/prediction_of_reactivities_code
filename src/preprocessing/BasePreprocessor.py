@@ -26,7 +26,7 @@ class BasePreprocessor(ABC):
     Attributes:
         config: YAML config providing details on the preprocessing logic
         sample_dct: Dictionary that is passed to the preprocessor containing trait and state df of the ESM samples
-        study: Study 1 ("ssc"), defined by the corresponding subclass
+        study: "ssc", defined by the corresponding subclass
         config_path: str, relative path to the config file
         trait_dct: Dictionary containing the raw traits as str:df pairs at the beginning (keys are e.g. "coco_int")
             and the processed traits as str:df pairs at the end (keys are e.g. "coco_int_social_interaction")
@@ -49,7 +49,7 @@ class BasePreprocessor(ABC):
         Args:
             config_path: str, relative path to the config file
             sample_dct: Dictionary that is passed to the preprocessor containing trait and state df of the ESM samples
-            study: Study 1 ("ssc"), defined by the corresponding subclass
+            study: "ssc", defined by the corresponding subclass
         """
         with open(config_path, "r") as f:
             self.config = yaml.safe_load(f)
