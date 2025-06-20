@@ -1,4 +1,4 @@
-# Using Machine Learning to Predict Individual Differences in Psychological Reactivities to Social Interactions and Major Societal Events 
+# Using Machine Learning to Predict Individual Differences in Psychological Reactivities to Social Interactions
 
 This repository contains the complete analysis code.
 
@@ -217,7 +217,6 @@ To reproduce the results, adjust the parameters in `config_refactored.yaml` and 
 - **"main"**: Main analysis
 - **"suppl"**: Supplementary analysis
 - **"ssc"**: Social interaction characteristics
-- **"mse"**: Major societal events
 
 #### Types of Supplementary Analyses
 1. **"sep_ftf_cmc"**: Supplement 2 - Separating Face-to-Face and Computer-Mediated Social Interactions
@@ -230,11 +229,9 @@ To reproduce the results, adjust the parameters in `config_refactored.yaml` and 
 3. **"weighting_by_rel"**: Supplement 4 – Using Weighted Samples to Consider the Reliability of the Individual Reactivities in the Machine Learning-Based Prediction Process
    - **"random_slopes"**: Weighting the empirical Bayes estimates
    - **"ols_slopes"**: Weighting the Ordinary Least Squares (OLS) estimates (individual models, N=1)
-4. **"add_wb_change"**: Supplement 5 – Adding the Initial Change in Well-Being as a Person-Level Variable for the Machine Learning-Based Prediction Process
-
 
 ### Walk-Through 
-We provide a walk-through how to reproduce the results for the main analysis of Study 1 (reactivities to social interactions).
+We provide a walk-through how to reproduce the results for the main analysis.
 The **data** folder contains the raw data (data/raw, data/external_country_data) as well as the preprocessed data (data/preprocessed) for the machine learning-based analysis. 
 If one only wishes to run the machine learning-based analysis, one may skip Steps 2 and 3. Steps 2 and 3 will reproduce (data/preprocessed) for the specified analysis. 
 
@@ -303,7 +300,6 @@ For example, if one want to execute the whole procedure for the supplementary an
 - `suppl_type: sep_ftf_cmc`
 - `suppl_var: ftf`
 - `study: ssc`
-- For results of Study 2, change "ssc" to "mse"
 
 
 ## Project Structure
@@ -350,7 +346,6 @@ prediction_of_reactivities_code/
 │   ├── preprocessing/
 │   │   ├── BasePreprocessor.py
 │   │   ├── helper_functions.py
-│   │   ├── PreprocessorMSE.py
 │   │   └── PreprocessorSSC.py
 │   │
 │   ├── main.py

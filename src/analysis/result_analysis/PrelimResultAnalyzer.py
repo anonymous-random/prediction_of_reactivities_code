@@ -26,7 +26,7 @@ class PrelimResultAnalyzer:
         config: YAML config determining certain specifications of the analysis.
         esm_sample: A given ESM-sample for which the descriptives are computed.
         _data_base_path: Root path were the processed data for all analyses is stored.
-        _study: The analysis study, either SSC or MSE.
+        _study: The analysis study, i.e., ssc.
     """
 
     def __init__(
@@ -83,8 +83,8 @@ class PrelimResultAnalyzer:
     @study.setter
     def study(self, value):
         """Set data_base_path, ensure that the path exists."""
-        if value not in ["ssc", "mse"]:
-            raise ValueError(f"Unknown study: {value}, choose 'mse' or 'ssc'")
+        if value not in ["ssc"]:
+            raise ValueError(f"Unknown study: {value}, choose 'ssc'")
         self._study = value
 
     @property
@@ -109,7 +109,7 @@ class PrelimResultAnalyzer:
         """Var of supplementary analysis, only defined if self.suppl_type exists, e.g. 'ftf'."""
         return (
             self.config["general"]["suppl_var"]
-            if self.suppl_type and self.suppl_type != "add_wb_change"
+            if self.suppl_type
             else None
         )
 
@@ -122,7 +122,7 @@ class PrelimResultAnalyzer:
         """
         return (
             None
-            if self.suppl_type in ["sep_ftf_cmc", "sep_pa_na", "add_wb_change"]
+            if self.suppl_type in ["sep_ftf_cmc", "sep_pa_na"]
             else "main"
         )
 
@@ -150,7 +150,7 @@ class PrelimResultAnalyzer:
         This sets the social interaction variables for the current analysis setting as a property.
         The assignment is based on the config and certain sample specifics (i.e., in CoCo UT interaction
         quantity was only assessed for face-to-face interactions, therefore it is added in this type
-        of supplementary analysis. If self.study == 'mse', the property is irrelevant.
+        of supplementary analysis.
         """
         soc_int_vars = [
             soc_int_var
@@ -304,21 +304,12 @@ class PrelimResultAnalyzer:
         wb_items = self.wb_items.copy()
         data_vars = self.soc_int_vars.copy()
 
-        # If study == "mse", there are no soc_int_vars. Including a dummy maintains the same structure for mse and ssc
-        if self.study == "mse":
-            data_vars.append("dummy")
         for soc_int_var in data_vars:
             result_dct[soc_int_var] = dict()
             if self.study == "ssc":
                 df = states[soc_int_var]
-            elif self.study == "mse":
-                df = states[
-                    self.config["analysis"]["result_analysis"]["mse_assignment"][
-                        self.esm_sample
-                    ]
-                ]
             else:
-                raise ValueError("Study must be ssc or mse")
+                raise ValueError("Study must be 'ssc'")
             # get correlations
             within_person_df, between_person_df = self.calc_bp_wp_correlations(
                 df, wb_items, self.person_id_col
@@ -434,9 +425,6 @@ class PrelimResultAnalyzer:
         traits = self.traits.copy()
         data_vars = self.soc_int_vars.copy()
 
-        # If study == "mse", there are no soc_int_vars. Including a dummy maintains the same structure for mse and ssc
-        if self.study == "mse":  # TODO test
-            data_vars.append("dummy")
         for soc_int_var in data_vars:
             result_dct[soc_int_var] = dict()
             for fis in ["scale_means", "single_items"]:
@@ -447,12 +435,8 @@ class PrelimResultAnalyzer:
                     result_dct[soc_int_var][fis][trait_type] = dict()
                     if self.study == "ssc":
                         df = traits[fis][soc_int_var]
-                    else:  # mse
-                        df = traits[fis][
-                            self.config["analysis"]["result_analysis"][
-                                "mse_assignment"
-                            ][self.esm_sample]
-                        ]
+                    else:
+                        raise ValueError("Study must be ssc")
                     df.columns = df.columns.str.replace("_clean", "")
 
                     # Get variable names for each trait category for the given ESM Sample and filter df

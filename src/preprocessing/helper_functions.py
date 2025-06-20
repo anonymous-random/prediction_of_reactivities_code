@@ -12,12 +12,12 @@ def load_data(config_path, nrows=None):
     This function loads the data and does some preliminary preprocessing that makes the
     following code more readable (mainly renaming and preselecting columns). Because this is a lot
     of manual processing, this function is not very elegant, but I do not have the time to refactor
-    this yet. It is used for both Studies (ssc/mse).
+    this yet.
     What it mainly does is
         - rename certain variables to have consistent naming conventions (e.g., bfi2_s_1) across variables
             and across samples (if questionnaires are identical across ESM-samples, names should also be identical)
         - filter the states and traits including only relevant variables specified in the config
-        - stors the processed state and trait dfs with the variables needed in a Dict
+        - stores the processed state and trait dfs with the variables needed in a Dict
 
     Args:
         config_path: str, relative path to YAML config
@@ -112,7 +112,7 @@ def load_data(config_path, nrows=None):
                 ]
                 + config["state_columns_to_keep"]
             )
-        except KeyError:  # for mse config
+        except KeyError:
             tmp_dct_states[f"{sample}_state_lst"].append(
                 filter_states_cfg["general"]["well_being_items"][sample][
                     "positive_affect"
@@ -349,136 +349,6 @@ def load_data(config_path, nrows=None):
             "int_lonely"
         ].combine_first(df_emotions_states["occup_lonely"])
 
-        # rename COVID-19 items for MSE
-        for tp in [
-            "t1",
-            "t2",
-            "t3",
-            "t4",
-        ]:
-            df_emotions_traits.rename(
-                columns={
-                    f"risk_self_health_{tp}": f"corona_risk_1_{tp}",
-                    f"risk_self_soclife_{tp}": f"corona_risk_2_{tp}",
-                    f"risk_self_studywork_{tp}": f"corona_risk_3_{tp}",
-                    f"risk_family_health_{tp}": f"corona_risk_4_{tp}",
-                    f"risk_family_soclife_{tp}": f"corona_risk_5_{tp}",
-                    f"risk_family_studywork_{tp}": f"corona_risk_6_{tp}",
-                    f"risk_closeothers_health_{tp}": f"corona_risk_7_{tp}",
-                    f"risk_closeothers_soclife_{tp}": f"corona_risk_8_{tp}",
-                    f"risk_closeothers_studywork_{tp}": f"corona_risk_9_{tp}",
-                    f"risk_society_health_{tp}": f"corona_risk_10_{tp}",
-                    f"risk_society_soclife_{tp}": f"corona_risk_11_{tp}",
-                    f"risk_society_studywork_{tp}": f"corona_risk_12_{tp}",
-                    f"risk_society_culture_{tp}": f"corona_risk_13_{tp}",
-                },
-                inplace=True,
-            )
-        # Fixed: translation error -> eval_others_1 is always the same item, independent of the collection wave
-        df_emotions_traits.rename(
-            columns={
-                "eval_others_considerate_t1": "eval_others_cautious_t1",
-                "eval_others_considerate_t2": "eval_others_cautious_t2",
-            },
-            inplace=True,
-        )
-
-        for tp in [
-            "t1",
-            "t2",
-            "t3",
-            "t4",
-        ]:
-            df_emotions_traits.rename(
-                columns={
-                    "eval_politics_" + tp: "corona_eval_1_" + tp,
-                    "eval_panic_" + tp: "corona_eval_2_" + tp,
-                    "eval_journalism_" + tp: "corona_eval_3_" + tp,
-                    "eval_socialmedia_" + tp: "corona_eval_4_" + tp,
-                    "eval_self_cautious_" + tp: "corona_eval_5_" + tp,
-                    "eval_self_restrictive_" + tp: "corona_eval_6_" + tp,
-                    "eval_self_uncautious_" + tp: "corona_eval_7_" + tp,
-                    "eval_self_recommendations_" + tp: "corona_eval_8_" + tp,
-                    "eval_self_irresponsible_" + tp: "corona_eval_9_" + tp,
-                    "eval_self_anxious_" + tp: "corona_eval_10_" + tp,
-                    "eval_self_relaxed_" + tp: "corona_eval_11_" + tp,
-                    "eval_self_panic_" + tp: "corona_eval_12_" + tp,
-                    "eval_self_control_" + tp: "corona_eval_13_" + tp,
-                    "eval_self_cohesion_" + tp: "corona_eval_14_" + tp,
-                    "eval_others_cautious_" + tp: "corona_eval_15_" + tp,
-                    "eval_others_restrictive_" + tp: "corona_eval_16_" + tp,
-                    "eval_others_uncautious_" + tp: "corona_eval_17_" + tp,
-                    "eval_others_recommendations_" + tp: "corona_eval_18_" + tp,
-                    "eval_others_irresponsible_" + tp: "corona_eval_19_" + tp,
-                    "eval_others_anxious_" + tp: "corona_eval_20_" + tp,
-                    "eval_others_relaxed_" + tp: "corona_eval_21_" + tp,
-                    "eval_others_panic_" + tp: "corona_eval_22_" + tp,
-                },
-                inplace=True,
-            )
-
-        # Adjust to naming conventions: COVID-19  behavioral change
-        mapping_change = {}
-        for tp in ["t1", "t2", "t3", "t4"]:
-            pattern = re.compile(rf"^(change_)(\w+)(_{tp})")
-            col_names = [
-                col for col in df_emotions_traits.columns if pattern.match(col)
-            ]
-            for idx, col_name in enumerate(col_names, 1):
-                mapping_change[col_name] = f"corona_change_{idx}_{tp}"
-        df_emotions_traits.rename(columns=mapping_change, inplace=True)
-
-        # COVID-19 policy evaluations
-        mapping_policy = {}
-        for tp in ["t1", "t2", "t3", "t4"]:
-            pattern = re.compile(rf"^(policy_)(\w+)(_{tp})")
-            col_names = [
-                col for col in df_emotions_traits.columns if pattern.match(col)
-            ]
-            for idx, col_name in enumerate(col_names, 1):
-                mapping_policy[col_name] = f"corona_policy_{idx}_{tp}"
-        df_emotions_traits.rename(columns=mapping_policy, inplace=True)
-
-        # COVID-19 stockpiling
-        for tp in ["t1", "t2", "t3", "t4"]:
-            df_emotions_traits.rename(
-                columns={
-                    f"toiletpaper_{tp}": f"corona_stockpile_1_{tp}",
-                    f"pasta_{tp}": f"corona_stockpile_2_{tp}",
-                },
-                inplace=True,
-            )
-
-        # COVID-19 exposure
-        for tp in [
-            "t1",
-            "t2",
-            "t3",
-            "t4",
-        ]:
-            df_emotions_traits.rename(
-                columns={
-                    "aff_self_distance_" + tp: "corona_aff_binaries_1_" + tp,
-                    "aff_self_volquarantine_" + tp: "corona_aff_binaries_2_" + tp,
-                    "aff_self_forquarantine_" + tp: "corona_aff_binaries_3_" + tp,
-                    "aff_self_symptoms_" + tp: "corona_aff_binaries_4_" + tp,
-                    "aff_self_test_" + tp: "corona_aff_binaries_5_" + tp,
-                    "aff_self_positive_" + tp: "corona_aff_binaries_6_" + tp,
-                    "aff_self_riskgroup_" + tp: "corona_aff_binaries_7_" + tp,
-                    "aff_self_occupation_" + tp: "corona_aff_occup_1_" + tp,
-                    "aff_family_quarantine_" + tp: "corona_aff_cont_1_" + tp,
-                    "aff_family_test_" + tp: "corona_aff_cont_2_" + tp,
-                    "aff_family_positive_" + tp: "corona_aff_cont_3_" + tp,
-                    "aff_closeothers_quarantine_" + tp: "corona_aff_cont_4_" + tp,
-                    "aff_closeothers_test_" + tp: "corona_aff_cont_5_" + tp,
-                    "aff_closeothers_positive_" + tp: "corona_aff_cont_6_" + tp,
-                    "aff_people_quarantine_" + tp: "corona_aff_cont_7_" + tp,
-                    "aff_people_test_" + tp: "corona_aff_cont_8_" + tp,
-                    "aff_people_positive_" + tp: "corona_aff_cont_9_" + tp,
-                },
-                inplace=True,
-            )
-
         # rename social situation variables to be consistent with CoCo International and CoCo UT
         df_emotions_states.rename(
             columns={
@@ -536,7 +406,7 @@ def load_data(config_path, nrows=None):
             os.path.join(coco_ut1_path, "demographics_fall_anonymized.csv"),
             delimiter=",",
             nrows=nrows,
-        )
+        )  # TODO: Voting state?
         df_coco_ut1_demographics = df_coco_ut1_demographics.rename(
             columns={"pID": "id"}
         )
@@ -575,10 +445,6 @@ def load_data(config_path, nrows=None):
             os.path.join(coco_ut1_path, "self_esteem_fall_anonymized.csv"), nrows=nrows
         )
         df_coco_ut1_self_esteem = df_coco_ut1_self_esteem.rename(columns={"pID": "id"})
-        df_coco_ut1_trump = pd.read_csv(
-            os.path.join(coco_ut1_path, "Trump_fall_anonymized.csv"), nrows=nrows
-        )
-        df_coco_ut1_trump = df_coco_ut1_trump.rename(columns={"pID": "id"})
 
         # Choose different suffixes for possible duplicate columns to prevent merge problems
         df_coco_ut1_traits = (
@@ -595,7 +461,6 @@ def load_data(config_path, nrows=None):
             .merge(
                 df_coco_ut1_self_esteem, on="id", how="left", suffixes=(None, "_est")
             )
-            .merge(df_coco_ut1_trump, on="id", how="left", suffixes=(None, "_trump"))
         )
 
         df_coco_ut1_states = pd.read_csv(
@@ -644,10 +509,6 @@ def load_data(config_path, nrows=None):
             os.path.join(coco_ut2_path, "self_esteem_spring_anonymized.csv"), nrows=nrows
         )
         df_coco_ut2_self_esteem = df_coco_ut2_self_esteem.rename(columns={"pID": "id"})
-        df_coco_ut2_trump = pd.read_csv(
-            os.path.join(coco_ut2_path, "Trump_spring_anonymized.csv"), nrows=nrows
-        )
-        df_coco_ut2_trump = df_coco_ut2_trump.rename(columns={"pID": "id"})
 
         # Rename cms to cmq -> consistent with coco_ut1
         pattern = re.compile(r"(cms)(_\w+)")
@@ -673,7 +534,6 @@ def load_data(config_path, nrows=None):
             .merge(
                 df_coco_ut2_self_esteem, on="id", how="left", suffixes=(None, "_est")
             )
-            .merge(df_coco_ut2_trump, on="id", how="left", suffixes=(None, "_trump"))
         )
 
         df_coco_ut2_states = pd.read_csv(
@@ -755,18 +615,6 @@ def load_data(config_path, nrows=None):
             mapping_policy[col_name] = f"wgm_{idx}_t1"
         df_coco_ut_traits.rename(columns=mapping_policy, inplace=True)
 
-        # Rename certain voting variables
-        df_coco_ut_traits.rename(
-            columns={
-                "party_affiliation_t1": "party_affiliation_1_t1",
-                "support_election2020_t1": "support_election_1_t1",
-                "winner_election2020_t1": "voting_cont_2_t1",
-                "voting_behav_1_t1": "voting_state_t1",
-                "voting_behav_2_t1": "voting_cont_1_t1",
-            },
-            inplace=True,
-        )
-
         # Rename additional variables from the other sources (anxiety, depression, etc.)
         # anxiety
         for item_nr in range(1, 8):
@@ -787,12 +635,6 @@ def load_data(config_path, nrows=None):
         for item_nr in range(1, 11):
             df_coco_ut_traits.rename(
                 columns={f"Q1_{item_nr}_est": f"self_esteem_{item_nr}_t1"}, inplace=True
-            )
-        # trump personality
-        for item_nr in range(1, 6):
-            df_coco_ut_traits.rename(
-                columns={f"Q1_{item_nr}_trump": f"trump_pers_{item_nr}_t1"},
-                inplace=True,
             )
 
         # Optimism (LOT-R) is also assessed in coco_ut2 -> compare and fill missings
@@ -921,7 +763,7 @@ def preprocess_country_data(config_path):
         df_hofstede.drop("ctr", axis=1, inplace=True)
 
         # Rename columns and create new columns for countries that are aggregated under a region in the Hofstede dataset
-        # Hofstedes data covers almost all countries that remain in the coco int dataset in mse or ssc after filtering
+        # Hofstedes data covers almost all countries that remain in the coco int dataset after filtering
         df_hofstede.rename(
             index={
                 "czech rep": "czech_republic",

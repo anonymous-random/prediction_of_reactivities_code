@@ -90,7 +90,7 @@ class ResultAnalyzer:
         """Var of supplementary analysis, only defined if self.suppl_type exists, e.g. 'ftf'."""
         return (
             None
-            if self.analysis_type == "main" or self.suppl_type == "add_wb_change"
+            if self.analysis_type == "main"
             else self.config["general"]["suppl_var"]
         )
 
@@ -103,7 +103,7 @@ class ResultAnalyzer:
         """
         return (
             None
-            if self.suppl_type in ["sep_ftf_cmc", "sep_pa_na", "add_wb_change"]
+            if self.suppl_type in ["sep_ftf_cmc", "sep_pa_na"]
             else "main"
         )
 
@@ -127,7 +127,7 @@ class ResultAnalyzer:
 
     @property
     def study(self):
-        """Study, either mse or ssc."""
+        """Study, i.e., ssc."""
         return self.config["general"]["study"]
 
     @property
@@ -278,10 +278,6 @@ class ResultAnalyzer:
         if self.study == "ssc":
             soc_int_var = components[2]
             file_name = f"{dataset}_{soc_int_var}_one_hot_encoded_preprocessed.pkl"
-        elif self.study == "mse":
-            soc_int_var = None
-            major_soc_event = self.result_config["mse_assignment"][dataset]
-            file_name = f"{dataset}_{major_soc_event}_one_hot_encoded_preprocessed.pkl"
         else:
             raise ValueError("study not implemented")
 
@@ -367,11 +363,8 @@ class ResultAnalyzer:
         """
         if dataset not in getattr(self, f"col_order_{time_var}_scaling"):
             getattr(self, f"col_order_{time_var}_scaling")[dataset] = {}
-        if self.study == "mse":
-            getattr(self, f"col_order_{time_var}_scaling")[dataset][
-                fis
-            ] = features.columns.tolist()
-        elif self.study == "ssc":
+
+        if self.study == "ssc":
             if fis not in getattr(self, f"col_order_{time_var}_scaling")[dataset]:
                 getattr(self, f"col_order_{time_var}_scaling")[dataset][fis] = {}
             if (
@@ -400,10 +393,6 @@ class ResultAnalyzer:
             current_path: str, current_path to current_level that is processed by the function
         """
         json_keys_non_linear = self.result_config["keys_non_linear"]
-        if self.result_config["shap_ia_values"]:
-            json_keys_non_linear = (
-                json_keys_non_linear + self.result_config["additional_keys_ia_values"]
-            )
         # Copy nonlinear keys and add "lin_model_coefficients"
         json_keys_linear = (
             json_keys_non_linear + self.result_config["additional_keys_linear"]
@@ -639,12 +628,9 @@ class ResultAnalyzer:
             col_order_after_scaling = self.col_order_after_scaling[esm_sample][fis][
                 soc_int_var
             ]
-        elif self.study == "mse":
-            esm_sample, fis = path_parts[study_index:-1]
-            col_order_before_scaling = self.col_order_before_scaling[esm_sample][fis]
-            col_order_after_scaling = self.col_order_after_scaling[esm_sample][fis]
         else:
-            raise ValueError("Unknown sample")
+            raise ValueError("Unknown study, must be ssc")
+
         return col_order_before_scaling, col_order_after_scaling
 
     def fix_coefficient_name_value_assignment(

@@ -130,61 +130,6 @@ socio_demographics:
     religious_affiliation_8: "How would you characterize your religious affiliation? Agnostic"
     religious_affiliation_9: "How would you characterize your religious affiliation? Atheist"
   job: "Do you currently have a job where you get paid money? (1 = No, 3 = Full-time)"
-  voting_state_1:
-    voting_state_1_1: 'In which state are you registered to vote? Alabama'
-    voting_state_1_2: 'In which state are you registered to vote? Alaska'
-    voting_state_1_3: 'In which state are you registered to vote? Arizona'
-    voting_state_1_4: 'In which state are you registered to vote? Arkansas'
-    voting_state_1_5: 'In which state are you registered to vote? California'
-    voting_state_1_6: 'In which state are you registered to vote? Colorado'
-    voting_state_1_7: 'In which state are you registered to vote? Connecticut'
-    voting_state_1_8: 'In which state are you registered to vote? Delaware'
-    voting_state_1_9: 'In which state are you registered to vote? District of Columbia'
-    voting_state_1_10: 'In which state are you registered to vote? Florida'
-    voting_state_1_11: 'In which state are you registered to vote? Georgia'
-    voting_state_1_12: 'In which state are you registered to vote? Hawaii'
-    voting_state_1_13: 'In which state are you registered to vote? Idaho'
-    voting_state_1_14: 'In which state are you registered to vote? Illinois'
-    voting_state_1_15: 'In which state are you registered to vote? Indiana'
-    voting_state_1_16: 'In which state are you registered to vote? Iowa'
-    voting_state_1_17: 'In which state are you registered to vote? Kansas'
-    voting_state_1_18: 'In which state are you registered to vote? Kentucky'
-    voting_state_1_19: 'In which state are you registered to vote? Louisiana'
-    voting_state_1_20: 'In which state are you registered to vote? Maine'
-    voting_state_1_21: 'In which state are you registered to vote? Maryland'
-    voting_state_1_22: 'In which state are you registered to vote? Massachusetts'
-    voting_state_1_23: 'In which state are you registered to vote? Michigan'
-    voting_state_1_24: 'In which state are you registered to vote? Minnesota'
-    voting_state_1_25: 'In which state are you registered to vote? Mississippi'
-    voting_state_1_26: 'In which state are you registered to vote? Missouri'
-    voting_state_1_27: 'In which state are you registered to vote? Montana'
-    voting_state_1_28: 'In which state are you registered to vote? Nebraska'
-    voting_state_1_29: 'In which state are you registered to vote? Nevada'
-    voting_state_1_30: 'In which state are you registered to vote? New Hampshire'
-    voting_state_1_31: 'In which state are you registered to vote? New Jersey'
-    voting_state_1_32: 'In which state are you registered to vote? New Mexico'
-    voting_state_1_33: 'In which state are you registered to vote? New York'
-    voting_state_1_34: 'In which state are you registered to vote? North Carolina'
-    voting_state_1_35: 'In which state are you registered to vote? North Dakota'
-    voting_state_1_36: 'In which state are you registered to vote? Ohio'
-    voting_state_1_37: 'In which state are you registered to vote? Oklahoma'
-    voting_state_1_38: 'In which state are you registered to vote? Oregon'
-    voting_state_1_39: 'In which state are you registered to vote? Pennsylvania'
-    voting_state_1_40: 'In which state are you registered to vote? Puerto Rico'
-    voting_state_1_41: 'In which state are you registered to vote? Rhode Island'
-    voting_state_1_42: 'In which state are you registered to vote? South Carolina'
-    voting_state_1_43: 'In which state are you registered to vote? South Dakota'
-    voting_state_1_44: 'In which state are you registered to vote? Tennessee'
-    voting_state_1_45: 'In which state are you registered to vote? Texas'
-    voting_state_1_46: 'In which state are you registered to vote? Utah'
-    voting_state_1_47: 'In which state are you registered to vote? Vermont'
-    voting_state_1_48: 'In which state are you registered to vote? Virginia'
-    voting_state_1_49: 'In which state are you registered to vote? Washington'
-    voting_state_1_50: 'In which state are you registered to vote? West Virginia'
-    voting_state_1_51: 'In which state are you registered to vote? Wisconsin'
-    voting_state_1_52: 'In which state are you registered to vote? Wyoming'
-    voting_state_1_53: "In which state are you registered to vote? I don't know"
-    voting_state_1_54: "In which state are you registered to vote? I'm not registered"
   demog_ses: "Think of this ladder as showing where people stand in the United States. Please mark the rung that represents where you think you stand, relative to other people in the United States."
   demog_healthinsurance:
     demog_healthinsurance_1: "Do you have health insurance? Yes, military"
@@ -459,7 +404,7 @@ personality:
     awb:
       awb_pos: 'AWB: Positivity'
       awb_neg: 'AWB: Negativity'
-    pwb: # TODO: PWB-18 or Psychological Well-Being?
+    pwb:
       pwb_autonomy: 'PWB-18: Autonomy'
       pwb_env_mastery: 'PWB-18: Environmental mastery'
       pwb_pers_growth: 'PWB-18: Personal growth'
@@ -488,7 +433,7 @@ personality:
       cope_substance_use: 'Brief COPE: Substance use'
       cope_behavioral_diseng: 'Brief COPE: Behavioral disengagement'
       cope_self_blame: 'Brief COPE: Self-blame'
-    lotr:  # TODO: Check subscales
+    lotr:
       lotr_opt: 'LOT-R: Optimism'
       lotr_neg: 'LOT-R: Pessimism'
 
@@ -591,161 +536,6 @@ polit_soc_attitudes:
     political_polar:
       political_polar_1: "Political Polarization: How favorable do you feel about the Democratic Party?"
       political_polar_2: "Political Polarization: How favorable do you feel about the Republican Party?"
-    corona_risk:
-      corona_risk_1: "COVID-19 risk estimations: How high do you estimate the risk of the coronavirus for yourself? For your health"
-      corona_risk_2: "COVID-19 risk estimations: How high do you estimate the risk of the coronavirus for yourself? For your social life"
-      corona_risk_3: "COVID-19 risk estimations: How high do you estimate the risk of the coronavirus for yourself? For your work/university studies"
-      corona_risk_4: "COVID-19 risk estimations: How high do you estimate the risk of the coronavirus for your family (parents, grandparents, siblings, children)? For their health"
-      corona_risk_5: "COVID-19 risk estimations: How high do you estimate the risk of the coronavirus for your family (parents, grandparents, siblings, children)? For their social life"
-      corona_risk_6: "COVID-19 risk estimations: How high do you estimate the risk of the coronavirus for your family (parents, grandparents, siblings, children)? For their working life/university studies"
-      corona_risk_7: "COVID-19 risk estimations: How high do you estimate the risk of the coronavirus for your close personal environment (partner, close friends)? For their health"
-      corona_risk_8: "COVID-19 risk estimations: How high do you estimate the risk of the coronavirus for your close personal environment (partner, close friends)? For their social life"
-      corona_risk_9: "COVID-19 risk estimations: How high do you estimate the risk of the coronavirus for your close personal environment (partner, close friends)? For their working life/university studies"
-      corona_risk_10: "COVID-19 risk estimations: How high do you estimate the risk of the coronavirus for the society as a whole? For the healthcare system"
-      corona_risk_11: "COVID-19 risk estimations: How high do you estimate the risk of the coronavirus for the society as a whole? For social cohesion"
-      corona_risk_12: "COVID-19 risk estimations: How high do you estimate the risk of the coronavirus for the society as a whole? For the economy/working life"
-      corona_risk_13: "COVID-19 risk estimations: How high do you estimate the risk of the coronavirus for the society as a whole? For cultural life"
-    corona_eval:
-      corona_eval_1: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, the government's crisis management is:"
-      corona_eval_2: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, people's panic is:"
-      corona_eval_3: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, journalists' reporting is:"
-      corona_eval_4: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, the discussion on social media is:"
-      corona_eval_5: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, I am acting with caution."
-      corona_eval_6: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, I am placing restrictions on myself."
-      corona_eval_7: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, I am acting somewhat too uncautiously."
-      corona_eval_8: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, I am following the recommended measures."
-      corona_eval_9: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, I am acting irresponsibly."
-      corona_eval_10: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, I am anxious/worried."
-      corona_eval_11: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, I am relaxed."
-      corona_eval_12: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, I am panicking."
-      corona_eval_13: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, I believe that we as a society can get the situation under control."
-      corona_eval_14: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, I feel like I am in the same boat with everyone else."
-      corona_eval_15: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, others are acting with caution."
-      corona_eval_16: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, others are placing restrictions on themselves."
-      corona_eval_17: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, others are acting a little too uncautiously."
-      corona_eval_18: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, others are following the recommended measures."
-      corona_eval_19: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, others are acting irresponsibly."
-      corona_eval_20: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, others are anxious/worried."
-      corona_eval_21: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, others are relaxed."
-      corona_eval_22: "COVID-19 behavioral evaluations: When it comes to the coronavirus and its containment, others are panicking."
-    corona_change:
-      corona_change_1: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I wash my hands."
-      corona_change_2: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? If I have to sneeze/cough, I do so into the crook of my arm."
-      corona_change_3: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I keep distance to other people."
-      corona_change_4: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I go on planned trips."
-      corona_change_5: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I ride my bike."
-      corona_change_6: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I use public transport."
-      corona_change_7: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I visit my family."
-      corona_change_8: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I meet up with my friends."
-      corona_change_9: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I attend public events (> 50 persons)."
-      corona_change_10: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I attend public events (< 50 persons)."
-      corona_change_11: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I attend private events/meetings (> 10 persons)."
-      corona_change_12: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I attend private events/meetings (< 10 persons)."
-      corona_change_13: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I invite people to my home."
-      corona_change_14: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I work/study at home."
-      corona_change_15: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I study in the library."
-      corona_change_16: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I do grocery shopping in supermarkets."
-      corona_change_17: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I go to discos, nightclubs."
-      corona_change_18: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I go to cafes, bars."
-      corona_change_19: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I visit cultural facilities (e.g. museums, cinemas, theatres)."
-      corona_change_20: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I visit public places (e.g. markets, shopping centres, shopping streets)."
-      corona_change_21: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I go to a fitness studio, gymnasium."
-      corona_change_22: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I go to work/university."
-      corona_change_23: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I go for walks."
-      corona_change_24: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I go jogging outside."
-      corona_change_25: "COVID-19 behavioral changes: Which behaviors are you currently engaging in less, equally or more often than before the coronavirus crisis? I stay home."
-    corona_policy:
-      corona_policy_1: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Cancellation of large-scale events with more than 1000 persons."
-      corona_policy_2: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Cancellation of events with less than 1000 persons."
-      corona_policy_3: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Cancellation of private events with more than 50 persons."
-      corona_policy_4: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Discontinuation of local public transport service (bus, train)."
-      corona_policy_5: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Discontinuation of long-distance public transport service (bus, train)."
-      corona_policy_6: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Discontinuation of air travel (short-haul, flights within Europe)."
-      corona_policy_7: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Discontinuation of air travel (long-haul, flights to and from Europe)."
-      corona_policy_8: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Closure of universities, higher education institutions."
-      corona_policy_9: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Closure of day-care centres and nursery schools."
-      corona_policy_10: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Closure of schools."
-      corona_policy_11: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Closure of discos, nightclubs."
-      corona_policy_12: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Closure of bars, cafes."
-      corona_policy_13: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Closure of museums, zoos, amusement parks, swimming pools, sports facilities."
-      corona_policy_14: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Closure of retail stores (with the exception of supermarkets, drugstores and pharmacies)."
-      corona_policy_15: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Border closures for people seeking to enter the country."
-      corona_policy_16: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Ban on travel abroad."
-      corona_policy_17: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. General ban on travel even within Germany."
-      corona_policy_18: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Imposition of home quarantine for everyone, including corresponding curfews (everyone must stay at home and may only leave the house for shopping, work, doctor's visits or to care for relatives)."
-      corona_policy_19: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Imposition of home quarantine including a total curfew (with no exceptions for a large majority of population)."
-      corona_policy_20: "COVID-19 policy evaluations: A number of measures have been implemented with respect to the coronavirus and its containment. Please assess how sensible you find their implementation at the current time. Rationing and, if necessary, seizure of food and other essential goods."
-    corona_aff_binaries:
-      corona_aff_binaries_1_1: "COVID-19 exposure: Do you follow social distancing measures (keep social distance to other people)? Yes"
-      corona_aff_binaries_1_2: "COVID-19 exposure: Do you follow social distancing measures (keep social distance to other people)? No"
-      corona_aff_binaries_2_1: "COVID-19 exposure: Are you in voluntary quarantine (not leaving the house even to go grocery shopping)? Yes"
-      corona_aff_binaries_2_2: "COVID-19 exposure: Are you in voluntary quarantine (not leaving the house even to go grocery shopping)? No"
-      corona_aff_binaries_3_1: "COVID-19 exposure: Are you in prescribed quarantine (not leaving the house even to go grocery shopping)? Yes"
-      corona_aff_binaries_3_2: "COVID-19 exposure: Are you in prescribed quarantine (not leaving the house even to go grocery shopping)? No"
-      corona_aff_binaries_4_1: "COVID-19 exposure: Do you have or have you had the typical symptoms of the disease (e.g. fever, cough)? Yes"
-      corona_aff_binaries_4_2: "COVID-19 exposure: Do you have or have you had the typical symptoms of the disease (e.g. fever, cough)? No"
-      corona_aff_binaries_5_1: "COVID-19 exposure: Have you been tested for the coronavirus? Yes"
-      corona_aff_binaries_5_2: "COVID-19 exposure: Have you been tested for the coronavirus? No"
-      corona_aff_binaries_6_1: "COVID-19 exposure: Do you believe that one or more people in your household belong to the coronavirus risk group? Yes"
-      corona_aff_binaries_6_2: "COVID-19 exposure: Do you believe that one or more people in your household belong to the coronavirus risk group? No"
-      corona_aff_binaries_7_1: "COVID-19 exposure: Can you continue to pursue your occupation/part-time job? Yes"
-      corona_aff_binaries_7_2: "COVID-19 exposure: Can you continue to pursue your occupation/part-time job? No"
-    corona_aff_occup:
-      corona_aff_occup_1_1: "COVID-19 job affected: Can you continue to pursue your occupation/part-time job? I am not currently employed"
-      corona_aff_occup_1_2: "COVID-19 job affected: Can you continue to pursue your occupation/part-time job? Yes, I will continue to pursue my occupation/side job on site as usual"
-      corona_aff_occup_1_3: "COVID-19 job affected: Can you continue to pursue your occupation/part-time job? Yes, I will continue to pursue my occupation/side job by working from home"
-      corona_aff_occup_1_4: "COVID-19 job affected: Can you continue to pursue your occupation/part-time job? No, due to the coronavirus crisis, it is not possible to engage in my occupation/side job"
-    corona_aff_cont:
-      corona_aff_cont_1: "COVID-19 exposure: How many people in your family (parents, grandparents, siblings, children) are in quarantine (do not leave the house even to go grocery shopping)?"
-      corona_aff_cont_2: "COVID-19 exposure: How many people in your family (parents, grandparents, siblings, children) have been tested for the coronavirus?"
-      corona_aff_cont_3: "COVID-19 exposure: How many people in your family (parents, grandparents, siblings, children) have tested positive, are or were therefore infected?"
-      corona_aff_cont_4: "COVID-19 exposure: How many people from your close personal environment (partner, close friends) are in quarantine (do not leave the house even to go grocery shopping)?"
-      corona_aff_cont_5: "COVID-19 exposure:  How many people from your close personal environment (partner, close friends) have been tested for the coronavirus?"
-      corona_aff_cont_6: "COVID-19 exposure: How many people from your close personal environment (partner, close friends) have tested positive, are or were therefore infected?"
-      corona_aff_cont_7: "COVID-19 exposure: How many people from your wider social environment (fellow university students, other acquaintances) are in quarantine (do not leave the house even to go grocery shopping)?"
-      corona_aff_cont_8: "COVID-19 exposure: How many people from your wider social environment (fellow university students, other acquaintances) have been tested for the coronavirus?"
-      corona_aff_cont_9: "COVID-19 exposure: How many people from your wider social environment (fellow university students, other acquaintances) have tested positive, are or were therefore infected?"
-    corona_stockpile:
-      corona_stockpile_1: "COVID-19 stockpiling: How many rolls of toilet paper do you currently have in your household?"
-      corona_stockpile_2: "COVID-19 stockpiling: How many packages of pasta do you currently have in your household?"
-
-    trump_pers:
-      trump_pers_1: 'BFI: How would you rate Donald Trump on the following Trait: Openness'
-      trump_pers_2: 'BFI: How would you rate Donald Trump on the following Trait: Conscientiousness'
-      trump_pers_3: 'BFI How would you rate Donald Trump on the following Trait: Extraversion'
-      trump_pers_4: 'BFI: How would you rate Donald Trump on the following Trait: Agreeableness'
-      trump_pers_5: 'BFI: How would you rate Donald Trump on the following Trait: Neuroticism'
-    worries_election2020:
-      worries_election2020_1: "US Election 2020: To what degree are you worried about each of the following happening during the election? That the results will be contested."
-      worries_election2020_2: "US Election 2020: To what degree are you worried about each of the following happening during the election? That there will be widespread voter fraud."
-      worries_election2020_3: "US Election 2020: To what degree are you worried about each of the following happening during the election? That mail-in ballots will not be counted correctly."
-      worries_election2020_4: "US Election 2020: To what degree are you worried about each of the following happening during the election? That people will protest the results violently."
-      worries_election2020_5: "US Election 2020: To what degree are you worried about each of the following happening during the election? That President Trump will not leave office if he loses."
-      worries_election2020_6: "US Election 2020: To what degree are you worried about each of the following happening during the election? That members of the losing party will not honor the election results."
-      worries_election2020_7: "US Election 2020: To what degree are you worried about each of the following happening during the election? That there will be widespread voter suppression."
-      worries_election2020_8: "US Election 2020: To what degree are you worried about each of the following happening during the election? That voters will be intimidated at the polls."
-    corona_know:
-      corona_know_1: "COVID-19 wrong knowledge: To what degree have you felt that people are making too big of a deal about COVID-19?"
-      corona_know_2: "COVID-19 wrong knowledge: To what degree have you felt that COVID-19 might be the result of a government conspiracy?"
-      corona_know_3: "COVID-19 wrong knowledge: To what degree have you felt that COVID-19 is a result of climate change?"
-      corona_know_4: "COVID-19 wrong knowledge: To what degree have you felt that COVID-19 is just a normal thing that happens every now and then?"
-      corona_know_5: "COVID-19 wrong knowledge: To what degree have you felt that COVID-19 is a result of immigrants coming to your country?"
-      corona_know_6: "COVID-19 wrong knowledge: To what degree have you felt that COVID-19 is a result of the introduction of the 5G mobile network?"
-      corona_know_7: "COVID-19 wrong knowledge: To what degree have you felt that COVID-19 is no worse than getting the flu?"
-      corona_know_8: "COVID-19 wrong knowledge: To what degree have you felt that COVID-19 can be cured by hydrochloroquine?"
-      corona_know_9: "COVID-19 wrong knowledge: To what degree have you felt that wearing a mask does not help limit the spread of the coronavirus?"
-    party_affiliation:
-      party_affiliation_1_1: "US Election 2020: With which party do you most identify? Republican party"
-      party_affiliation_1_2: "US Election 2020: With which party do you most identify? Democratic party"
-      party_affiliation_1_3: "US Election 2020: With which party do you most identify? Other"
-      party_affiliation_1_4: "US Election 2020: With which party do you most identify? I am not politically engaged"
-    support_election:
-      support_election_1_1: "US Election 2020: Who do you support in the 2020 presidential election? Trump"
-      support_election_1_2: "US Election 2020: Who do you support in the 2020 presidential election? Biden"
-      support_election_1_3: "US Election 2020: Who do you support in the 2020 presidential election? Other"
-    voting_cont:
-      voting_cont_voting_behav: 'US Election 2020: Do you intend to vote? (1 = Yes, 6 = No, not interested)'
-      voting_cont_winner_elect: 'US Election 2020: Who do you think will win the 2020 U.S. presidential election? (1 = Certainly Trump, 5 = Certainly Biden)'
 
   scale_means:
     cmq:
@@ -790,55 +580,6 @@ polit_soc_attitudes:
     political_polar:
       political_polar_favor_dem: 'Political polarization: Attitudes towards Democrats'
       political_polar_favor_rep: 'Political polarization: Attitudes towards Republicans'
-    corona_risk:
-      corona_risk_self: 'COVID-19: Self-related risk estimations'
-      corona_risk_family: 'COVID-19: Family-related risk estimations'
-      corona_risk_closeothers: 'COVID-19: Close others-related risk estimations'
-      corona_risk_society: 'COVID-19: Society-related risk estimations'
-    corona_eval:
-      corona_eval_rating: 'COVID-19: Evaluation of public reactions'
-      corona_eval_self: 'COVID-19: Self-related behavioral evaluations'
-      corona_eval_others: 'COVID-19: Behavioral evaluations of others'
-    corona_change:
-      corona_change: 'COVID-19: Self-related behavioral changes'
-    corona_policy:
-      corona_policy: 'COVID-19: Policy evaluations'
-    corona_aff:
-      corona_aff_binaries: 'COVID-19: Exposure of oneself'
-      corona_aff_occup:
-        corona_aff_occup_1_1: "COVID-19 job affected: Can you continue to pursue your occupation/part-time job? I am not currently employed"
-        corona_aff_occup_1_2: "COVID-19 job affected: Can you continue to pursue your occupation/part-time job? Yes, I will continue to pursue my occupation/side job on site as usual"
-        corona_aff_occup_1_3: "COVID-19 job affected: Can you continue to pursue your occupation/part-time job? Yes, I will continue to pursue my occupation/side job by working from home"
-        corona_aff_occup_1_4: "COVID-19 job affected: Can you continue to pursue your occupation/part-time job? No, due to the coronavirus crisis, it is not possible to engage in my occupation/side job"
-      corona_aff_cont_family: 'COVID-19: Exposure of the family'
-      corona_aff_cont_closeothers: 'COVID-19: Exposure of close others'
-      corona_aff_cont_people: 'COVID-19: Exposure of distant others'
-    corona_stockpile:
-      corona_stockpile: 'COVID-19: Stockpiling'
-    trump_pers:
-      trump_pers_open: 'BFI ratings of Trumps personality: Openness'
-      trump_pers_consc: 'BFI ratings of Trumps personality: Conscientiousness'
-      trump_pers_extra: 'BFI ratings of Trumps personality: Extraversion'
-      trump_pers_agree: 'BFI ratings of Trumps personality: Agreeableness'
-      trump_pers_neuro: 'BFI ratings of Trumps personality: Neuroticism'
-    worries_election2020:
-      worries_election2020: 'US election 2020-related worries'
-    corona_know:
-      corona_know: 'Wrong beliefs about COVID-19'
-    policy_eval:
-      policy_eval: 'COVID-19 related policy evaluations'
-    party_affiliation:
-      party_affiliation_1_1: "With which party do you most identify? Republican party"
-      party_affiliation_1_2: "With which party do you most identify? Democratic party"
-      party_affiliation_1_3: "With which party do you most identify? Other"
-      party_affiliation_1_4: "With which party do you most identify? I am not politically engaged"
-    support_election:
-      support_election_1_1: "Who do you support in the 2020 presidential election? Trump"
-      support_election_1_2: "Who do you support in the 2020 presidential election? Biden"
-      support_election_1_3: "Who do you support in the 2020 presidential election? Other"
-    voting_cont:
-      voting_cont_voting_behav: 'US Election 2020 voting intention (1 = Yes, 6 = No, not interested)'
-      voting_cont_winner_elect: 'US Election 2020 guessing the winner (1 = Certainly Trump, 5 = Certainly Biden)'
 
 country_vars:
   hofstede:
@@ -871,8 +612,6 @@ country_vars:
     psm_cult_idx: {coco_int: 'Country-level: Civil liberties index'}
     psm_pol_idx: {coco_int: 'Country-level: Political participation index'}
 
-wb_change:
-  wb_change_pre_post_event: 'Initial change in well-being'
 
 
 

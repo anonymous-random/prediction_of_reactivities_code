@@ -1,6 +1,7 @@
 import os
 import shutil
 
+
 def supplementary_result_structurer(root_dir, filename, output_dir):
     """
     This function is used to collect the given filenames from their result folders to upload them

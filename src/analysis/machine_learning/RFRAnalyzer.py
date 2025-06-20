@@ -39,10 +39,6 @@ class RFRAnalyzer(BaseMLAnalyzer):
         Returns:
             explainer(instance.reshape(1, -1)).values: array containing the SHAP values for "n_instance"
         """
-        # if n_instance < 10:
-            # print(
-            #     f"Calculating SHAP for instance {n_instance} in process {os.getpid()}"
-            # )
         return explainer(instance.reshape(1, -1), check_additivity=False).values
 
     def compute_shap_interaction_values(self, explainer, X_subset):
@@ -112,8 +108,6 @@ class RFRAnalyzer(BaseMLAnalyzer):
             shap_ia_values_array = None
 
         print(self.config["analysis"]["parallelize"]["shap_n_jobs"])
-        #print("-----")
-        #print("now starting parallel shap computations for one outer fold")
         shap_values_list = Parallel(
             n_jobs=self.config["analysis"]["parallelize"]["shap_n_jobs"],
             verbose=0,
