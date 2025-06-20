@@ -7,8 +7,8 @@ general:
   # To prevent confusion, I recommend to use only one method at a time
   preprocessing: false
   calc_mlms: false
-  ml_analysis: false
-  result_analysis: true
+  ml_analysis: true
+  result_analysis: false
   prelim_results_analysis: false
   significance_tests: false
   cv_results_plots: false
@@ -28,9 +28,9 @@ general:
   #           as suppl_type parameters to create a common plot with the two variables. This might not work with other
   #           combinations and is for one specific plot in the paper
 
-  analysis: main # suppl # main / suppl, ['main', 'suppl']
-  suppl_type: x # sep_pa_na, sep_ftf_cmc, weighting_by_rel,
-  suppl_var: x # pa, na; ftf, cmc, ftf_pa; random_slopes, ols_slopes, ['pa', 'na'], ['ftf', 'cmc']
+  analysis: suppl # suppl # main / suppl, ['main', 'suppl']
+  suppl_type: sep_ftf_cmc # sep_pa_na, sep_ftf_cmc, weighting_by_rel,
+  suppl_var: ftf_pa # pa, na; ftf, cmc, ftf_pa; random_slopes, ols_slopes, ['pa', 'na'], ['ftf', 'cmc']
   study: ssc # ssc
   social_interaction_variable: social_interaction # social_interaction, interaction_quantity, interaction_depth, interaction_closeness
   esm_sample: coco_int  # coco_int, emotions, coco_ut, for classes that use only a single sample at a time
@@ -858,7 +858,7 @@ analysis:
       - apply_shap_analyses
     paths:
       # Adjust result path here: Either use path to shap_values, or to shap_ia_values
-      result_path: '../results/ml_results_ia_values' # a) '../results/ml_results_processed', b) '../results/ml_results_ia_values'
+      result_path: '../results/ml_results_processed' # a) '../results/ml_results_processed', b) '../results/ml_results_ia_values'
       plot_path: '../results/plots'
       feature_path: '../data/preprocessed'
     correlate_shap_values:
@@ -877,11 +877,11 @@ analysis:
       output_dir: "../results/osf_suppl_results/shap_ia_values"
 
     plots:
-      store_plots: true
+      store_plots: false
       filetype: 'jpeg'  # filetype for storing, according to e.g. JPSP submission guidelines
       ggplot_style: true
       axes_facecolor: "white"  # '#eaeaea'
-      plot_types: ['ia_scatter_plot']   # Insert plot types that should be created, must match the results
+      plot_types: ['summary_plot']   # Insert plot types that should be created, must match the results
       # possible plot_types: ['summary_plot', 'importance_plot', 'ia_scatter_plot', 'ia_heatmap']
       soc_int_var_order: ['social_interaction', 'interaction_quantity', 'interaction_depth', 'interaction_closeness']
       esm_sample_order: ['coco_int', 'emotions','coco_ut']
@@ -918,6 +918,7 @@ analysis:
         max_display: 6
         strng_length: 40 # 30 used for the paper plots, use 40 for other plots
         cmap: copper
+        plot_scatter: false  # if true, scatter plot (SHAP values x most important feature) is created instead of summary plot
       ia_heatmap:
         num_features: 15
         cmap_main_effects: 'binary'

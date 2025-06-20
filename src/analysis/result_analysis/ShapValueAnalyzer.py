@@ -1819,6 +1819,10 @@ class ShapValueAnalyzer:
         for the training and the test set. Each modelxfis combo correspond to an ax Object, on which
         the specific subplot is plotted on.
 
+        Note: We further added the possibility to create a scatter plot for the SHAP values and the most
+        important feature per modelxfis combination instead of the SHAP summary plots, this can be selected
+        in the config (setting "plot_scatter" to True).
+
         Args:
             data_dct: Dict, containing the SHAP values
             esm_sample: str, current esm sample
@@ -1845,17 +1849,28 @@ class ShapValueAnalyzer:
                         esm_sample=esm_sample,
                         plot="summary_plot",
                     )
-                    self.create_summary_plot(
-                        data=data_dct[fis][model],
-                        features=features_pretty,
-                        dataset=dataset,
-                        model=model,
-                        fis=fis,
-                    )
+                    if self.shap_config["plots"]["summary_plot"]["plot_scatter"]:
+                        self.feature_shap_scatter_plot(
+                            data=data_dct[fis][model],
+                            features=features_pretty,
+                            dataset=dataset,
+                            model=model,
+                            fis=fis,
+                        )
+                        plot_type = "feature_shap_scatter"
+                    else:
+                        self.create_summary_plot(
+                            data=data_dct[fis][model],
+                            features=features_pretty,
+                            dataset=dataset,
+                            model=model,
+                            fis=fis,
+                        )
+                        plot_type = "summary_plot"
             plt.tight_layout()
             if self.shap_config["plots"]["store_plots"]:
                 self.store_plot(
-                    plot_type="summary_plot",
+                    plot_type=plot_type,
                     dataset=dataset,
                     esm_sample=esm_sample,
                     soc_int_var=soc_int_var,
@@ -2379,6 +2394,39 @@ class ShapValueAnalyzer:
         ax.spines['bottom'].set_visible(True)
         ax.spines['bottom'].set_color('black')
 
+    def feature_shap_scatter_plot(self, data, dataset, features, model, fis):
+        """
+        Creates a scatter plot showing the relationship between the most important feature
+        (based on mean absolute SHAP value) and its SHAP values.
+
+        Args:
+            data: Dict, containing the SHAP values
+            dataset: str, "train" or "test"
+            features: DataFrame, containing the input features
+            model: str, the model identifier
+            fis: str, feature inclusion strategy
+        """
+        shap_values = np.array(data["shap_values"][dataset]["avg_across_reps"])
+        abs_mean_shap = np.abs(shap_values).mean(axis=0)
+        top_feature_idx = np.argmax(abs_mean_shap)
+        top_feature_name = features.columns[top_feature_idx]
+
+        # Scatter plot: SHAP value vs. feature value
+        plt.scatter(
+            features[top_feature_name],
+            shap_values[:, top_feature_idx],
+            alpha=0.8,
+            s=13,
+            color="tab:blue",
+            edgecolor="none",
+        )
+        plt.xlabel(f"{top_feature_name}", fontsize=20)
+        plt.ylabel("SHAP Value", fontsize=20)
+        plt.title(
+            f"{self.shap_config['plots']['str_mapping']['fis'][fis]} - {self.shap_config['plots']['str_mapping']['models'][model]}",
+            fontsize=24)
+        plt.xticks(fontsize=20)
+        plt.yticks(fontsize=20)
 
     def create_importance_plot(
         self, data, ax, shap_summary_type, esm_sample, soc_int_var
