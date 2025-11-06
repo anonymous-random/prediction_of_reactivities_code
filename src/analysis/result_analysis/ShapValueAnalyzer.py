@@ -715,6 +715,7 @@ class ShapValueAnalyzer:
             shap_vals[dataset][
                 "shap_abstr_broad_categories"
             ] = self.summarize_broad_categories(shap_data)
+
         return shap_vals
 
     @staticmethod
@@ -832,12 +833,13 @@ class ShapValueAnalyzer:
             abs_shap_dct: Dict containing the individual shap values for all variables
 
         Returns:
-            results_scale_means: Dict containing the summarized shap values (1st value: sum, 2nd value: mean)
-                across categories
+            results_scale_means: Dict containing the summarized shap values (1st value: sum, 2nd value: mean,
+            3rd value raw values) across categories
         """
         # extract config names of the dct keys
         cfg_names = self.extract_name_generic(abs_shap_dct)
         category_mapping = self.create_cfg_category_mapping()
+
         # Organizing data based on category mapping
         organized_data = defaultdict(list)
         for data_var, value in abs_shap_dct.items():
@@ -845,12 +847,15 @@ class ShapValueAnalyzer:
             for category, variables in category_mapping.items():
                 if extracted_name in variables:
                     organized_data[category].append(value)
-        # Calculating sum and mean
+
+        # Calculating sum, mean and keeping raw values
         result = {}
         for category, values in organized_data.items():
+            raw_vals = values
             sum_val = sum(values)
             mean_val = sum_val / len(values)
-            result[category] = [sum_val, mean_val]
+            result[category] = [sum_val, mean_val, raw_vals]
+
         return result
 
     def create_cfg_category_mapping(self):
@@ -1013,6 +1018,8 @@ class ShapValueAnalyzer:
         combos_data = {}
         esm_samples = []
         name_suffix = ""
+        soc_int_vars = []
+
         # Extract relevant data from full dict
         for combo in combos_to_plot:
             for esm_sample, esm_sample_vals in data.items():
@@ -1021,11 +1028,23 @@ class ShapValueAnalyzer:
                         combo["esm_sample"] == esm_sample
                         and combo["soc_int_var"] == soc_int_var
                     ):
+                        soc_int_vars.append(soc_int_var)
                         combos_data[f"{esm_sample}_{soc_int_var}"] = soc_int_var_vals
                         esm_samples.append(esm_sample)
                         name_suffix += f"{esm_sample}_{soc_int_var}_"
                         soc_int_var_to_plot = soc_int_var
         name_suffix += dataset_to_plot
+
+        # Dynamically adjust axes limites in one plot
+        if "social_interaction" in soc_int_vars:
+            xlim = (-0.0015, 0.06)
+            ylim = (-0.00002, 0.00074)
+        elif "interaction_quantity" in soc_int_vars:
+            xlim = (-0.00015, 0.008)
+            ylim = (-0.000002, 0.00015)
+        else:
+            xlim = (-0.00015, 0.0035)
+            ylim = (-0.000002, 0.000062)
 
         fig, axes = plt.subplots(
             len(fis_to_plot), len(combos_to_plot), figsize=(25, 16)
@@ -1048,6 +1067,9 @@ class ShapValueAnalyzer:
                     ax=ax,
                     esm_sample=esm_samples[i],
                     soc_int_var=soc_int_var_to_plot,
+                    xlim=xlim,
+                    ylim=ylim,
+                    dataset_to_plot=dataset_to_plot,
                 )
                 # Apply scientific notation conditionally if values are too small
                 ax.ticklabel_format(
@@ -1158,7 +1180,7 @@ class ShapValueAnalyzer:
             new_dct[dataset]["abs_agg_ia_persons_ias"] = df_abs_agg_ia_persons_ias
         return new_dct
 
-    def shap_ia_scatter_plot(self, data, fis, combo, ax, esm_sample, soc_int_var=None):
+    def shap_ia_scatter_plot(self, data, fis, combo, ax, esm_sample, soc_int_var, xlim, ylim, dataset_to_plot):
         """
         This function creates a scatter plot for the shap interaction values. It uses the (absolute)
         shap value matrix (n_features x n_features) summarized across persons to compare the size
@@ -1167,7 +1189,7 @@ class ShapValueAnalyzer:
         effect. Further, it highlights certain dots and add the feature name, it calculates and presents
         the rank correlation for each feature category and all features, and it formats parameters of the plot.
         The plot created here is plotted on ax, so it is only displayed together with the scatter plots for
-        other combos.
+        other combos. xlims are set based on the data to plot.
 
         Args:
             data: Dict, contains the SHAP ia values for a given model (i.e., RFR) and a given feature inclusion
@@ -1177,6 +1199,9 @@ class ShapValueAnalyzer:
             ax: ax: matplotlib.ax Object, specific position on the main plot where to plot the current data
             esm_sample: str, a given ESM sample
             soc_int_var: str, current soc_int_var
+            xlim: Tuple setting x axis
+            ylim: Tuple setting y axis
+            dataset_to_plot: "train" or "test"
         """
         df_abs_ia_persons = data["abs_agg_ia_persons"].copy()
         df_abs_ia_persons_ias = data["abs_agg_ia_persons_ias"].copy()
@@ -1362,7 +1387,11 @@ class ShapValueAnalyzer:
             labelpad=10,
         )
         ax.tick_params(axis="both", labelsize=14)
-        ax.legend(loc="lower right", fontsize=15)
+        ax.legend(loc="lower right", fontsize=13)
+
+        # Set axes limits
+        ax.set_xlim(*xlim)
+        ax.set_ylim(*ylim)
 
         ax.spines['bottom'].set_visible(True)
         ax.spines['left'].set_visible(True)
@@ -1458,10 +1487,6 @@ class ShapValueAnalyzer:
             raise NotImplementedError(f"corr type {corr_type} not implemented")
         if corr:
             formatted_corr = f"{corr:.2f}".replace("0.", ".")
-            #if p_val < 0.001:
-             #   sig_symbol = "***"
-            #elif p_val < 0.01:
-            #    sig_symbol = "**"
             if p_val < 0.05:
                 sig_symbol = "*"
             else:
@@ -1818,6 +1843,7 @@ class ShapValueAnalyzer:
         are placed in. Currently, we create 6 summary plots on the big plot (2 models x 3 fis), separately
         for the training and the test set. Each modelxfis combo correspond to an ax Object, on which
         the specific subplot is plotted on.
+        The xlim is computed dynamically based on the maximum values in one plot.
 
         Note: We further added the possibility to create a scatter plot for the SHAP values and the most
         important feature per modelxfis combination instead of the SHAP summary plots, this can be selected
@@ -1838,6 +1864,8 @@ class ShapValueAnalyzer:
             fig, axes = plt.subplots(
                 len(models_to_plot), len(fis_to_plot), figsize=(40, 16)
             )
+            xlim = self._compute_common_summary_xlim(data_dct, dataset, models_to_plot, fis_to_plot)
+
             # Loop over model / fis combinations
             for j, fis in enumerate(fis_to_plot):
                 for i, model in enumerate(models_to_plot):
@@ -1865,6 +1893,7 @@ class ShapValueAnalyzer:
                             dataset=dataset,
                             model=model,
                             fis=fis,
+                            xlim=xlim,  # for equal xlims within plots
                         )
                         plot_type = "summary_plot"
             plt.tight_layout()
@@ -1878,6 +1907,67 @@ class ShapValueAnalyzer:
             else:
                 plt.show()
                 self.check_plot_grayscale(fig=fig, filename_raw=None, show_plot=True)
+
+    @staticmethod
+    def _compute_common_summary_xlim(
+            data_dct: dict,
+            dataset: str,
+            models_to_plot: list[str],
+            fis_to_plot: list[str],
+            margin_ratio: float = 0.02,
+    ) -> tuple[float, float]:
+        """
+        Computes data-driven x-axis limits for SHAP summary plots (non-symmetric) and adds a dynamic margin.
+
+        The margin is applied to both sides and equals `margin_ratio` times the data span.
+
+        Args:
+            data_dct: Dict holding SHAP info with structure
+                      data_dct[fis][model]["shap_values"][dataset]["avg_across_reps"]
+            dataset: Target split, e.g., "train" or "test"
+            models_to_plot: Models to include for this figure
+            fis_to_plot: Feature-inclusion strategies to include for this figure
+            margin_ratio: Proportion of the span used as padding on each side (default 0.02)
+
+        Returns:
+            tuple[float, float]: (left, right) x-limits to use across all subplots.
+        """
+        global_min = None
+        global_max = None
+
+        for fis in fis_to_plot:
+            if fis not in data_dct:
+                continue
+            for model in models_to_plot:
+                if model not in data_dct[fis]:
+                    continue
+                try:
+                    arr = np.asarray(
+                        data_dct[fis][model]["shap_values"][dataset]["avg_across_reps"]
+                    )
+                except KeyError:
+                    continue
+                if arr.size == 0:
+                    continue
+
+                local_min = np.nanmin(arr)
+                local_max = np.nanmax(arr)
+
+                if np.isfinite(local_min):
+                    global_min = local_min if global_min is None else min(global_min, local_min)
+                if np.isfinite(local_max):
+                    global_max = local_max if global_max is None else max(global_max, local_max)
+
+        if global_min is None or global_max is None:
+            return (-1e-12, 1e-12)
+
+        if global_min == global_max:
+            pad = 1e-12 if global_max == 0 else abs(global_max) * max(margin_ratio, 0.02)
+            return (global_min - pad, global_max + pad)
+
+        span = global_max - global_min
+        pad = span * margin_ratio
+        return (float(global_min - pad), float(global_max + pad))
 
     def dependence_plot_wrapper(self, data_dct, esm_sample, soc_int_var, ia_pairs_dct):
         """
@@ -1944,16 +2034,25 @@ class ShapValueAnalyzer:
         The specifications how many importance plots are created and which are defined in the config.
         Currently, we plot the mean and the sum of the shap values summarized across categories per
         soc_int_var and sample, so that it results in one plot for one analysis
-        (e.g., one plot for main/ssc with all ESM-samples and soc_int_vars)
+        (e.g., one plot for main/ssc with all ESM-samples and soc_int_vars).
+        The xlim is computed dynamically based on the maximum values in one plot.
 
         Args:
             data_dct: Dict, containing the raw SHAP values
         """
-        for model in ["lasso", "rfr"]:
-            for dataset in ["train", "test"]:
+        for model in ["lasso", "rfr"]:  # ["lasso", "rfr"]
+            for dataset in ["test", "train"]:  # ["train", "test"]
                 data_agg_across_categories = self.summarize_abstraction_shap_for_plot(
                     data_dct=data_dct, sum_across_models=False  # True
                 )
+
+                xlims = self.compute_common_summary_xlim_importanceplot(
+                    data_agg_across_categories=data_agg_across_categories,
+                    dataset=dataset,
+                    model=model,
+                    margin_ratio=0.02,
+                )
+
                 fig = plt.figure(figsize=(24, 13))
                 gs = gridspec.GridSpec(
                     nrows=self.shap_config["plots"]["importance_plot"]["grid_spec"][
@@ -1997,12 +2096,14 @@ class ShapValueAnalyzer:
                             current_data = esm_sample_vals[soc_int_var]["shap_values"][
                                 dataset
                             ]["abs_avg_across_cat"][model]
+
                             self.create_importance_plot(
                                 data=current_data,
                                 ax=ax,
                                 shap_summary_type=summary_stat,
                                 esm_sample=esm_sample,
                                 soc_int_var=soc_int_var,
+                                xlim=xlims[summary_stat],
                             )
 
                 # Apply some formatting
@@ -2039,12 +2140,94 @@ class ShapValueAnalyzer:
                     plt.show()
                     self.check_plot_grayscale(fig=fig, filename_raw=None, show_plot=True)
 
+    def compute_common_summary_xlim_importanceplot(
+            self,
+            data_agg_across_categories: dict,  # summarize_abstraction_shap_for_plot output
+            dataset: str,
+            model: str,
+            margin_ratio: float = 0.02,
+    ) -> dict[str, tuple[float, float]]:
+        """
+        Computes per-figure x-limits for importance plots.
+
+        For 'sum' subplots, limits are based on the aggregated sums (vals[0]) and anchored at 0.
+        For 'mean' subplots, limits are taken from the raw values (vals[2]) across all categories.
+
+        Args:
+            data_agg_across_categories: Nested dict containing aggregated SHAP values for all subplots in the figure.
+            dataset: Target split, e.g., "train" or "test".
+            model: Model key present in the aggregated structure.
+            margin_ratio: Proportion of span used as padding (mean: both sides; sum: right side only).
+
+        Returns:
+            dict[str, tuple[float, float]]: {'sum': (left, right), 'mean': (left, right)}
+        """
+        import numpy as np
+
+        max_sum = 0.0
+        mean_min = None
+        mean_max = None
+
+        for esm_sample_vals in data_agg_across_categories.values():
+            for soc_vals in esm_sample_vals.values():
+                node = (
+                    soc_vals.get("shap_values", {})
+                    .get(dataset, {})
+                    .get("abs_avg_across_cat", {})
+                )
+                if model not in node:
+                    continue
+
+                for vals in node[model].values():
+                    if not isinstance(vals, (list, tuple)) or len(vals) < 3:
+                        continue
+
+                    # sum subplot: aggregated sum in vals[0]
+                    try:
+                        s = float(vals[0])
+                        if s > max_sum:
+                            max_sum = s
+                    except Exception:
+                        pass
+
+                    # mean subplot: raw values in vals[2]
+                    raw = np.asarray(vals[2], dtype=float)
+                    if raw.size:
+                        loc_min = np.nanmin(raw)
+                        loc_max = np.nanmax(raw)
+                        if np.isfinite(loc_min):
+                            mean_min = loc_min if mean_min is None else min(mean_min, loc_min)
+                        if np.isfinite(loc_max):
+                            mean_max = loc_max if mean_max is None else max(mean_max, loc_max)
+
+        # Build padded limits
+        def _pad_mean(left: float | None, right: float | None) -> tuple[float, float]:
+            if left is None or right is None:
+                return (0.0, 1e-12)
+            if left == right:
+                pad = max(abs(right) * margin_ratio, 1e-12)
+                return (left - pad, right + pad)
+            span = right - left
+            pad = max(span * margin_ratio, 1e-12)
+            return (left - pad, right + pad)
+
+        if max_sum <= 0:
+            sum_xlim = (0.0, 1e-12)
+        else:
+            pad = max(max_sum * margin_ratio, 1e-12)
+            sum_xlim = (0.0, max_sum + pad)
+
+        mean_xlim = _pad_mean(mean_min, mean_max)
+
+        return {"sum": sum_xlim, "mean": mean_xlim}
+
     def summarize_abstraction_shap_for_plot(self, data_dct, sum_across_models):
         """
         This function summarizes the SHAP values specifically for the importance plot. This results in one
         importance score for a broad feature category in one esm_sample - soc_int_var combination. Thus,
         importance scores for models and fis are pooled for this "global" importance.
-        SHAP values for SVR are excluded, beucase the results were corrupted.
+        We also extract the raw values for plotting a boxplots with the individual data points
+        SHAP values for SVR are excluded, because the results were corrupted.
 
         Args:
             data_dct: Dict, containing the raw SHAP values
@@ -2082,6 +2265,7 @@ class ShapValueAnalyzer:
                             results[esm_sample][soc_int_var]["shap_values"][dataset][
                                 "abs_avg_across_cat"
                             ][category] = self.calculate_mean(aggregates)
+
                     else:
                         for fis, fis_vals in soc_int_var_vals.items():
                             for model, model_vals in fis_vals.items():
@@ -2162,7 +2346,14 @@ class ShapValueAnalyzer:
         """
         total_mean = sum(pair[0] for pair in shap_val_lst) / len(shap_val_lst)
         total_sum = sum(pair[1] for pair in shap_val_lst) / len(shap_val_lst)
-        return [total_mean, total_sum]
+
+        try:
+            total_raw_vals = [val for pair in shap_val_lst for val in pair[2]]
+            return [total_mean, total_sum, total_raw_vals]
+
+        except:
+            print("No raw values extracted")
+            return [total_mean, total_sum]
 
     def structure_shap_values_for_plots(self, data, study):
         """
@@ -2356,7 +2547,7 @@ class ShapValueAnalyzer:
         results = "\n".join(lines)
         return results
 
-    def create_summary_plot(self, data, dataset, features, model, fis):
+    def create_summary_plot(self, data, dataset, features, model, fis, xlim):
         """
         This function creates a shap summary plot / beeswarm plot. Currently, this is wrapped so that multiple
         summary plots are plotted together in one root plot
@@ -2367,6 +2558,7 @@ class ShapValueAnalyzer:
             features: df, containing the features for correct display of the feature values in the plot
             model: str, specifies the model on the plot
             fis: str, feature inclusion strategy
+            xlim: Tuple defining the x-axis limits of the plot
         """
         max_display_summary_plot = self.shap_config["plots"]["summary_plot"][
             "max_display"
@@ -2382,6 +2574,10 @@ class ShapValueAnalyzer:
         )
         # Get the current figure and axes objects and reformat
         fig, ax = plt.gcf(), plt.gca()
+
+        if xlim is not None:
+            ax.set_xlim(*xlim)
+
         ax.tick_params(axis="y", labelsize=5, pad=0, direction="inout")
         ax.tick_params(axis="x", labelsize=5)
         ax.set_xlabel("SHAP Value", fontsize=6)
@@ -2429,11 +2625,12 @@ class ShapValueAnalyzer:
         plt.yticks(fontsize=20)
 
     def create_importance_plot(
-        self, data, ax, shap_summary_type, esm_sample, soc_int_var
+        self, data, ax, shap_summary_type, esm_sample, soc_int_var, xlim
     ):
         """
         This creates an importance plot. Currently, we use this only on the abstraction level of
         broad categories. This function plots one plot on the current ax.object that is given.
+        It either creates a barplot (for the sum) or boxplot with the individual data points.
 
         Args:
             data: Dict, containing the SHAP values
@@ -2441,6 +2638,7 @@ class ShapValueAnalyzer:
             ax: matplotlib.ax Object, determines where the plot is placed on the root plot
             esm_sample: str, given ESM sample
             soc_int_var: str, given soc_int_var
+            xlim: Tuple dynamically defining the xlim  of the plot
         """
         if shap_summary_type == "sum":
             val_dct = {cat: vals[0] for cat, vals in data.items()}
@@ -2448,27 +2646,101 @@ class ShapValueAnalyzer:
             val_dct = {cat: vals[1] for cat, vals in data.items()}
         else:
             raise NotImplementedError("Choose either 'sum' or 'mean'")
-        sorted_val_dct = dict(
-            sorted(val_dct.items(), key=lambda item: item[1], reverse=True)
-        )
-        top_features = list(sorted_val_dct.keys())
+
+        fixed_order_raw = [
+            "personality",
+            "socio_demographics",
+            "polit_soc_attitudes",
+            "country_vars",  # will be skipped if not in data
+        ]
+
+        # Get features, data, and colors
+        top_features = [cat for cat in fixed_order_raw if cat in data]
+        top_importances =  [val_dct[cat] for cat in top_features]
         color_mapping = self.shap_config["plots"]["cat_color_mapping"]
-        color = [color_mapping[feature] for feature in top_features]
         top_features_pretty = [
             self.shap_config["plots"]["category_mapping"][feature]
             for feature in top_features
         ]
-        top_importances = list(sorted_val_dct.values())
+        palette_pretty = {
+            self.shap_config["plots"]["category_mapping"][feature]: color_mapping[feature]
+            for feature in top_features
+        }
         bar_height = 0.42
 
-        # Creating the bar plot with different colors and adjusted spacing and format
-        ax.barh(
-            top_features_pretty,
-            top_importances,
-            align="center",
-            height=bar_height,
-            color=color,
-        )
+        if shap_summary_type == "mean":
+            # gather raw values
+            violin_data = []
+            for feature in top_features:
+                raw_vals = data[feature][2]
+                cat_pretty = self.shap_config["plots"]["category_mapping"][feature]
+                for val in raw_vals:
+                    violin_data.append({"category": cat_pretty, "value": val})
+
+            violin_df = pd.DataFrame(violin_data)
+            violin_df["category"] = pd.Categorical(
+                violin_df["category"],
+                categories=list(top_features_pretty),
+                ordered=True,
+            )
+
+            # boxplot per category with matching colors
+            sns.boxplot(
+                data=violin_df,
+                y="category",
+                x="value",
+                ax=ax,
+                orient="h",
+                palette=palette_pretty,
+                showcaps=True,
+                fliersize=0,  # hide default gray fliers; we'll show colored dots below
+                linewidth=1,
+                width=0.55,
+            )
+
+            sp = sns.stripplot(
+                data=violin_df,
+                y="category",
+                x="value",
+                ax=ax,
+                orient="h",
+                hue="category",  # ensures color per category
+                palette=palette_pretty,
+                dodge=False,
+                jitter=0.1,
+                alpha=0.4,
+                size=6,
+                linewidth=0,
+                legend=False,
+            )
+            if sp.get_legend() is not None:
+                sp.get_legend().remove()
+            ax.set_ylabel("")
+
+            # overlay larger, high-contrast mean markers
+            for i, feat in enumerate(top_features):
+                mean_val = np.mean(data[feat][2])
+                ax.scatter(
+                    mean_val,
+                    i,
+                    color="black",
+                    marker="D",
+                    s=90,  # bigger
+                    zorder=5,
+                    edgecolors="white",  # white outline for contrast
+                    linewidths=0.9,
+                )
+
+        else:  # sum
+            ax.barh(
+                top_features_pretty,
+                top_importances,
+                align="center",
+                height=bar_height,
+                color=[palette_pretty[c] for c in top_features_pretty],
+            )
+            ax.invert_yaxis()
+
         if self.study == "ssc":
             soc_int_var_pretty = self.shap_config["plots"]["importance_plot"][
                 "soc_int_var_mapping"
@@ -2482,7 +2754,6 @@ class ShapValueAnalyzer:
             raise ValueError("Study must be ssc")
 
         ax.set_aspect(aspect="auto")
-        ax.invert_yaxis()
         ax.set_yticklabels(top_features_pretty, fontsize=y_x_fontsize)
         ax.locator_params(axis="x", nbins=4)
         if shap_summary_type == "sum":
@@ -2494,7 +2765,7 @@ class ShapValueAnalyzer:
             )
         elif shap_summary_type == "mean":
             ax.set_xlabel(
-                "Mean of Importances per Category ",
+                "Dist. of Importances per Category ",
                 fontsize=y_x_fontsize,
                 labelpad=8,
                 fontweight="bold",
@@ -2506,8 +2777,9 @@ class ShapValueAnalyzer:
                     pad=15,
                     fontweight="bold",
                 )
-            else:
-                raise ValueError("Study must be ssc")
+
+        if xlim is not None:
+            ax.set_xlim(*xlim)
 
         # Add axis if background is white
         # Only show left and top spines
@@ -2535,6 +2807,7 @@ class ShapValueAnalyzer:
             features: df, containing the feature values for correct display in the plot
             ia_pair: list, containing two features that interact
             ax: matplotlib.ax object, determines where on the root plot the current config is plotted
+            num_feature: int, number of features to plot
         """
         if ia_pair:
             feature_1 = list(ia_pair)[0]
@@ -2580,6 +2853,7 @@ class ShapValueAnalyzer:
                 and test together
             soc_int_var: str, soc_int_var if ssc
             esm_sample: str, the given ESM sample
+            model: str, the given model
             fis: str, feature inclusion strategy
             name_suffix: str, given suffix for more adequately specifyin the result plot
         """

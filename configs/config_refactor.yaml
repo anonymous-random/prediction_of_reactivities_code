@@ -7,12 +7,12 @@ general:
   # To prevent confusion, I recommend to use only one method at a time
   preprocessing: false
   calc_mlms: false
-  ml_analysis: true
+  ml_analysis: false
   result_analysis: false
   prelim_results_analysis: false
   significance_tests: false
   cv_results_plots: false
-  shap_value_analysis: false
+  shap_value_analysis: true
   osf_suppl_analysis: false
 
   #### Common Parameters used in all Classes - Could be assigned via Slurm in the machine learning analyses ####
@@ -675,13 +675,13 @@ analysis:
     methods:
       - create_cv_result_dct_wrapper
       # - create_cv_result_table_wrapper
-      # - plot_cv_results_wrapper
-      - compare_feature_inclusion_strategies
-    base_path: '../results/ml_results_processed'
+      - plot_cv_results_wrapper
+      #  - compare_feature_inclusion_strategies
+    base_path: '../results/ml_results_processed'  # '../results/ml_results_processed'
     store_plot: true
     store_table: false
-    plot_path: '../results/plots'
-    sig_results_path: '../results/significance_test_results'
+    plot_path: '../results/plots'  # '../results/plots'
+    sig_results_path: '../results/significance_test_results'  # '../results/significance_test_results'
     orderings: # for correct plotting
       sample: ["coco_int", "emotions", "coco_ut"]
       fis: ["single_items", "scale_means", "feature_selection"]
@@ -869,7 +869,7 @@ analysis:
       - polit_soc_attitudes
       - country_vars
     storing_shap_values:
-      store_abstraction_levels: true
+      store_abstraction_levels: false
       models: ['lasso', 'rfr', 'linear_baseline_model']
       output_dir: "../results/osf_suppl_results/shap_values"
     storing_shap_ia_values:
@@ -877,7 +877,7 @@ analysis:
       output_dir: "../results/osf_suppl_results/shap_ia_values"
 
     plots:
-      store_plots: false
+      store_plots: true
       filetype: 'jpeg'  # filetype for storing, according to e.g. JPSP submission guidelines
       ggplot_style: true
       axes_facecolor: "white"  # '#eaeaea'
@@ -938,10 +938,10 @@ analysis:
         dataset_to_plot: 'test'  # train, test  # adjust here
         sample_var_combos: # adjust here
           ssc:
-            - esm_sample: coco_int
-              soc_int_var: interaction_closeness
-            - esm_sample: coco_int
-              soc_int_var: interaction_depth
+            - esm_sample: coco_int  # coco_int
+              soc_int_var: social_interaction  # social_interaction
+            - esm_sample: emotions  # emotions
+              soc_int_var: social_interaction  # social_interaction
         corr_type: spearmanr   # pearsonr, spearmanr
         txt_x: 0.82 # X coordinate in figure units (0 left, 1 right)
         txt_y: 0.42 # Y coordinate in figure units (0 bottom, 1 top)
@@ -964,15 +964,15 @@ analysis:
                         uls_relational_clean: [ -0.0025, 0.00003 ]
                         political_efficacy_clean: [ -0.0025, 0.00002 ]
                         internet_num_person_percent: [ -0.0025, 0.00002 ]
-                        cope_behavioral_diseng_clean: [ -0.002, -0.00004 ]
-                        pol_att_other_religiosity_clean: [ -0.002, 0.00002 ]
+                        cope_behavioral_diseng_clean: [ -0.002, -0.000051 ]
+                        pol_att_other_religiosity_clean: [ -0.0025, 0.00002 ]
                       single_items:
-                        age_clean: [ -0.0005, -0.000006 ]
-                        gdp_growth_rate: [ -0.0013, 0.000008 ]
-                        quantity_household_clean: [ 0.0005, 0 ]
-                        pol_att_other_3_clean: [ -0.0025, 0.000012 ]
-                        uls_3_clean: [ 0.0005, -0.000005 ]
-                        bfi2_1_clean: [ 0.0005,-0.00001 ]
+                        age_clean: [ -0.0005, 0.00002 ]
+                        gdp_growth_rate: [ 0.0006, 0.000028 ]
+                        #quantity_household_clean: [ 0.0005, 0 ]
+                        pol_att_other_3_clean: [ -0.0036, 0.000045 ]
+                        uls_3_clean: [ 0.0007, -0.000028 ]
+                        # bfi2_1_clean: [ 0.0005,-0.00001 ]
                     emotions:
                       scale_means:
                         uls_relational_clean: [ -0.006, 0.000025 ]
@@ -982,13 +982,13 @@ analysis:
                         bfi2s_extra_clean: [ -0.0025, 0.00004 ]
                         educational_attainment_clean: [ -0.004, 0.00004 ]
                       single_items:
-                        age_clean: [ -0.0004, -0.000018 ]
-                        uls_5_clean: [ -0.004, 0.000003 ]
-                        cmq_2_clean: [ -0.0015, 0.000045 ]
-                        uls_1_clean: [ 0.0005, 0.000003 ]
-                        bfi2s_16_clean: [ -0.0012, -0.000035 ]
-                        sex_clean_1: [ 0.0006, -0.000025 ]
-                        sex_clean_2: [ 0.0005, -0.00001 ]
+                        age_clean: [ -0.0004, -0.000024 ]
+                        uls_5_clean: [ 0.0008, 0.000003 ]
+                        cmq_2_clean: [ -0.0015, 0.000064 ]
+                        uls_1_clean: [ 0.0005, 0.000052 ]
+                        bfi2s_16_clean: [ -0.0012, -0.000047 ]
+                        sex_clean_1: [ 0.0012, -0.000028 ]  # female
+                        sex_clean_2: [ 0.0010, -0.000013 ]  # male
 
       importance_plot:
         samples_to_plot: ['coco_int', 'emotions', 'coco_ut']

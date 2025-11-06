@@ -324,7 +324,7 @@ class CVResultPlotter:
                     current_level["metrics"] = metrics_summary
 
         # for keeping the rest of the code simpler, we set the same dct structure, independent of the analysis_type
-        key_path = self.sum_results_path.split("\\")
+        key_path = self.sum_results_path.split(os.sep)
         current_dct = result_dict
         for key in key_path:
             if key in current_dct:
@@ -1049,6 +1049,7 @@ class CVResultPlotter:
         # Optional: set their color if needed
         ax.spines['left'].set_color('black')
         ax.spines['bottom'].set_color('black')
+        ax.axhline(0, linestyle="--", color="black", linewidth=1)
 
     def get_r2_ylim(self, study):
         """
