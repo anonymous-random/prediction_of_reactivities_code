@@ -252,5 +252,6 @@ run_all_reliabilities <- function(dir_path, id_var = "id", sample_n = 1000,
   return(results_tbl)
 }
 
-results <- run_all_reliabilities(getwd(), id_var = "id", sample_n = 1000)
+# set wd to the dir where the states are stored, e.g., "../data/preprocessed/main/ssc/states"
+results <- run_all_reliabilities(getwd(), id_var = "id", sample_n = 999999)  # basically no sampling
 View(results)
